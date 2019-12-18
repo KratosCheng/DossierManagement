@@ -62,8 +62,13 @@ public class DossierController {
         return iDossierService.saveDossier(dossier);
     }
 
-    @RequestMapping("/remove/1")
-    public String remove() {
-        return "删除卷宗（admin，judge）";
+    /**
+     * 通过id删除卷宗
+     * @param dossierId
+     * @return
+     */
+    @RequestMapping("/remove/{dossierId}")
+    public boolean remove(@PathVariable long dossierId) {
+        return iDossierService.removeDossierById(dossierId);
     }
 }

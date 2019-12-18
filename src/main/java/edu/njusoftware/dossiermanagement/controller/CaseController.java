@@ -26,11 +26,19 @@ public class CaseController {
         return caseService.getCaseInfo(caseNum);
     }
 
+    /**
+     * 获取所有的案件
+     * @return
+     */
     @RequestMapping("/all")
     public List<Case> getAllCases() {
         return caseService.getAllCases();
     }
 
+    /**
+     * 获取某类型所有的案件
+     * @return
+     */
     @RequestMapping("/list/{type}")
     public List<Case> getAllCases(@PathVariable String type) {
         return caseService.getCasesByType(type);

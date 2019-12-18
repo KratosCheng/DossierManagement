@@ -60,4 +60,19 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         user.setRoleName(roleName);
         return userRepository.save(user);
     }
+
+    @Override
+    public User getUserByJobNum(String jobNum) {
+        return userRepository.findFirstByJobNum(jobNum);
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    public List<User> getAllUsersByRoleName(String roleName) {
+        return userRepository.findAllByRoleName(roleName);
+    }
 }

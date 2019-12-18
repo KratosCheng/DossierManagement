@@ -55,6 +55,11 @@ public class DossierServiceImpl implements IDossierService {
         return dossierOperationRepository.findAllByJobNum(jobNum);
     }
 
+    @Override
+    public boolean removeDossierById(long dossierId) {
+        return dossierRepository.removeById(dossierId) != null;
+    }
+
     private boolean saveOperationRecord(DossierOperationRecord dossierOperationRecord) {
         return dossierOperationRepository.save(dossierOperationRecord) != null;
     }

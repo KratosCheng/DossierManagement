@@ -18,4 +18,6 @@ public interface IDossierService {
     List<DossierOperationRecord> getDossierOperationRecordsByCaseNum(String caseNum);
 
     List<DossierOperationRecord> getDossierOperationRecordsByJobNum(String jobNum);
+
+    boolean removeDossierById(long dossierId);
 }
