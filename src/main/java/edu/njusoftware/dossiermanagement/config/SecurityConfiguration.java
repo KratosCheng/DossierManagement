@@ -15,6 +15,17 @@ import org.springframework.util.DigestUtils;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private String[] urlWhiteList = {"/",
+            "/index",
+            "/login",
+            "/login-error",
+            "/user/**",
+            "/case/**",
+            "/static/**",
+            "/css/**",
+            "/js/**"
+    };
+
     @Qualifier("userServiceImpl")
     @Autowired
     private UserDetailsService userService;
@@ -45,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/","index","/login","/login-error","/user/**","case/**").permitAll()
+                .antMatchers(urlWhiteList).permitAll()
 //                .antMatchers("/admin/**").hasRole(Constants.ROLE_ADMIN)
 //                .antMatchers("/dossier/common/**", "/case/common/**").hasAnyRole(Constants.ROLE_VISITOR)
 //                .antMatchers("/dossier/common/**", "/dossier/add/**", "/case/common/**").hasAnyRole(Constants.ROLE_PARTNER)
