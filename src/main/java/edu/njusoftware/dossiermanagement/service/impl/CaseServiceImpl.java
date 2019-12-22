@@ -4,6 +4,10 @@ import edu.njusoftware.dossiermanagement.domain.Case;
 import edu.njusoftware.dossiermanagement.repository.CaseRepository;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +25,14 @@ public class CaseServiceImpl implements ICaseService {
     @Override
     public List<Case> getAllCases() {
         return caseRepository.findAll();
+    }
+
+    @Override
+    public Page<Case> getCaseList(int pageNum, int pageSize) {
+//        Sort sort = new Sort();
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Case> caseList = caseRepository.findAll(pageable);
+        return caseList;
     }
 
     @Override

@@ -17,8 +17,8 @@ import org.springframework.util.DigestUtils;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private String[] urlWhiteList = {
-            "/",
-            "/index",
+//            "/",
+//            "/index",
             "/login",
             "/login-error",
             "/user/**",

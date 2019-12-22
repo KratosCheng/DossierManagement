@@ -1,10 +1,19 @@
 package edu.njusoftware.dossiermanagement.controller;
 
+import edu.njusoftware.dossiermanagement.domain.Case;
+import edu.njusoftware.dossiermanagement.service.ICaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 前端页面跳转控制器
@@ -12,8 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Controller
 public class PageController {
-    @RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
-    public String index(Model model) {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
+    private ICaseService caseService;
+
+    @RequestMapping({"/", "/index"})
+    public String index(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
+                        @RequestParam(value = "pageSize", defaultValue = "2") int pageSize) {
+        Page<Case> caseList = caseService.getCaseList(pageNum, pageSize);
+        model.addAttribute("caseList", caseList);
         return "index";
     }
 }

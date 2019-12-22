@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="zh">
 <head>
     <title>卷宗管理系统</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <link th:href="@{/css/bootstrap.css}" href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link th:href="@{/css/app.css}" href="css/app.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -11,10 +11,75 @@
         <div id="header" class="app-header">
             <span class="header-title">卷宗管理系统</span>
             <span class="header-menu">案件列表</span>
-            <span class="header-menu">案件列表</span>
+        </div>
+        <div id="div-case-list" class="with:80%">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>#案号</th>
+                    <th>案由</th>
+                    <th>立案时间</th>
+                    <th>结案时间</th>
+                    <th>案件类型</th>
+                    <th>审理阶段</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+<!--                <tr th:if="caseList == null or ${caseList.size} eq 0">-->
+<!--                    <td colspan="3">没有案件信息！</td>-->
+<!--                </tr>-->
+                <tr th:each="caseInfo : ${caseList}">
+                    <th scope="row" th:text="${caseInfo.caseNum}">-</th>
+                    <td th:text="${caseInfo.summary}">-</td>
+                    <td th:text="${caseInfo.filingTime}">-</td>
+                    <td th:text="${caseInfo.closingTime}">-</td>
+                    <td th:text="${caseInfo.type}">-</td>
+                    <td th:text="${caseInfo.stage}">-</td>
+                    <td>
+                        <a th:href="@{'dossier/common/all/'+${caseInfo.caseNum}}">查看卷宗</a>
+                    </td>
+                    <td><a th:href="@{/case/delete(id=${caseInfo.caseNum})}">删除</a></td>
+                    <!--                    <td><a th:href="@{/delete(id=${user.id})}">delete</a></td>-->
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+    <div class="modal-footer no-margin-top">
+        <ul class="pagination pull-right no-margin">
+
+            <!-- 首页 -->
+            <li>
+                <a th:href="'/index?pageNum=0'">首页</a>
+            </li>
+
+            <!-- 上一页 -->
+            <li th:if="${caseList.hasPrevious()}">
+                <a th:href="'/index?pageNum=' + ${caseList.previousPageable().getPageNumber()}" th:text="上一页"></a>
+            </li>
+
+            <!-- 中间页 -->
+            <li th:each="pageNum:${#numbers.sequence(0, caseList.getTotalPages() - 1)}">
+                <a th:href="'/index?pageNum=' + ${pageNum}" th:text="${pageNum + 1}" th:if="${pageNum ne caseList.pageable.getPageNumber()}"></a>
+                <a th:href="'/index?pageNum=' + ${pageNum}" th:text="${pageNum + 1}" th:if="${pageNum eq caseList.pageable.getPageNumber()}" th:style="'font-weight:bold;background: #6faed9;'"></a>
+            </li>
+
+            <!-- 下一页 -->
+            <li th:if="${caseList.hasNext()}">
+                <a th:href="'/index?pageNum=' + ${caseList.nextPageable().getPageNumber()}" th:text="下一页"></a>
+            </li>
+
+            <!-- 尾页 -->
+            <li>
+                <a th:href="'/index?pageNum=' + ${caseList.getTotalPages() - 1}">尾页</a>
+            </li>
+
+        </ul>
+    </div>
 </body>
+<script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
 <script>
 
 </script>
