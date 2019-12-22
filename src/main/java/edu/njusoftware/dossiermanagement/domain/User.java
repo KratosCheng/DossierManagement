@@ -3,6 +3,8 @@ package edu.njusoftware.dossiermanagement.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Entity(name = "entity_user")
 public class User {
@@ -12,6 +14,7 @@ public class User {
     private String jobNum;
 
     // 密码
+    @NotEmpty
     private String password;
 
     // 角色
