@@ -1,4 +1,3 @@
-
 .app-header {
     width: 100%;
     height: 50px;
@@ -6,7 +5,14 @@
     background: #0064b1;
     color: #ffffff;
 }
-.app-header .header-title {
+
+.app-header-left {
+    float: left;
+    height: 100%;
+    overflow: hidden;
+}
+
+.app-header-left .header-title {
     font-size: 32px;
     margin-left: 30px;
     margin-right: 70px;
@@ -15,10 +21,24 @@
     font-weight: bold;
     text-align: center;
 }
-.app-header .header-menu {
+.app-header-left .header-menu {
     font-size: 16px;
     padding: 0 0.25rem;
     display: inline-block;
     text-align: center;
     cursor: pointer;
+}
+
+.app-header-right {
+    float: right;
+    height: 100%;
+}
+.app-header-right .header-user-info {
+    font-size: 16px;
+    padding: 0 0.25rem;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    line-height: 50px;
+    margin-right: 20px;
 }

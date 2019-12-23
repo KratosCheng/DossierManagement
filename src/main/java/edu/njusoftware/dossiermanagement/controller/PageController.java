@@ -8,15 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * 前端页面跳转控制器
+ * 前端页面跳转控制器，初步计划用PageController来处理页面的跳转，其他Controller处理数据请求
  * 页面跳转不能使用 @RestController
  */
 @Controller
@@ -28,9 +25,19 @@ public class PageController {
 
     @RequestMapping({"/", "/index"})
     public String index(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
-                        @RequestParam(value = "pageSize", defaultValue = "2") int pageSize) {
+                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         Page<Case> caseList = caseService.getCaseList(pageNum, pageSize);
         model.addAttribute("caseList", caseList);
         return "index";
+    }
+
+    @RequestMapping("/case/add")
+    public String addCase(Model model) {
+        return "addCase";
+    }
+
+    @RequestMapping("/user/{jobNum}")
+    public String getUserInfo(Model model, @PathVariable String jobNum) {
+        return "addCase";
     }
 }
