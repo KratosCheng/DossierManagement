@@ -1,8 +1,10 @@
 package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.domain.Case;
+import edu.njusoftware.dossiermanagement.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.util.SystemSecurityUtils;
+import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +75,7 @@ public class CaseController {
      * @return
      */
     @RequestMapping(value = "/add")
-    public String index(@ModelAttribute("caseInfo") @Validated Case caseInfo, BindingResult rs) {
+    public String addCase(@ModelAttribute("caseInfo") @Validated Case caseInfo, BindingResult rs) {
         if (rs.hasErrors()) {
             StringBuilder errorMsg =
                     new StringBuilder(SystemSecurityUtils.getLoginUserName() + " attempt to create case with error: ");
@@ -85,6 +87,17 @@ public class CaseController {
         }
         logger.info(SystemSecurityUtils.getLoginUserName() + "created case: #" + caseInfo.getCaseNum());
         return caseService.saveCase(caseInfo) ? "redirect:/index" : "redirect:/error";
+    }
+
+    /**
+     * 删除案件
+     * @param caseNum
+     * @return
+     */
+    @RequestMapping(value = "/remove/{caseNum}")
+    @ResponseBody
+    public BaseResponse removeCase(@PathVariable String caseNum) {
+        return caseService.removeCase(caseNum);
     }
 
     /**

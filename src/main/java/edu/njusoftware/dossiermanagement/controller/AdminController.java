@@ -1,6 +1,6 @@
 package edu.njusoftware.dossiermanagement.controller;
 
-import edu.njusoftware.dossiermanagement.config.Constants;
+import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.domain.Case;
 import edu.njusoftware.dossiermanagement.domain.User;
 import edu.njusoftware.dossiermanagement.service.ICaseService;

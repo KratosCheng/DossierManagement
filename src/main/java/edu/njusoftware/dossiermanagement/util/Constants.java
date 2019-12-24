@@ -1,4 +1,4 @@
-package edu.njusoftware.dossiermanagement.config;
+package edu.njusoftware.dossiermanagement.util;
 
 public interface Constants {
     String ROLE_ADMIN = "admin";
@@ -26,4 +26,16 @@ public interface Constants {
     String CASE_PEICHANG = "赔偿";
 
     String CASE_ZHIXING = "执行";
+
+    int CODE_SUCCESS = 0;
+
+    String MSG_SUCCESS = "请求成功";
+
+    int CODE_FAIL = 1;
+
+    String MSG_FAIL = "请求失败";
+
+    int CODE_RESOURCE_NOT_FOUND = 2;
+
+    String MSG_RESOURCE_NOT_FOUND = "找不到请求的资源";
 }

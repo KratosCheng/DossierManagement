@@ -1,6 +1,5 @@
 package edu.njusoftware.dossiermanagement.controller;
 
-import edu.njusoftware.dossiermanagement.config.Constants;
 import edu.njusoftware.dossiermanagement.domain.User;
 import edu.njusoftware.dossiermanagement.service.IUserService;
 import org.slf4j.Logger;

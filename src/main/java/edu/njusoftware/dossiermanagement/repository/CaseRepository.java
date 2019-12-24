@@ -11,4 +11,6 @@ public interface CaseRepository extends JpaRepository<Case, String> {
     Case findFirstByCaseNum(String caseNum);
 
     List<Case> findAllByType(String type);
+
+    int removeByCaseNum(String caseNum);
 }
