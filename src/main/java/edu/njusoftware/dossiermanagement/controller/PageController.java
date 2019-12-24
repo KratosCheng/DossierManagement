@@ -10,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * 前端页面跳转控制器，初步计划用PageController来处理页面的跳转，其他Controller处理数据请求
  * 页面跳转不能使用 @RestController
@@ -31,13 +29,15 @@ public class PageController {
         return "index";
     }
 
-    @RequestMapping("/case/add")
+    @RequestMapping("/addCase")
     public String addCase(Model model) {
+        Case caseInfo = new Case();
+        model.addAttribute("caseInfo", caseInfo);
         return "addCase";
     }
 
     @RequestMapping("/user/{jobNum}")
-    public String getUserInfo(Model model, @PathVariable String jobNum) {
-        return "addCase";
+    public String getUserMainPage(Model model, @PathVariable String jobNum) {
+        return "userPage";
     }
 }

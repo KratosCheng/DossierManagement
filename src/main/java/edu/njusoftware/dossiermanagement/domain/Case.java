@@ -1,8 +1,14 @@
 package edu.njusoftware.dossiermanagement.domain;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.Date;
 
 /**
@@ -14,21 +20,26 @@ public class Case {
 
     // 案号
     @Id
+    @NotEmpty(message = "案号不能为空")
     @Column(name = "case_num")
     private String caseNum;
 
     // 案由
+    @NotEmpty(message = "案由不能为空")
     private String summary;
 
     // 立案时间
+    @NotNull(message = "立案时间不能为空")
     @Column(name = "filing_time")
     private Date filingTime;
 
     // 结案时间
+    @Nullable
     @Column(name = "closing_time")
     private Date closingTime;
 
     // 案件类型
+    @NotNull(message = "案件类型不能为空")
     private String type;
 
     // 案件审理阶段

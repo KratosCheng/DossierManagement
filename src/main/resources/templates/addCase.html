@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="zh">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="zh">
 <head>
     <title>卷宗管理系统</title>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
@@ -7,7 +7,70 @@
     <link th:href="@{/css/app.css}" href="css/app.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-
+    <div id="app">
+        <div id="header" class="app-header">
+            <div class="app-header-left">
+                <span><a th:href="@{/index}" class="header-title">卷宗管理系统</a></span>
+                <span class="header-menu">添加案件</span>
+            </div>
+            <div class="app-header-right">
+                <p class="header-user-info">欢迎，<span sec:authentication="name"></span></p>
+            </div>
+        </div>
+        <div id="form-div" class="container">
+            <form class="form-horizontal" role="form" action="#" th:action="@{/case/add}" th:object="${caseInfo}" method="post">
+                <div class="form-group">
+                    <span class="col-sm-1 control-label">案号</span>
+                    <label><input type="text" th:field="*{caseNum}" /> </label>
+                    <span th:if="${#fields.hasErrors('caseNum')}" th:errors="*{caseNum}"></span>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-1 control-label">案由</span>
+                    <label><input type="text" th:field="*{summary}" /> </label>
+                    <span th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}"></span>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-1 control-label">立案时间</span>
+                    <label><input type="date" th:field="*{filingTime}" /> </label>
+                    <span th:if="${#fields.hasErrors('filingTime')}" th:errors="*{filingTime}"></span>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-1 control-label">结案时间</span>
+                    <label><input type="date" th:field="*{closingTime}" /> </label>
+                    <span th:if="${#fields.hasErrors('closingTime')}" th:errors="*{closingTime}"></span>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-1 control-label">案件类型</span>
+                    <label>
+                        <select class="form-control">
+                            <option>刑事</option>
+                            <option>民事</option>
+                            <option>行政</option>
+                            <option>赔偿</option>
+                            <option>执行</option>
+                        </select>
+                    </label>
+                    <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+                </div>
+                <div class="form-group">
+                    <span class="col-sm-1 control-label">案件审理阶段</span>
+                    <label>
+                        <select class="form-control">
+                            <option>立案</option>
+                            <option>审理中</option>
+                            <option>结案</option>
+                        </select>
+                    </label>
+                    <span th:if="${#fields.hasErrors('stage')}" th:errors="*{stage}"></span>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-1 control-label">
+                        <button type="submit" class="btn btn-default">确认</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
 <script>
