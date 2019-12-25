@@ -22,35 +22,35 @@
                 <div class="form-group">
                     <span class="col-sm-1 control-label">案号</span>
                     <label><input type="text" th:field="*{caseNum}" /> </label>
-                    <span th:if="${#fields.hasErrors('caseNum')}" th:errors="*{caseNum}"></span>
+                    <span th:if="${#fields.hasErrors('caseNum')}" th:errors="*{caseNum}" th:style="'color:red;'"></span>
                 </div>
                 <div class="form-group">
                     <span class="col-sm-1 control-label">案由</span>
                     <label><input type="text" th:field="*{summary}" /> </label>
-                    <span th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}"></span>
+                    <span th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}" th:style="'color:red;'"></span>
                 </div>
                 <div class="form-group">
                     <span class="col-sm-1 control-label">立案时间</span>
                     <label><input type="date" th:field="*{filingTime}" /> </label>
-                    <span th:if="${#fields.hasErrors('filingTime')}" th:errors="*{filingTime}"></span>
+                    <span th:if="${#fields.hasErrors('filingTime')}" th:errors="*{filingTime}" th:style="'color:red;'"></span>
                 </div>
                 <div class="form-group">
                     <span class="col-sm-1 control-label">结案时间</span>
                     <label><input type="date" th:field="*{closingTime}" /> </label>
-                    <span th:if="${#fields.hasErrors('closingTime')}" th:errors="*{closingTime}"></span>
+                    <span th:if="${#fields.hasErrors('closingTime')}" th:errors="*{closingTime}" th:style="'color:red;'"></span>
                 </div>
                 <div class="form-group">
                     <span class="col-sm-1 control-label">案件类型</span>
                     <label>
-                        <select class="form-control">
-                            <option>刑事</option>
-                            <option>民事</option>
-                            <option>行政</option>
-                            <option>赔偿</option>
-                            <option>执行</option>
+                        <select th:field="*{type}" class="form-control">
+                            <option th:value="刑事">刑事</option>
+                            <option th:value="民事">民事</option>
+                            <option th:value="行政">行政</option>
+                            <option th:value="赔偿">赔偿</option>
+                            <option th:value="执行">执行</option>
                         </select>
                     </label>
-                    <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></span>
+                    <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}" th:style="'color:red;'"></span>
                 </div>
                 <div class="form-group">
                     <span class="col-sm-1 control-label">案件审理阶段</span>
@@ -61,7 +61,7 @@
                             <option>结案</option>
                         </select>
                     </label>
-                    <span th:if="${#fields.hasErrors('stage')}" th:errors="*{stage}"></span>
+                    <span th:if="${#fields.hasErrors('stage')}" th:errors="*{stage}" th:style="'color:red;'"></span>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-1 control-label">
