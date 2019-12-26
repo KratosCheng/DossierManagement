@@ -16,7 +16,7 @@ import java.util.Date;
  * 案件实体类
  */
 @Entity(name = "entity_case")
-public class Case {
+public class CaseInfo {
 
     // 案号
     @Id
@@ -45,7 +45,7 @@ public class Case {
     // 案件审理阶段
     private String stage;
 
-    public Case(String caseNum, String summary, Date filingTime, Date closingTime, String type, String stage) {
+    public CaseInfo(String caseNum, String summary, Date filingTime, Date closingTime, String type, String stage) {
         this.caseNum = caseNum;
         this.summary = summary;
         this.filingTime = filingTime;
@@ -54,7 +54,7 @@ public class Case {
         this.stage = stage;
     }
 
-    public Case() {
+    public CaseInfo() {
     }
 
     public String getCaseNum() {

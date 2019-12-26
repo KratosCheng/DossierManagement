@@ -22,7 +22,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/login",
             "/login-error",
             "/user/**",
-            "/case/**"
+            "/case/**",
+            "/**/*.woff",
+            "/**/*.tff",
+            "/static/**/*"
     };
 
     @Qualifier("userServiceImpl")

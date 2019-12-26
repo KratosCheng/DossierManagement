@@ -47,7 +47,7 @@
                         <td th:text="${caseInfo.type}">-</td>
                         <td th:text="${caseInfo.stage}">-</td>
                         <td>
-                            <a th:href="@{'case/info/' + ${caseInfo.caseNum}}">查看卷宗</a>
+                            <a th:href="@{'case/' + ${caseInfo.caseNum}}">查看卷宗</a>
                         </td>
                         <td><a href="javascript:void(0)" th:onclick="removeCase([[${caseInfo.caseNum}]])">删除</a></td>
 <!--                        <td><a th:href="@{'case/remove/' + ${caseInfo.caseNum}}">删除</a></td>-->

@@ -1,7 +1,7 @@
 package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.util.Constants;
-import edu.njusoftware.dossiermanagement.domain.Case;
+import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.User;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.service.IUserService;
@@ -35,7 +35,7 @@ public class AdminController {
     private IUserService userService;
 
     @RequestMapping("/addCase")
-    public boolean addCase(Case caseInfo) {
+    public boolean addCase(CaseInfo caseInfo) {
         return caseService.saveCase(caseInfo);
     }
 

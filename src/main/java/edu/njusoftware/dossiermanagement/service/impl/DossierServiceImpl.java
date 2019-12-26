@@ -9,8 +9,7 @@ import edu.njusoftware.dossiermanagement.service.IDossierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DossierServiceImpl implements IDossierService {
@@ -58,6 +57,29 @@ public class DossierServiceImpl implements IDossierService {
     @Override
     public boolean removeDossierById(long dossierId) {
         return dossierRepository.removeById(dossierId) != null;
+    }
+
+    /**
+     * 获取当前案件卷宗目录映射
+     * @param caseNum
+     * @return
+     */
+    @Override
+    public Map<String, List<Dossier>> getDirectoryMap(String caseNum) {
+        List<Dossier> dossierList = getDossiersByCaseNum(caseNum);
+        // 构建卷宗目录映射
+        Map<String, List<Dossier>> directoryMap = new HashMap<>();
+        for (Dossier dossier : dossierList) {
+            String directory = dossier.getDirectory();
+            if (directoryMap.containsKey(directory)) {
+                directoryMap.get(directory).add(dossier);
+            } else {
+                List<Dossier> dossierListInDirectory = new LinkedList<>();
+                dossierListInDirectory.add(dossier);
+                directoryMap.put(directory, dossierListInDirectory);
+            }
+        }
+        return directoryMap;
     }
 
     private boolean saveOperationRecord(DossierOperationRecord dossierOperationRecord) {

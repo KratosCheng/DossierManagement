@@ -1,7 +1,7 @@
 package edu.njusoftware.dossiermanagement.service.impl;
 
 import edu.njusoftware.dossiermanagement.controller.UserController;
-import edu.njusoftware.dossiermanagement.domain.Case;
+import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.repository.CaseRepository;
 import edu.njusoftware.dossiermanagement.repository.DossierRepository;
@@ -31,30 +31,30 @@ public class CaseServiceImpl implements ICaseService {
     private DossierRepository dossierRepository;
 
     @Override
-    public Case getCaseInfo(String caseNum) {
+    public CaseInfo getCaseInfo(String caseNum) {
         return caseRepository.findFirstByCaseNum(caseNum);
     }
 
     @Override
-    public List<Case> getAllCases() {
+    public List<CaseInfo> getAllCases() {
         return caseRepository.findAll();
     }
 
     @Override
-    public Page<Case> getCaseList(int pageNum, int pageSize) {
+    public Page<CaseInfo> getCaseList(int pageNum, int pageSize) {
 //        Sort sort = new Sort();
         Pageable pageable = PageRequest.of(pageNum, pageSize);
-        Page<Case> caseList = caseRepository.findAll(pageable);
+        Page<CaseInfo> caseList = caseRepository.findAll(pageable);
         return caseList;
     }
 
     @Override
-    public List<Case> getCasesByType(String type) {
+    public List<CaseInfo> getCasesByType(String type) {
         return null;
     }
 
     @Override
-    public boolean saveCase(Case caseInfo) {
+    public boolean saveCase(CaseInfo caseInfo) {
         return caseRepository.save(caseInfo) != null;
     }
 

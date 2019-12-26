@@ -4,6 +4,7 @@ import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IDossierService {
 
@@ -20,4 +21,6 @@ public interface IDossierService {
     List<DossierOperationRecord> getDossierOperationRecordsByJobNum(String jobNum);
 
     boolean removeDossierById(long dossierId);
+
+    Map<String, List<Dossier>> getDirectoryMap(String caseNum);
 }

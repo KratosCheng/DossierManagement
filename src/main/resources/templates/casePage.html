@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="zh">
+<head>
+    <title>卷宗管理系统</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <!--    解决ajax被springSecurity的CSRF拦截POST和PUT请求的问题-->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <!--    default header name is X-CSRF-TOKEN-->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <link th:href="@{/css/bootstrap.css}" href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/app.css}" href="css/app.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/font-awesome.css}" href="css/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/ionicons.css}" href="css/ionicons.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/AdminLTE.css}" href="css/AdminLTE.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/skins/_all-skins.css}" href="css/skins/_all-skins.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header class="main-header app-header">
+        <div class="app-header-left">
+            <span><a th:href="@{/index}" class="header-title">卷宗管理系统</a></span>
+            <span class="header-menu" th:text="'案件主页 （#' + ${caseInfo.caseNum} + '）'"></span>
+        </div>
+        <div class="app-header-right">
+            <p class="header-user-info">欢迎，<span sec:authentication="name"></span></p>
+        </div>
+    </header>
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                    <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+                </div>
+            </form>
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header page-nav-left-font">卷宗目录</li>
+                <li class="treeview" th:each="map : ${directoryMap}">
+                    <a href="#">
+                        <i class="fa fa-files-o"></i>
+                        <span th:text="${map.key}"></span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li  th:each="dossier : ${map.value}">
+                            <a href="javascript:void(0)" th:href="@{/index}">
+                                <i th:class="'fa fa-file-' + ${dossier.fileType} + '-o'"></i>
+                                <span th:text="${dossier.name}"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="/">
+                        <i class="fa fa-plus"></i>
+                        <span>添加卷宗和证据材料</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </aside>
+    <section class="content-wrapper">
+
+    </section>
+</div>
+</body>
+<script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.media.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
+<script type="text/javascript" th:src="@{/js/adminlte.js}"></script>
+<script>
+
+</script>
+</html>

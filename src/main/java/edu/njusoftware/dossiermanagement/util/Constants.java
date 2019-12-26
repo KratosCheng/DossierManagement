@@ -11,7 +11,7 @@ public interface Constants {
 
     String FILE_TYPE_PDF = "pdf";
 
-    String FILE_TYPE_PIC = "pic";
+    String FILE_TYPE_PIC = "image";
 
     String FILE_TYPE_VIDEO = "video";
 

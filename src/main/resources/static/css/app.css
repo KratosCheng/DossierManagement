@@ -4,7 +4,6 @@
     /*line-height: 0.45rem;*/
     background: #0064b1;
     color: #ffffff;
-    margin-bottom: 20px;
 }
 
 .app-header-left {
@@ -42,4 +41,8 @@
     cursor: pointer;
     line-height: 50px;
     margin-right: 20px;
+}
+
+.page-nav-left-font {
+    font-size: 16px;
 }

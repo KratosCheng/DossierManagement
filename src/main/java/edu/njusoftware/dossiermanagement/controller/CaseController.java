@@ -1,10 +1,9 @@
 package edu.njusoftware.dossiermanagement.controller;
 
-import edu.njusoftware.dossiermanagement.domain.Case;
+import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.util.SystemSecurityUtils;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class CaseController {
 
     @RequestMapping("/info/{caseNum}")
     @ResponseBody
-    public Case getCaseInfo(@PathVariable String caseNum) {
+    public CaseInfo getCaseInfo(@PathVariable String caseNum) {
         if (StringUtils.isEmpty(caseNum)) {
             return null;
         }
@@ -46,7 +45,7 @@ public class CaseController {
      * @return
      */
     @RequestMapping("/all")
-    public List<Case> getAllCases() {
+    public List<CaseInfo> getAllCases() {
         return caseService.getAllCases();
     }
 
@@ -56,14 +55,14 @@ public class CaseController {
      * @return
      */
     @RequestMapping("/list/{type}")
-    public List<Case> getAllCases(@PathVariable String type) {
+    public List<CaseInfo> getAllCases(@PathVariable String type) {
         return caseService.getCasesByType(type);
     }
 
     @RequestMapping(value = "/list")
-    public String index(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
+    public String getCaseList(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
                         @RequestParam(value = "pageSize", defaultValue = "2") int pageSize) {
-        Page<Case> caseList = caseService.getCaseList(pageNum, pageSize);
+        Page<CaseInfo> caseList = caseService.getCaseList(pageNum, pageSize);
         model.addAttribute("caseList", caseList);
         return "index::#div-case-list";
     }
@@ -75,7 +74,7 @@ public class CaseController {
      * @return
      */
     @RequestMapping(value = "/add")
-    public String addCase(@ModelAttribute("caseInfo") @Validated Case caseInfo, BindingResult rs) {
+    public String addCase(@ModelAttribute("caseInfo") @Validated CaseInfo caseInfo, BindingResult rs) {
         if (rs.hasErrors()) {
             StringBuilder errorMsg =
                     new StringBuilder(SystemSecurityUtils.getLoginUserName() + " attempt to create case with error: ");
