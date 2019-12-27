@@ -50,8 +50,6 @@
                             <a th:href="@{'case/' + ${caseInfo.caseNum}}">查看卷宗</a>
                         </td>
                         <td><a href="javascript:void(0)" th:onclick="removeCase([[${caseInfo.caseNum}]])">删除</a></td>
-<!--                        <td><a th:href="@{'case/remove/' + ${caseInfo.caseNum}}">删除</a></td>-->
-                        <!--                    <td><a th:href="@{/delete(id=${user.id})}">delete</a></td>-->
                     </tr>
                 </tbody>
             </table>
@@ -106,7 +104,7 @@
     function removeCase(caseNum) {
         $.ajax({
             type: "post",
-            url: "case/remove/" + caseNum,
+            url: "../case/remove/" + caseNum,
             data: JSON.stringify(caseNum),
             dataType: 'json',
             contentType: 'application/json;charset=UTF-8',

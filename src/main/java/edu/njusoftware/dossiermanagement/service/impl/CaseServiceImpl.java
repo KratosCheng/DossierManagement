@@ -5,7 +5,7 @@ import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.repository.CaseRepository;
 import edu.njusoftware.dossiermanagement.repository.DossierRepository;
-import edu.njusoftware.dossiermanagement.rsp.BaseResponse;
+import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.SystemSecurityUtils;

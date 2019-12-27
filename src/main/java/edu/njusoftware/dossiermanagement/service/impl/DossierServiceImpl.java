@@ -8,6 +8,7 @@ import edu.njusoftware.dossiermanagement.repository.DossierRepository;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -80,6 +81,17 @@ public class DossierServiceImpl implements IDossierService {
             }
         }
         return directoryMap;
+    }
+
+    @Override
+    public List<String> getDirectoriesByCaseNum(String caseNum) {
+        return dossierMapper.findDirectoriesByCaseNum(caseNum);
+    }
+
+    @Transactional
+    @Override
+    public void addDirectory(String caseNum, String directoryName) {
+        dossierMapper.addDirectory(caseNum, directoryName);
     }
 
     private boolean saveOperationRecord(DossierOperationRecord dossierOperationRecord) {

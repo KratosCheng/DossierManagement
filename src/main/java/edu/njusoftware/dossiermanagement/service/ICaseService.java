@@ -1,7 +1,7 @@
 package edu.njusoftware.dossiermanagement.service;
 
 import edu.njusoftware.dossiermanagement.domain.CaseInfo;
-import edu.njusoftware.dossiermanagement.rsp.BaseResponse;
+import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

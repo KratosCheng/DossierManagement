@@ -2,8 +2,11 @@ package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
+import edu.njusoftware.dossiermanagement.domain.User;
+import edu.njusoftware.dossiermanagement.mapper.DossierMapper;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
+import edu.njusoftware.dossiermanagement.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,9 @@ public class PageController {
 
     @Autowired
     private IDossierService dossierService;
+
+    @Autowired
+    private IUserService userService;
 
     /**
      * 主页
@@ -66,6 +72,8 @@ public class PageController {
      */
     @RequestMapping("/user/{jobNum}")
     public String getUserMainPage(Model model, @PathVariable String jobNum) {
+        User user = userService.getUserByJobNum(jobNum);
+        model.addAttribute(user);
         return "userPage";
     }
 
@@ -79,6 +87,7 @@ public class PageController {
     public String getCaseMainPage(Model model, @PathVariable String caseNum) {
         model.addAttribute("caseInfo", caseService.getCaseInfo(caseNum));
         model.addAttribute("dossierList", dossierService.getDossiersByCaseNum(caseNum));
+        model.addAttribute("directoryList", dossierService.getDirectoriesByCaseNum(caseNum));
         model.addAttribute("directoryMap", dossierService.getDirectoryMap(caseNum));
         return "casePage";
     }

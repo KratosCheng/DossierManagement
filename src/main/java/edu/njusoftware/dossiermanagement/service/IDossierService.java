@@ -23,4 +23,8 @@ public interface IDossierService {
     boolean removeDossierById(long dossierId);
 
     Map<String, List<Dossier>> getDirectoryMap(String caseNum);
+
+    List<String> getDirectoriesByCaseNum(String caseNum);
+
+    void addDirectory(String caseNum, String directoryName);
 }

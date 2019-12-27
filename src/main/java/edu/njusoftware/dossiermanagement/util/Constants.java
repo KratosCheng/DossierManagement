@@ -1,6 +1,8 @@
 package edu.njusoftware.dossiermanagement.util;
 
 public interface Constants {
+    String DOSSIER_BASE_DIRECTORY = "C:\\Users\\Kratos\\Desktop\\dossier";
+
     String ROLE_ADMIN = "admin";
 
     String ROLE_JUDGE = "judge";

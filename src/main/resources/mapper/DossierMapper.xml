@@ -19,4 +19,13 @@
           (select id from entity_dossier where case_num = #{caseNum})
     </select>
 
+    <select id="findDirectoriesByCaseNum" resultType="java.lang.String">
+        select directory from entity_directory
+         where case_num = #{caseNum}
+    </select>
+
+    <insert id="addDirectory">
+        insert into entity_directory(case_num, directory) values (#{caseNum}, #{directoryName})
+    </insert>
+
 </mapper>

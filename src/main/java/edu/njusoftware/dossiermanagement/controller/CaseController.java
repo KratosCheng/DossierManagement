@@ -1,7 +1,7 @@
 package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.domain.CaseInfo;
-import edu.njusoftware.dossiermanagement.rsp.BaseResponse;
+import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.util.SystemSecurityUtils;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/case")
 public class CaseController {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CaseController.class);
 
     @Autowired
     private ICaseService caseService;

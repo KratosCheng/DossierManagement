@@ -1,4 +1,4 @@
-package edu.njusoftware.dossiermanagement.rsp;
+package edu.njusoftware.dossiermanagement.domain.rsp;
 
 /**
  * HTTP响应基类
