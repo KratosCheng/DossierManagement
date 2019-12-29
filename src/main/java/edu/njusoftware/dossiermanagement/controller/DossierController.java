@@ -10,14 +10,20 @@ import edu.njusoftware.dossiermanagement.util.SystemSecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/dossier")
 public class DossierController {
     private static final Logger logger = LoggerFactory.getLogger(DossierController.class);
@@ -65,11 +71,6 @@ public class DossierController {
         return dossierService.getDossierOperationRecordsByJobNum(jobNum);
     }
 
-    @RequestMapping("/add")
-    public boolean add(Dossier dossier) {
-        return dossierService.saveDossier(dossier);
-    }
-
     /**
      * 通过id删除卷宗
      * @param dossierId
@@ -98,5 +99,71 @@ public class DossierController {
         process.append(" added directory: ").append(req.getCaseNum()).append(" to #").append(req.getCaseNum());
         logger.info(process.toString());
         return new BaseResponse(Constants.CODE_SUCCESS, Constants.MSG_SUCCESS);
+    }
+
+//    @RequestMapping("/getFile/{dossierId}")
+//    public ResponseEntity<FileSystemResource> getFile(@PathVariable long dossierId) {
+////        Dossier dossier = dossierService.getDossier(dossierId);
+////        File file = new File(dossier.getPath());
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+////        headers.add("Content-Disposition", "attachment; filename=" + dossier.getName());
+//        headers.add("Pragma", "no-cache");
+//        headers.add("Expires", "0");
+//        headers.add("Last-Modified", new Date().toString());
+//        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+//
+//        File file = new File("C:/Users/Kratos/Desktop/dossier/test/卷宗扫描件/requirements.pdf");
+//        headers.add("Content-Disposition", "attachment; filename=\"requirements.pdf\"");
+//
+//        return ResponseEntity
+//                .ok()
+//                .headers(headers)
+//                .contentLength(file.length())
+//                .contentType(MediaType.parseMediaType("application/octet-stream"))
+//                .body(new FileSystemResource(file));
+//    }
+
+    /**
+     * 返回前端展示的卷宗多媒体文件
+     * @param request
+     * @param response
+     * @param session
+     * @param dossierId
+     */
+    @RequestMapping("/getFile/{dossierId}")
+    public void getFile(HttpServletRequest request, HttpServletResponse response, HttpSession session, @PathVariable long dossierId) {
+        Dossier dossier = dossierService.getDossier(dossierId);
+//        response.setContentType("application/pdf");
+        response.setContentType("video/mp4");
+        FileInputStream in;
+        OutputStream out;
+        try {
+//            in = new FileInputStream(new File("C:/Users/Kratos/Desktop/dossier/test/卷宗扫描件/requirements.pdf"));
+//            new File("C:/Users/Kratos/Desktop/dossier/test/视频证据/视频1.mp4")
+            in = new FileInputStream(new File(dossier.getPath()));
+            out = response.getOutputStream();
+            byte[] b = new byte[512];
+            while ((in.read(b)) != -1) {
+                out.write(b);
+            }
+            out.flush();
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 查找一个用户所有的卷宗操作记录
+     * @param dossierId
+     * @return
+     */
+    @RequestMapping("/updateCurrentDossier/{dossierId}")
+    public String updateCurrentDossier(Model model, @PathVariable long dossierId) {
+        model.addAttribute("currentDossier", dossierService.getDossier(dossierId));
+        return "casePage::#div-media-container";
     }
 }

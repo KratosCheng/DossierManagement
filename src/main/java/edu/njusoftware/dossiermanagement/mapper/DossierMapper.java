@@ -13,4 +13,6 @@ public interface DossierMapper {
     List<String> findDirectoriesByCaseNum(String caseNum);
 
     int addDirectory(@Param("caseNum") String caseNum, @Param("directoryName") String directoryName);
+
+    String getFilePathById(long dossierId);
 }

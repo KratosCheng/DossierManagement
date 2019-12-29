@@ -46,3 +46,8 @@
 .page-nav-left-font {
     font-size: 16px;
 }
+
+.media-container {
+    min-height: inherit;
+    width: 80%;
+}

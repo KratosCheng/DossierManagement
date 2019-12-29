@@ -28,4 +28,9 @@
         insert into entity_directory(case_num, directory) values (#{caseNum}, #{directoryName})
     </insert>
 
+    <select id="getFilePathById" resultType="java.lang.String">
+        select path from entity_dossier
+         where id = #{dossierId}
+    </select>
+
 </mapper>

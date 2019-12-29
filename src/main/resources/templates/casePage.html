@@ -49,15 +49,15 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li  th:each="dossier : ${directoryMap.get(directory)}">
-                            <a href="javascript:void(0)" th:href="@{/index}">
+                        <li th:each="dossier : ${directoryMap.get(directory)}">
+                            <a href="javascript:void(0)" th:onclick="updateCurrentDossier([[${dossier.id}]])">
                                 <i th:class="'fa fa-file-' + ${dossier.fileType} + '-o'"></i>
                                 <span th:text="${dossier.name}"></span>
                             </a>
                         </li>
                         <li>
                             <a href="/">
-                                <i class="fa ion-plus-round"></i>
+                                <i class="fa ion-plus-round fa-remove"></i>
                                 <span>添加卷宗/证据材料</span>
                             </a>
                         </li>
@@ -66,7 +66,7 @@
             </ul>
             <form class="sidebar-form">
                 <div class="input-group">
-                    <input type="text" id="directoryName" name="directoryName" class="form-control" placeholder="添加目录...">
+                    <label for="directoryName"></label><input type="text" id="directoryName" name="directoryName" class="form-control" placeholder="添加目录...">
                     <span class="input-group-btn">
                         <button type="submit" th:onclick="addDirectory([[${caseInfo.caseNum}]])" class="btn btn-flat"><i class="fa fa-plus"></i></button>
                     </span>
@@ -75,7 +75,11 @@
         </section>
     </aside>
     <section class="content-wrapper">
-
+        <div id="div-media-container" th:fragment="div-media-container" style="min-height: inherit">
+            <div style="min-height: inherit" th:if="${currentDossier} ne null">
+                <embed class="media-container" align="center" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" />
+            </div>
+        </div>
     </section>
 </div>
 </body>

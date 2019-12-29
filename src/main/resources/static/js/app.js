@@ -29,3 +29,9 @@ function addDirectory(caseNum) {
         }
     })
 }
+
+function updateCurrentDossier(dossierId) {
+    alert(dossierId)
+    // 装载局部刷新返回的页面
+    $('#div-media-container').load('/dossier/updateCurrentDossier/' + dossierId);
+}

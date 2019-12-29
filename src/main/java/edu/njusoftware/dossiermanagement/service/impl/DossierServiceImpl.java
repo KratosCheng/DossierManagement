@@ -94,6 +94,11 @@ public class DossierServiceImpl implements IDossierService {
         dossierMapper.addDirectory(caseNum, directoryName);
     }
 
+    @Override
+    public String getFilePathById(long dossierId) {
+        return dossierMapper.getFilePathById(dossierId);
+    }
+
     private boolean saveOperationRecord(DossierOperationRecord dossierOperationRecord) {
         return dossierOperationRepository.save(dossierOperationRecord) != null;
     }
