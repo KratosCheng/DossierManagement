@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns="http://www.w3.org/1999/html" lang="zh">
+<head>
+    <title>卷宗管理系统</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <!--    解决ajax被springSecurity的CSRF拦截POST和PUT请求的问题-->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <!--    default header name is X-CSRF-TOKEN-->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <link th:href="@{/css/bootstrap.css}" href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/app.css}" href="css/app.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="app">
+    <div id="header" class="app-header">
+        <div class="app-header-left">
+            <span><a th:href="@{/index}" class="header-title">卷宗管理系统</a></span>
+            <span class="header-menu">上传卷宗</span>
+        </div>
+        <div class="app-header-right">
+            <p class="header-user-info">欢迎，<span sec:authentication="name"></span></p>
+        </div>
+    </div>
+    <div id="dossier-form-div">
+<!--        <form class="form-horizontal" id="dossierAddForm" role="form" enctype="multipart/form-data" th:action="@{/dossier/add}" th:object="${dossier}" method="post">-->
+        <form class="form-horizontal" id="dossierAddForm" role="form" enctype="multipart/form-data" th:object="${dossier}" method="post">
+            <div class="form-group">
+                <span class="col-sm-1 control-label">案号</span>
+                <label>
+                    <input readonly th:field="*{caseNum}" th:value="*{caseNum}"> </input>
+                </label>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-1 control-label">所在文件夹</span>
+                <label>
+                    <select th:field="*{directory}" th:required="true" class="form-control">
+                        <option th:each="d : ${directoryList}" th:value="${d}" th:text="${d}" th:selected="${dossier.directory eq d}"></option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-1 control-label">卷宗名称</span>
+                <label><input type="text" th:field="*{name}" placeholder="不填则为上传文件的文件名" /> </label>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-1 control-label" th:required="true">卷宗文件类型</span>
+                <label>
+                    <select th:field="*{fileType}" class="form-control">
+                        <option th:value="pdf">扫描件</option>
+                        <option th:value="video">视频</option>
+                        <option th:value="audio">音频</option>
+                        <option th:value="media">其他</option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                <span class="col-sm-1 control-label">请选择文件</span>
+                <label><input id="file" name="file" type="file" th:required="true" /> </label>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1 control-label">
+                    <button type="submit" class="btn btn-default" th:onclick="uploadDossier()">确认</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+<script>
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token)
+    });
+
+    function uploadDossier() {
+        var formData = new FormData($("#dossierAddForm")[0]);
+        // var dossier = [[${dossier}]];
+        // formData.append("file", $('#file')[0].files[0]);
+        // formData.append("dossier", dossier);
+
+        $.ajax({
+            type: "post",
+            url: "../dossier/add",
+            data: formData,
+            processData: false,			//对数据不做处理
+            cache:false,      				//上传文件不需要缓存
+            contentType: false,
+            mimeType:"multipart/form-data",
+            success: function (result) {
+                alert("sdfs");
+                if (result.code === 0) {
+                    alert("添加成功！");
+                    // window.location.reload();
+                } else {
+                    alert(result.code + result);
+                }
+            },
+            error: function (r) {
+                alert("error" + r);
+            }
+        })
+    }
+</script>
+</html>

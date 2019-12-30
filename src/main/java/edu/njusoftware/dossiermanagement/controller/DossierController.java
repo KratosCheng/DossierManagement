@@ -12,21 +12,34 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/dossier")
 public class DossierController {
     private static final Logger logger = LoggerFactory.getLogger(DossierController.class);
+
+    private static final Map<String, String> fileTypeMap = new HashMap<>(10);
+
+    static {
+        fileTypeMap.put("pdf", "application/pdf");
+        fileTypeMap.put("video", "video/mp4");
+        fileTypeMap.put("audio", "audio/mp3");
+    }
 
     @Autowired
     private IDossierService dossierService;
@@ -87,6 +100,7 @@ public class DossierController {
      * @return
      */
     @RequestMapping("/addDirectory")
+    @ResponseBody
     public BaseResponse addDirectory(@RequestBody AddDirectoryReq req) {
         StringBuilder process = new StringBuilder(SystemSecurityUtils.getLoginUserName());
         try {
@@ -96,7 +110,7 @@ public class DossierController {
             logger.error(process.toString());
             return new BaseResponse(Constants.CODE_FAIL, Constants.MSG_FAIL);
         }
-        process.append(" added directory: ").append(req.getCaseNum()).append(" to #").append(req.getCaseNum());
+        process.append(" added directory: ").append(req.getDirectoryName()).append(" to #").append(req.getCaseNum());
         logger.info(process.toString());
         return new BaseResponse(Constants.CODE_SUCCESS, Constants.MSG_SUCCESS);
     }
@@ -135,13 +149,12 @@ public class DossierController {
     @RequestMapping("/getFile/{dossierId}")
     public void getFile(HttpServletRequest request, HttpServletResponse response, HttpSession session, @PathVariable long dossierId) {
         Dossier dossier = dossierService.getDossier(dossierId);
-//        response.setContentType("application/pdf");
-        response.setContentType("video/mp4");
+        response.setContentType(fileTypeMap.get(dossier.getFileType()));
         FileInputStream in;
         OutputStream out;
         try {
-//            in = new FileInputStream(new File("C:/Users/Kratos/Desktop/dossier/test/卷宗扫描件/requirements.pdf"));
-//            new File("C:/Users/Kratos/Desktop/dossier/test/视频证据/视频1.mp4")
+//            in = new FileInputStream(new File("C:/Users/Kratos/Desktop/dossier/test/音频证据/荣耀-35.mp3"));
+            in = new FileInputStream(new File(dossier.getPath()));
             in = new FileInputStream(new File(dossier.getPath()));
             out = response.getOutputStream();
             byte[] b = new byte[512];
@@ -157,7 +170,7 @@ public class DossierController {
     }
 
     /**
-     * 查找一个用户所有的卷宗操作记录
+     * 局部刷新卷宗文件展示
      * @param dossierId
      * @return
      */
@@ -165,5 +178,39 @@ public class DossierController {
     public String updateCurrentDossier(Model model, @PathVariable long dossierId) {
         model.addAttribute("currentDossier", dossierService.getDossier(dossierId));
         return "casePage::#div-media-container";
+    }
+
+    /**
+     * 新增案件
+     * @param dossier
+     * @return
+     */
+    @RequestMapping(value = "/add")
+    @ResponseBody
+    public BaseResponse addCase(@RequestParam(value = "file") MultipartFile file, Dossier dossier) {
+        logger.info(SystemSecurityUtils.getLoginUserName() + "tries to upload dossier: " + dossier.getName() +
+                " in #" + dossier.getCaseNum() + "/" + dossier.getDirectory());
+        if (StringUtils.isEmpty(dossier.getName())) {
+            dossier.setName(file.getOriginalFilename());
+        }
+
+        String filePath = Constants.DOSSIER_BASE_DIRECTORY + dossier.getCaseNum() + "/" + dossier.getDirectory() + "/" + dossier.getName();
+
+        try {
+            File destFile = new File(filePath);
+            destFile.getParentFile().mkdirs();
+            file.transferTo(destFile);
+            logger.info("Store uploaded dossier: " + dossier.getName() + " in #" + dossier.getCaseNum() + "/" +
+                    dossier.getDirectory() + " at " + destFile.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new BaseResponse(1, "上传失败," + e.getMessage());
+        }
+
+        dossier.setPath(filePath);
+        dossier.setUploadUser(SystemSecurityUtils.getLoginUserName());
+        dossier.setUploadTime(new Date());
+        return dossierService.saveDossier(dossier) ? new BaseResponse(0, "上传卷宗成功！") :
+                new BaseResponse(1, "上传失败！Error to store dossier!");
     }
 }

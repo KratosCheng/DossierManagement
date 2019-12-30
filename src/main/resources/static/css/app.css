@@ -50,4 +50,5 @@
 .media-container {
     min-height: inherit;
     width: 80%;
+    align-content: center;
 }

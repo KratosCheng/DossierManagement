@@ -60,7 +60,7 @@ public class PageController {
     @RequestMapping("/addCase")
     public String addCase(Model model) {
         CaseInfo caseInfo = new CaseInfo();
-        model.addAttribute( caseInfo);
+        model.addAttribute(caseInfo);
         return "addCase";
     }
 
@@ -90,5 +90,26 @@ public class PageController {
         model.addAttribute("directoryList", dossierService.getDirectoriesByCaseNum(caseNum));
         model.addAttribute("directoryMap", dossierService.getDirectoryMap(caseNum));
         return "casePage";
+    }
+
+    /**
+     * 上传卷宗
+     * @param model
+     * @param caseNum
+     * @param directory
+     * @return
+     */
+    @RequestMapping("/addDossier")
+    public String addDossierPage(Model model, String caseNum, String directory) {
+        Dossier dossier = new Dossier();
+        dossier.setCaseNum(caseNum);
+        dossier.setDirectory(directory);
+
+        List<String> directoryList = dossierService.getDirectoriesByCaseNum(caseNum);
+
+        model.addAttribute("dossier", dossier);
+        model.addAttribute("directoryList", directoryList);
+
+        return "addDossier";
     }
 }

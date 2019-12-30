@@ -1,9 +1,6 @@
 package edu.njusoftware.dossiermanagement.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -13,7 +10,7 @@ import java.util.Date;
 @Entity(name = "entity_dossier")
 public class Dossier {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;
 
     // 卷宗文件存储路径
