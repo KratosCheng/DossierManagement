@@ -99,7 +99,7 @@ public class PageController {
      * @param directory
      * @return
      */
-    @RequestMapping("/addDossier")
+    @RequestMapping(value = "/addDossier", method = RequestMethod.GET)
     public String addDossierPage(Model model, String caseNum, String directory) {
         Dossier dossier = new Dossier();
         dossier.setCaseNum(caseNum);

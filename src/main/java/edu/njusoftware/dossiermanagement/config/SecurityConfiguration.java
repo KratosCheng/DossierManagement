@@ -69,6 +69,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logout().permitAll().invalidateHttpSession(true).deleteCookies("JSESSIONID")
                 .and()
                 .httpBasic();
+//        http.csrf().disable();
 //        http.authorizeRequests().anyRequest().permitAll().and().logout().permitAll();
     }
 

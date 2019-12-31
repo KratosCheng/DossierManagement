@@ -60,7 +60,7 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-1 control-label">
-                    <button type="submit" class="btn btn-default" th:onclick="uploadDossier()">确认</button>
+                    <button type="button" class="btn btn-default" th:onclick="uploadDossier()">确认</button>
                 </div>
             </div>
         </form>
@@ -81,27 +81,32 @@
         // formData.append("file", $('#file')[0].files[0]);
         // formData.append("dossier", dossier);
 
-        $.ajax({
-            type: "post",
-            url: "../dossier/add",
-            data: formData,
-            processData: false,			//对数据不做处理
-            cache:false,      				//上传文件不需要缓存
-            contentType: false,
-            mimeType:"multipart/form-data",
-            success: function (result) {
-                alert("sdfs");
-                if (result.code === 0) {
-                    alert("添加成功！");
-                    // window.location.reload();
-                } else {
-                    alert(result.code + result);
+        if ($("#file").val() !== "") {
+            $.ajax({
+                async: false,
+                type: "post",
+                url: "../dossier/add",
+                data: formData,
+                processData: false,			//对数据不做处理
+                cache:false,      				//上传文件不需要缓存
+                contentType: false,
+                mimeType:"multipart/form-data",
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.code === 0) {
+                        alert("添加成功！");
+                        self.location = document.referrer;
+                    } else {
+                        alert(result.code + result);
+                        window.location.reload();
+                    }
+                },
+                error: function (r) {
+                    alert("error" + r.msg);
+                    window.location.reload();
                 }
-            },
-            error: function (r) {
-                alert("error" + r);
-            }
-        })
+            })
+        }
     }
 </script>
 </html>

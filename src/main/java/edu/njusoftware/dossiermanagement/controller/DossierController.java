@@ -23,10 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/dossier")
@@ -185,16 +182,17 @@ public class DossierController {
      * @param dossier
      * @return
      */
-    @RequestMapping(value = "/add")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
-    public BaseResponse addCase(@RequestParam(value = "file") MultipartFile file, Dossier dossier) {
-        logger.info(SystemSecurityUtils.getLoginUserName() + "tries to upload dossier: " + dossier.getName() +
+    public BaseResponse addDossier(@RequestParam(value = "file") MultipartFile file, Dossier dossier) {
+        logger.info(SystemSecurityUtils.getLoginUserName() + " tries to upload dossier: " + dossier.getName() +
                 " in #" + dossier.getCaseNum() + "/" + dossier.getDirectory());
+        String[] fileNameParts = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
         if (StringUtils.isEmpty(dossier.getName())) {
-            dossier.setName(file.getOriginalFilename());
+            dossier.setName(fileNameParts[0]);
         }
 
-        String filePath = Constants.DOSSIER_BASE_DIRECTORY + dossier.getCaseNum() + "/" + dossier.getDirectory() + "/" + dossier.getName();
+        String filePath = Constants.DOSSIER_BASE_DIRECTORY + dossier.getCaseNum() + "/" + dossier.getDirectory() + "/" + dossier.getName() + "." + fileNameParts[1];
 
         try {
             File destFile = new File(filePath);
