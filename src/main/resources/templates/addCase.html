@@ -8,15 +8,7 @@
 </head>
 <body>
     <div id="app">
-        <div id="header" class="app-header">
-            <div class="app-header-left">
-                <span><a th:href="@{/index}" class="header-title">卷宗管理系统</a></span>
-                <span class="header-menu">添加案件</span>
-            </div>
-            <div class="app-header-right">
-                <p class="header-user-info">欢迎，<span sec:authentication="name"></span></p>
-            </div>
-        </div>
+        <div th:include="commonComponenets :: app-header"></div>
         <div id="form-div" class="container">
             <form class="form-horizontal" role="form" action="#" th:action="@{/case/add}" th:object="${caseInfo}" method="post">
                 <div class="form-group">

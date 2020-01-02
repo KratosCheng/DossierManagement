@@ -19,13 +19,7 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <header class="main-header app-header">
-        <div class="app-header-left">
-            <span><a th:href="@{/index}" class="header-title">卷宗管理系统</a></span>
-            <span class="header-menu" th:text="'案件主页 （#' + ${caseInfo.caseNum} + '）'"></span>
-        </div>
-        <div class="app-header-right">
-            <p class="header-user-info">欢迎，<span sec:authentication="name"></span></p>
-        </div>
+        <div th:include="commonComponenets :: app-header"></div>
     </header>
     <aside class="main-sidebar">
         <section class="sidebar">
@@ -83,6 +77,7 @@
                         <source th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" />
                         Your browser does not support the video tag.
                     </video>
+                    <iframe id="pdf-iframe" class="media-container" th:case="pdf" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}"></iframe>
                     <embed class="media-container" type="application/pdf" th:case="*" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" th:title="${currentDossier.name}" />
                 </div>
             </div>

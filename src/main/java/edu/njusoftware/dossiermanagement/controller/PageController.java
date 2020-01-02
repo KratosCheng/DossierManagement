@@ -49,6 +49,7 @@ public class PageController {
                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         Page<CaseInfo> caseList = caseService.getCaseList(pageNum, pageSize);
         model.addAttribute("caseList", caseList);
+        model.addAttribute("title", "案件列表");
         return "index";
     }
 
@@ -61,6 +62,7 @@ public class PageController {
     public String addCase(Model model) {
         CaseInfo caseInfo = new CaseInfo();
         model.addAttribute(caseInfo);
+        model.addAttribute("title", "添加案件");
         return "addCase";
     }
 
@@ -74,6 +76,7 @@ public class PageController {
     public String getUserMainPage(Model model, @PathVariable String jobNum) {
         User user = userService.getUserByJobNum(jobNum);
         model.addAttribute(user);
+        model.addAttribute("title", "用户主页");
         return "userPage";
     }
 
@@ -89,6 +92,7 @@ public class PageController {
         model.addAttribute("dossierList", dossierService.getDossiersByCaseNum(caseNum));
         model.addAttribute("directoryList", dossierService.getDirectoriesByCaseNum(caseNum));
         model.addAttribute("directoryMap", dossierService.getDirectoryMap(caseNum));
+        model.addAttribute("title", "案件主页 #" + caseNum);
         return "casePage";
     }
 
@@ -109,6 +113,7 @@ public class PageController {
 
         model.addAttribute("dossier", dossier);
         model.addAttribute("directoryList", directoryList);
+        model.addAttribute("title", "添加卷宗");
 
         return "addDossier";
     }
