@@ -20,4 +20,12 @@ public class AddDirectoryReq {
     public void setDirectoryName(String directoryName) {
         this.directoryName = directoryName;
     }
+
+    @Override
+    public String toString() {
+        return "AddDirectoryReq{" +
+                "caseNum='" + caseNum + '\'' +
+                ", directoryName='" + directoryName + '\'' +
+                '}';
+    }
 }

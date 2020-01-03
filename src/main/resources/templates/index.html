@@ -13,6 +13,58 @@
 <body>
     <div id="app">
         <div th:include="commonComponenets :: app-header"></div>
+        <div>
+            <form class="form-inline case-search-form" id="case-search-form" role="form" action="#" th:action="@{/case/list}" th:object="${caseQueryCondition}" method="get">
+                <div class="form-group">
+                    <!-- 当前页 -->
+                    <label>
+                        <input type="hidden" id="pageNumInput" name="pageNumInput" th:field="*{pageNum}" class="form-control" />
+                    </label>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label>每页显示行数：
+                        <select th:field="*{pageSize}" class="form-control">
+                            <option th:selected="*{pageSize eq 5}" th:value="5">5</option>
+                            <option th:selected="*{pageSize eq 10}" th:value="10">10</option>
+                            <option th:selected="*{pageSize eq 20}" th:value="20">20</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label>案件类型：
+                        <select th:field="*{type}" class="form-control">
+                            <option th:selected="*{type eq null}" th:value="null">所有类型</option>
+                            <option th:selected="*{type eq '刑事'}" th:value="刑事">刑事</option>
+                            <option th:selected="*{type eq '民事'}" th:value="民事">民事</option>
+                            <option th:selected="*{type eq '行政'}" th:value="行政">行政</option>
+                            <option th:selected="*{type eq '赔偿'}" th:value="赔偿">赔偿</option>
+                            <option th:selected="*{type eq '执行'}" th:value="执行">执行</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-group col-sm-2">
+                    <label>按立案时间：
+                        <select th:field="*{descend}" class="form-control">
+                            <option th:selected="*{descend eq true}" th:value="true">倒序</option>
+                            <option th:selected="*{descend eq false}" th:value="false">正序</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="form-group col-sm-3">
+                    <label>关键词：
+                        <input type="text" th:field="*{keyword}" class="form-control"  placeholder="请输入查询关键字" />
+                    </label>
+                </div>
+                <div class="col-sm-1">
+                    <button type="submit" class="btn btn-primary btn-w-m" id="queryBtn">
+                        <span class="glyphicon glyphicon-search"></span> 搜索
+                    </button>
+                </div>
+                <div class="col-sm-1">
+                    <a type="button" th:href="@{/index}" class="btn btn-default">重置</a>
+                </div>
+            </form>
+        </div>
         <div id="div-case-list" class="with:80%">
             <table class="table table-hover">
                 <thead>
@@ -50,34 +102,34 @@
             <ul class="pagination pull-right no-margin">
 
                 <!-- 新建案件 -->
-                <li th:if="${caseList.isLast()}">
+                <li>
                     <a th:href="'/case/add'">新建案件</a>
                 </li>
 
                 <!-- 首页 -->
                 <li>
-                    <a th:href="'/index?pageNum=0'">首页</a>
+                    <a th:onclick="changePage(0)" >首页</a>
                 </li>
 
                 <!-- 上一页 -->
                 <li th:if="${caseList.hasPrevious()}">
-                    <a th:href="'/index?pageNum=' + ${caseList.previousPageable().getPageNumber()}" th:text="上一页"></a>
+                    <a th:onclick="changePage([[${caseList.previousPageable().getPageNumber()}]])" th:text="上一页"></a>
                 </li>
 
                 <!-- 中间页 -->
                 <li th:each="pageNum:${#numbers.sequence(0, caseList.getTotalPages() - 1)}">
-                    <a th:href="'/index?pageNum=' + ${pageNum}" th:text="${pageNum + 1}" th:if="${pageNum ne caseList.pageable.getPageNumber()}"></a>
-                    <a th:href="'/index?pageNum=' + ${pageNum}" th:text="${pageNum + 1}" th:if="${pageNum eq caseList.pageable.getPageNumber()}" th:style="'font-weight:bold;background: #6faed9;'"></a>
+                    <a th:onclick="changePage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum ne caseList.pageable.getPageNumber()}"></a>
+                    <a th:onclick="changePage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum eq caseList.pageable.getPageNumber()}" th:style="'font-weight:bold;background: #6faed9;'"></a>
                 </li>
 
                 <!-- 下一页 -->
                 <li th:if="${caseList.hasNext()}">
-                    <a th:href="'/index?pageNum=' + ${caseList.nextPageable().getPageNumber()}" th:text="下一页"></a>
+                    <a th:onclick="changePage([[${caseList.nextPageable().getPageNumber()}]])" th:text="下一页"></a>
                 </li>
 
                 <!-- 尾页 -->
                 <li>
-                    <a th:href="'/index?pageNum=' + ${caseList.getTotalPages() - 1}">尾页</a>
+                    <a th:onclick="changePage([[${caseList.getTotalPages() - 1}]])">尾页</a>
                 </li>
 
             </ul>
@@ -87,31 +139,13 @@
 <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/app.js}"></script>
 <script>
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
-    $(document).ajaxSend(function (e, xhr, options) {
-        xhr.setRequestHeader(header, token)
-    });
+    $("select").change(function () {
+        $("#case-search-form").submit();
+    })
 
-    function removeCase(caseNum) {
-        $.ajax({
-            type: "post",
-            url: "../case/remove/" + caseNum,
-            data: JSON.stringify(caseNum),
-            dataType: 'json',
-            contentType: 'application/json;charset=UTF-8',
-            success: function (result) {
-                if (result.code === 0) {
-                    alert("删除成功！");
-                    window.location.reload();
-                } else {
-                    alert(result.code + result);
-                }
-            },
-            error: function (r) {
-                alert("error" + r);
-            }
-        })
+    function changePage(pageNum) {
+        $("#pageNumInput").val(pageNum);
+        $("#case-search-form").submit();
     }
 </script>
 </html>

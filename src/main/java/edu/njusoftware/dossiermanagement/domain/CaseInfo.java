@@ -104,4 +104,16 @@ public class CaseInfo {
     public void setStage(String stage) {
         this.stage = stage;
     }
+
+    @Override
+    public String toString() {
+        return "CaseInfo{" +
+                "caseNum='" + caseNum + '\'' +
+                ", summary='" + summary + '\'' +
+                ", filingTime=" + filingTime +
+                ", closingTime=" + closingTime +
+                ", type='" + type + '\'' +
+                ", stage='" + stage + '\'' +
+                '}';
+    }
 }

@@ -64,4 +64,14 @@ public class User {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "jobNum='" + jobNum + '\'' +
+                ", password='" + password + '\'' +
+                ", roleName='" + roleName + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

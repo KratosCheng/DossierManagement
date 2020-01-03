@@ -1,6 +1,7 @@
 package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.domain.CaseInfo;
+import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.util.SystemSecurityUtils;
@@ -60,11 +61,11 @@ public class CaseController {
     }
 
     @RequestMapping(value = "/list")
-    public String getCaseList(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
-                        @RequestParam(value = "pageSize", defaultValue = "2") int pageSize) {
-        Page<CaseInfo> caseList = caseService.getCaseList(pageNum, pageSize);
+    public String getCaseList(Model model, @ModelAttribute CaseQueryCondition caseQueryCondition) {
+
+        Page<CaseInfo> caseList = caseService.getCaseList(caseQueryCondition);
         model.addAttribute("caseList", caseList);
-        return "index::#div-case-list";
+        return "index";
     }
 
     /**

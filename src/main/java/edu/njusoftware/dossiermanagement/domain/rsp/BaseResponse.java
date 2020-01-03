@@ -31,4 +31,12 @@ public class BaseResponse {
     public void setMsg(String msg) {
         this.msg = msg;
     }
+
+    @Override
+    public String toString() {
+        return "BaseResponse{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                '}';
+    }
 }

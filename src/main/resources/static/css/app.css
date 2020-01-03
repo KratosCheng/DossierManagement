@@ -52,3 +52,10 @@
     width: 80%;
     align-content: center;
 }
+
+.case-search-form {
+    margin-inline-start: 9%;
+    margin-inline-end: 9%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}

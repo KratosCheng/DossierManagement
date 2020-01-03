@@ -107,4 +107,18 @@ public class DossierOperationRecord {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "DossierOperationRecord{" +
+                "id=" + id +
+                ", jobNum='" + jobNum + '\'' +
+                ", dossierId=" + dossierId +
+                ", operation='" + operation + '\'' +
+                ", operateTime=" + operateTime +
+                ", before='" + before + '\'' +
+                ", after='" + after + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package edu.njusoftware.dossiermanagement.service.impl;
 import edu.njusoftware.dossiermanagement.controller.UserController;
 import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
+import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.repository.CaseRepository;
 import edu.njusoftware.dossiermanagement.repository.DossierRepository;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
@@ -15,9 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,10 +50,8 @@ public class CaseServiceImpl implements ICaseService {
 
     @Override
     public Page<CaseInfo> getCaseList(int pageNum, int pageSize) {
-//        Sort sort = new Sort();
         Pageable pageable = PageRequest.of(pageNum, pageSize);
-        Page<CaseInfo> caseList = caseRepository.findAll(pageable);
-        return caseList;
+        return caseRepository.findAll(pageable);
     }
 
     @Override
@@ -76,5 +82,27 @@ public class CaseServiceImpl implements ICaseService {
             logger.info(processInfo.toString());
             return new BaseResponse(Constants.CODE_SUCCESS, Constants.MSG_SUCCESS);
         }
+    }
+
+    @Override
+    public Page<CaseInfo> getCaseList(CaseQueryCondition caseQueryCondition) {
+        Pageable pageable = PageRequest.of(caseQueryCondition.getPageNum(), caseQueryCondition.getPageSize(),
+                caseQueryCondition.isDescend() ? Sort.Direction.DESC : Sort.Direction.ASC, "filingTime");
+        Page<CaseInfo> caseInfoPage = caseRepository.findAll(new Specification<CaseInfo>(){
+            @Override
+            public Predicate toPredicate(Root<CaseInfo> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<Predicate>();
+                if(caseQueryCondition.getType() != null && !"".equals(caseQueryCondition.getType())) {
+                    list.add(criteriaBuilder.equal(root.get("type").as(String.class), caseQueryCondition.getType()));
+                }
+                // 案号模糊查询
+                if (caseQueryCondition.getKeyword() != null && !"".equals(caseQueryCondition.getKeyword())) {
+                    list.add(criteriaBuilder.like(root.get("caseNum").as(String.class), "%" + caseQueryCondition.getKeyword() + "%"));
+                }
+                Predicate[] p = new Predicate[list.size()];
+                return criteriaBuilder.and(list.toArray(p));
+            }
+        }, pageable);
+        return caseInfoPage;
     }
 }

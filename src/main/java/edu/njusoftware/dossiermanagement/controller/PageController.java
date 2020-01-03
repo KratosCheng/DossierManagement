@@ -3,6 +3,7 @@ package edu.njusoftware.dossiermanagement.controller;
 import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.User;
+import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.mapper.DossierMapper;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
@@ -48,7 +49,12 @@ public class PageController {
     public String index(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         Page<CaseInfo> caseList = caseService.getCaseList(pageNum, pageSize);
+        CaseQueryCondition caseQueryCondition = new CaseQueryCondition();
+        caseQueryCondition.setPageNum(0);
+        caseQueryCondition.setPageSize(10);
+        caseQueryCondition.setDescend(false);
         model.addAttribute("caseList", caseList);
+        model.addAttribute("caseQueryCondition", caseQueryCondition);
         model.addAttribute("title", "案件列表");
         return "index";
     }

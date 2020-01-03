@@ -114,4 +114,18 @@ public class Dossier {
     public void setUploadUser(String uploadUser) {
         this.uploadUser = uploadUser;
     }
+
+    @Override
+    public String toString() {
+        return "Dossier{" +
+                "id=" + id +
+                ", path='" + path + '\'' +
+                ", name='" + name + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", caseNum='" + caseNum + '\'' +
+                ", directory='" + directory + '\'' +
+                ", uploadTime=" + uploadTime +
+                ", uploadUser='" + uploadUser + '\'' +
+                '}';
+    }
 }
