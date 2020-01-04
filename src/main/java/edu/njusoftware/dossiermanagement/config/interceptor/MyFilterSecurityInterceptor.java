@@ -1,4 +1,4 @@
-package edu.njusoftware.dossiermanagement.interceptor;
+package edu.njusoftware.dossiermanagement.config.interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.SecurityMetadataSource;

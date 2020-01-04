@@ -1,4 +1,4 @@
-package edu.njusoftware.dossiermanagement.interceptor;
+package edu.njusoftware.dossiermanagement.config.interceptor;
 
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.web.multipart.support.MultipartFilter;

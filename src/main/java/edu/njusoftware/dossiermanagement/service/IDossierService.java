@@ -1,7 +1,7 @@
 package edu.njusoftware.dossiermanagement.service;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
-import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.OperationRecord;
 
 import java.util.List;
 import java.util.Map;
@@ -14,11 +14,11 @@ public interface IDossierService {
 
     boolean saveDossier(Dossier dossier);
 
-    List<DossierOperationRecord> getDossierOperationRecordsByDossierId(long dossierId);
+    List<OperationRecord> getDossierOperationRecordsByDossierId(long dossierId);
 
-    List<DossierOperationRecord> getDossierOperationRecordsByCaseNum(String caseNum);
+    List<OperationRecord> getDossierOperationRecordsByCaseNum(String caseNum);
 
-    List<DossierOperationRecord> getDossierOperationRecordsByJobNum(String jobNum);
+    List<OperationRecord> getDossierOperationRecordsByJobNum(String jobNum);
 
     boolean removeDossierById(long dossierId);
 

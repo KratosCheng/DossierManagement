@@ -1,11 +1,13 @@
 package edu.njusoftware.dossiermanagement.service.impl;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
-import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.OperationRecord;
 import edu.njusoftware.dossiermanagement.mapper.DossierMapper;
-import edu.njusoftware.dossiermanagement.repository.DossierOperationRepository;
+import edu.njusoftware.dossiermanagement.repository.OperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.DossierRepository;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
+import edu.njusoftware.dossiermanagement.service.OperationRecordService;
+import edu.njusoftware.dossiermanagement.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +21,7 @@ public class DossierServiceImpl implements IDossierService {
     private DossierRepository dossierRepository;
 
     @Autowired
-    private DossierOperationRepository dossierOperationRepository;
+    private OperationRecordRepository operationRecordRepository;
 
     @Autowired
     private DossierMapper dossierMapper;
@@ -37,27 +39,37 @@ public class DossierServiceImpl implements IDossierService {
 
     @Override
     public boolean saveDossier(Dossier dossier) {
-        return dossierRepository.save(dossier) != null;
+        Dossier savedDossier = dossierRepository.save(dossier);
+        if (savedDossier == null) {
+            return false;
+        }
+        OperationRecordService.saveNormalDossierOperationRecord(dossier.getCaseNum(), savedDossier.getId(), Constants.OPERATION_ADD);
+        return true;
     }
 
     @Override
-    public List<DossierOperationRecord> getDossierOperationRecordsByDossierId(long dossierId) {
-        return dossierOperationRepository.findAllByDossierId(dossierId);
+    public List<OperationRecord> getDossierOperationRecordsByDossierId(long dossierId) {
+        return operationRecordRepository.findAllByDossierId(dossierId);
     }
 
     @Override
-    public List<DossierOperationRecord> getDossierOperationRecordsByCaseNum(String caseNum) {
+    public List<OperationRecord> getDossierOperationRecordsByCaseNum(String caseNum) {
         return dossierMapper.findRecordsByCaseNum(caseNum);
     }
 
     @Override
-    public List<DossierOperationRecord> getDossierOperationRecordsByJobNum(String jobNum) {
-        return dossierOperationRepository.findAllByJobNum(jobNum);
+    public List<OperationRecord> getDossierOperationRecordsByJobNum(String jobNum) {
+        return operationRecordRepository.findAllByJobNum(jobNum);
     }
 
     @Override
     public boolean removeDossierById(long dossierId) {
-        return dossierRepository.removeById(dossierId) != null;
+        Dossier removedDossier = dossierRepository.removeById(dossierId);
+        if (removedDossier == null) {
+            return false;
+        }
+        OperationRecordService.saveNormalDossierOperationRecord(removedDossier.getCaseNum(), removedDossier.getId(), Constants.OPERATION_REMOVE);
+        return true;
     }
 
     /**
@@ -97,9 +109,5 @@ public class DossierServiceImpl implements IDossierService {
     @Override
     public String getFilePathById(long dossierId) {
         return dossierMapper.getFilePathById(dossierId);
-    }
-
-    private boolean saveOperationRecord(DossierOperationRecord dossierOperationRecord) {
-        return dossierOperationRepository.save(dossierOperationRecord) != null;
     }
 }

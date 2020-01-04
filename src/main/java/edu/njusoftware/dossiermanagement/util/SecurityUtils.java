@@ -3,7 +3,7 @@ package edu.njusoftware.dossiermanagement.util;
 import edu.njusoftware.dossiermanagement.domain.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class SystemSecurityUtils {
+public class SecurityUtils {
     /**
      * 获取系统当前登录用户名
      * @return

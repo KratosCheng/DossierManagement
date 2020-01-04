@@ -1,21 +1,18 @@
 package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
-import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.OperationRecord;
 import edu.njusoftware.dossiermanagement.domain.req.AddDirectoryReq;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.util.Constants;
-import edu.njusoftware.dossiermanagement.util.SystemSecurityUtils;
+import edu.njusoftware.dossiermanagement.util.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,7 +54,7 @@ public class DossierController {
      * @return
      */
     @RequestMapping("/his/all/{caseNum}")
-    public List<DossierOperationRecord> getRecordsByCaseNum(@PathVariable String caseNum) {
+    public List<OperationRecord> getRecordsByCaseNum(@PathVariable String caseNum) {
         return dossierService.getDossierOperationRecordsByCaseNum(caseNum);
     }
 
@@ -67,7 +64,7 @@ public class DossierController {
      * @return
      */
     @RequestMapping("/his/dossier/{dossierId}")
-    public List<DossierOperationRecord> getRecordsByDossierId(@PathVariable int dossierId) {
+    public List<OperationRecord> getRecordsByDossierId(@PathVariable int dossierId) {
         return dossierService.getDossierOperationRecordsByDossierId(dossierId);
     }
 
@@ -77,7 +74,7 @@ public class DossierController {
      * @return
      */
     @RequestMapping("/his/dossier/{jobNum}")
-    public List<DossierOperationRecord> getRecordsByDossierId(@PathVariable String jobNum) {
+    public List<OperationRecord> getRecordsByDossierId(@PathVariable String jobNum) {
         return dossierService.getDossierOperationRecordsByJobNum(jobNum);
     }
 
@@ -99,7 +96,7 @@ public class DossierController {
     @RequestMapping("/addDirectory")
     @ResponseBody
     public BaseResponse addDirectory(@RequestBody AddDirectoryReq req) {
-        StringBuilder process = new StringBuilder(SystemSecurityUtils.getLoginUserName());
+        StringBuilder process = new StringBuilder(SecurityUtils.getLoginUserName());
         try {
             dossierService.addDirectory(req.getCaseNum(), req.getDirectoryName());
         } catch (Exception e){
@@ -185,7 +182,7 @@ public class DossierController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @ResponseBody
     public BaseResponse addDossier(@RequestParam(value = "file") MultipartFile file, Dossier dossier) {
-        logger.info(SystemSecurityUtils.getLoginUserName() + " tries to upload dossier: " + dossier.getName() +
+        logger.info(SecurityUtils.getLoginUserName() + " tries to upload dossier: " + dossier.getName() +
                 " in #" + dossier.getCaseNum() + "/" + dossier.getDirectory());
         String[] fileNameParts = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
         if (StringUtils.isEmpty(dossier.getName())) {
@@ -206,7 +203,7 @@ public class DossierController {
         }
 
         dossier.setPath(filePath);
-        dossier.setUploadUser(SystemSecurityUtils.getLoginUserName());
+        dossier.setUploadUser(SecurityUtils.getLoginUserName());
         dossier.setUploadTime(new Date());
         return dossierService.saveDossier(dossier) ? new BaseResponse(0, "上传卷宗成功！") :
                 new BaseResponse(1, "上传失败！Error to store dossier!");

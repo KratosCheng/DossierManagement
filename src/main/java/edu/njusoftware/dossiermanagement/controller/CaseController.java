@@ -4,7 +4,7 @@ import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
-import edu.njusoftware.dossiermanagement.util.SystemSecurityUtils;
+import edu.njusoftware.dossiermanagement.util.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +62,6 @@ public class CaseController {
 
     @RequestMapping(value = "/list")
     public String getCaseList(Model model, @ModelAttribute CaseQueryCondition caseQueryCondition) {
-
         Page<CaseInfo> caseList = caseService.getCaseList(caseQueryCondition);
         model.addAttribute("caseList", caseList);
         return "index";
@@ -78,14 +77,14 @@ public class CaseController {
     public String addCase(@ModelAttribute("caseInfo") @Validated CaseInfo caseInfo, BindingResult rs) {
         if (rs.hasErrors()) {
             StringBuilder errorMsg =
-                    new StringBuilder(SystemSecurityUtils.getLoginUserName() + " attempt to create case with error: ");
+                    new StringBuilder(SecurityUtils.getLoginUserName() + " attempt to create case with error: ");
             for (ObjectError error : rs.getAllErrors()) {
                 errorMsg.append(error.getDefaultMessage()).append("|");
             }
             logger.error(errorMsg.toString());
             return "addCase";
         }
-        logger.info(SystemSecurityUtils.getLoginUserName() + "created case: #" + caseInfo.getCaseNum());
+        logger.info(SecurityUtils.getLoginUserName() + "created case: #" + caseInfo.getCaseNum());
         return caseService.saveCase(caseInfo) ? "redirect:/index" : "redirect:/error";
     }
 

@@ -1,4 +1,4 @@
-package edu.njusoftware.dossiermanagement.interceptor;
+package edu.njusoftware.dossiermanagement.config.interceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

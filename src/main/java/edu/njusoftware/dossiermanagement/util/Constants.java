@@ -29,6 +29,14 @@ public interface Constants {
 
     String CASE_ZHIXING = "执行";
 
+    String OPERATION_ADD = "添加";
+
+    String OPERATION_REMOVE = "删除";
+
+    String OPERATION_MODIFY = "修改";
+
+    String OPERATION_VIEW = "查看";
+
     int CODE_SUCCESS = 0;
 
     String MSG_SUCCESS = "请求成功";
