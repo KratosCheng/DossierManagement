@@ -1,5 +1,7 @@
 package edu.njusoftware.dossiermanagement.domain;
 
+import edu.njusoftware.dossiermanagement.util.Constants;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -35,6 +37,10 @@ public class User {
     }
 
     public User() {
+    }
+
+    public boolean isAdmin() {
+        return Constants.ROLE_ADMIN.equals(roleName);
     }
 
     public void setJobNum(String jobNum) {

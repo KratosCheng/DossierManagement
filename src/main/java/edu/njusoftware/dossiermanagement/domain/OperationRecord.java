@@ -28,6 +28,10 @@ public class OperationRecord {
     @Nullable
     private long dossierId;
 
+    @Column(name = "dossier_name")
+    @Nullable
+    private String dossierName;
+
     @Column(name = "page_num")
     @Nullable
     private int pageNum;
@@ -53,13 +57,15 @@ public class OperationRecord {
      * @param jobNum
      * @param caseNum
      * @param dossierId
+     * @param dossierName 
      * @param operation
      * @param operateTime
      */
-    public OperationRecord(String jobNum, String caseNum, long dossierId, String operation, Date operateTime) {
+    public OperationRecord(String jobNum, String caseNum, long dossierId, String dossierName, String operation, Date operateTime) {
         this.jobNum = jobNum;
         this.caseNum = caseNum;
         this.dossierId = dossierId;
+        this.dossierName = dossierName;
         this.operation = operation;
         this.operateTime = operateTime;
     }
@@ -69,6 +75,7 @@ public class OperationRecord {
      * @param jobNum
      * @param caseNum
      * @param dossierId
+     * @param dossierName
      * @param pageNum
      * @param operation
      * @param operateTime
@@ -76,11 +83,12 @@ public class OperationRecord {
      * @param after
      * @param status
      */
-    public OperationRecord(String jobNum, String caseNum, long dossierId, int pageNum, String operation,
-                           Date operateTime, String before, String after, int status) {
+    public OperationRecord(String jobNum, String caseNum, long dossierId, String dossierName, int pageNum,
+                           String operation, Date operateTime, String before, String after, int status) {
         this.jobNum = jobNum;
         this.caseNum = caseNum;
         this.dossierId = dossierId;
+        this.dossierName = dossierName;
         this.pageNum = pageNum;
         this.operation = operation;
         this.operateTime = operateTime;
@@ -133,6 +141,15 @@ public class OperationRecord {
 
     public void setDossierId(long dossierId) {
         this.dossierId = dossierId;
+    }
+
+    @Nullable
+    public String getDossierName() {
+        return dossierName;
+    }
+
+    public void setDossierName(@Nullable String dossierName) {
+        this.dossierName = dossierName;
     }
 
     public int getPageNum() {

@@ -1,9 +1,6 @@
 package edu.njusoftware.dossiermanagement.domain.req;
 
-/**
- * 案件列表查询条件实体类
- */
-public class CaseQueryCondition {
+public class RecordQueryCondition {
     // 显示第几页
     private int pageNum;
 
@@ -13,11 +10,17 @@ public class CaseQueryCondition {
     // 搜索关键词
     private String keyword;
 
-    // 案件类型
-    private String type;
+    // 操作类型
+    private String operation;
 
-    // 立案时间倒序
+    // 操作时间倒序
     private boolean descend;
+
+    // 工号
+    private String jobNum;
+
+    // 修改操作状态
+    private int status;
 
     public int getPageNum() {
         return pageNum;
@@ -43,12 +46,12 @@ public class CaseQueryCondition {
         this.keyword = keyword;
     }
 
-    public String getType() {
-        return type;
+    public String getOperation() {
+        return operation;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 
     public boolean isDescend() {
@@ -59,14 +62,32 @@ public class CaseQueryCondition {
         this.descend = descend;
     }
 
+    public String getJobNum() {
+        return jobNum;
+    }
+
+    public void setJobNum(String jobNum) {
+        this.jobNum = jobNum;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
-        return "CaseQueryCondition{" +
+        return "RecordQueryCondition{" +
                 "pageNum=" + pageNum +
                 ", pageSize=" + pageSize +
                 ", keyword='" + keyword + '\'' +
-                ", type='" + type + '\'' +
+                ", operation='" + operation + '\'' +
                 ", descend=" + descend +
+                ", jobNum='" + jobNum + '\'' +
+                ", status=" + status +
                 '}';
     }
 }

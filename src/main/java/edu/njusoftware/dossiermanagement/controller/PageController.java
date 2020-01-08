@@ -5,11 +5,10 @@ import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.OperationRecord;
 import edu.njusoftware.dossiermanagement.domain.User;
 import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
-import edu.njusoftware.dossiermanagement.mapper.DossierMapper;
+import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.service.IUserService;
-import edu.njusoftware.dossiermanagement.service.OperationRecordService;
 import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.SecurityUtils;
 import org.slf4j.Logger;
@@ -76,15 +75,27 @@ public class PageController {
     /**
      * 用户个人主页
      * @param model
-     * @param jobNum
      * @return
      */
-    @RequestMapping("/user/{jobNum}")
-    public String getUserMainPage(Model model, @PathVariable String jobNum) {
-        User user = userService.getUserByJobNum(jobNum);
+    @RequestMapping("/userPage")
+    public String getUserMainPage(Model model) {
+        User user = userService.getUserByJobNum(SecurityUtils.getLoginUserName());
+
+        RecordQueryCondition recordQueryCondition = new RecordQueryCondition();
+        recordQueryCondition.setPageNum(0);
+        recordQueryCondition.setPageSize(10);
+        // admin用户默认查询系统所有操作记录，其他用户只能查询自己的
+        if (!Constants.ROLE_ADMIN.equals(SecurityUtils.getLoginUser().getRoleName())) {
+            recordQueryCondition.setJobNum(user.getJobNum());
+        }
+
+        Page<OperationRecord> operationRecords = userService.getOperationRecords(recordQueryCondition);
+
         model.addAttribute(user);
         model.addAttribute("title", "用户主页");
-        return "userPage";
+        model.addAttribute("recordQueryCondition", recordQueryCondition);
+        model.addAttribute("operationRecords", operationRecords);
+        return "user";
     }
 
     /**

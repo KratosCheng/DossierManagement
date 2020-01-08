@@ -1,7 +1,6 @@
 .app-header {
     width: 100%;
     height: 50px;
-    /*line-height: 0.45rem;*/
     background: #0064b1;
     color: #ffffff;
 }
@@ -20,6 +19,7 @@
     font-family: Microsoft YaHei, serif;
     font-weight: bold;
     text-align: center;
+    overflow: hidden;
 }
 .app-header-left .header-menu {
     font-size: 16px;
@@ -41,10 +41,11 @@
     cursor: pointer;
     line-height: 50px;
     margin-right: 20px;
+    color: #ffffff;
 }
 
 .page-nav-left-font {
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .media-container {
@@ -58,4 +59,27 @@
     margin-inline-end: 9%;
     margin-top: 10px;
     margin-bottom: 20px;
+}
+
+.user-block {
+    margin-bottom: 30px;
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.user-block a {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.user-block .info-block {
+    margin-top: 10px;
+}
+
+.user-block .info-block table {
+    margin-top: 10px;
+}
+
+.form-group-inline {
+    margin-left: 20px;
 }

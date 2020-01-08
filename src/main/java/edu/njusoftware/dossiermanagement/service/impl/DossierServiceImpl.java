@@ -43,7 +43,8 @@ public class DossierServiceImpl implements IDossierService {
         if (savedDossier == null) {
             return false;
         }
-        OperationRecordService.saveNormalDossierOperationRecord(dossier.getCaseNum(), savedDossier.getId(), Constants.OPERATION_ADD);
+        OperationRecordService.saveNormalDossierOperationRecord(dossier.getCaseNum(), savedDossier.getId(),
+                savedDossier.getName(), Constants.OPERATION_ADD);
         return true;
     }
 
@@ -68,7 +69,8 @@ public class DossierServiceImpl implements IDossierService {
         if (removedDossier == null) {
             return false;
         }
-        OperationRecordService.saveNormalDossierOperationRecord(removedDossier.getCaseNum(), removedDossier.getId(), Constants.OPERATION_REMOVE);
+        OperationRecordService.saveNormalDossierOperationRecord(removedDossier.getCaseNum(), removedDossier.getId(),
+                removedDossier.getName(), Constants.OPERATION_REMOVE);
         return true;
     }
 

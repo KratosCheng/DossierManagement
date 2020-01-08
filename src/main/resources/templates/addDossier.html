@@ -14,16 +14,16 @@
 <body>
 <div id="app">
     <div th:include="commonComponenets :: app-header"></div>
-    <div id="dossier-form-div">
+    <div id="dossier-form-div" style="margin-top: 20px">
         <form class="form-horizontal" id="dossierAddForm" role="form" enctype="multipart/form-data" th:object="${dossier}" method="post">
             <div class="form-group">
-                <span class="col-sm-1 control-label">案号</span>
+                <label class="col-sm-1 control-label">案号</label>
                 <label>
                     <input readonly th:field="*{caseNum}" th:value="*{caseNum}"> </input>
                 </label>
             </div>
             <div class="form-group">
-                <span class="col-sm-1 control-label">所在文件夹</span>
+                <label class="col-sm-1 control-label">所在文件夹</label>
                 <label>
                     <select th:field="*{directory}" th:required="true" class="form-control">
                         <option th:each="d : ${directoryList}" th:value="${d}" th:text="${d}" th:selected="${dossier.directory eq d}"></option>
@@ -31,11 +31,11 @@
                 </label>
             </div>
             <div class="form-group">
-                <span class="col-sm-1 control-label">卷宗名称</span>
+                <label class="col-sm-1 control-label">卷宗名称</label>
                 <label><input type="text" th:field="*{name}" placeholder="不填则为上传文件的文件名" /> </label>
             </div>
             <div class="form-group">
-                <span class="col-sm-1 control-label" th:required="true">卷宗文件类型</span>
+                <label class="col-sm-1 control-label" th:required="true">卷宗文件类型</label>
                 <label>
                     <select th:field="*{fileType}" class="form-control">
                         <option th:value="pdf">扫描件</option>
@@ -46,7 +46,7 @@
                 </label>
             </div>
             <div class="form-group">
-                <span class="col-sm-1 control-label">请选择文件</span>
+                <label class="col-sm-1 control-label">请选择文件</label>
                 <label><input id="file" name="file" type="file" th:required="true" /> </label>
             </div>
             <div class="form-group">

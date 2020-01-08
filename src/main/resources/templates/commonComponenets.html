@@ -8,7 +8,7 @@
             <span class="header-menu" th:text="${title}"></span>
         </div>
         <div class="app-header-right">
-            <p class="header-user-info">欢迎，<span sec:authentication="name"></span></p>
+            <p class="header-user-info">欢迎，<a th:href="@{/userPage}"><span class="header-user-info" sec:authentication="name"></span></a></p>
         </div>
     </div>
 </div>

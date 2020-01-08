@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="zh">
+<head>
+    <title>卷宗管理系统</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <!--    解决ajax被springSecurity的CSRF拦截POST和PUT请求的问题-->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <!--    default header name is X-CSRF-TOKEN-->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <link th:href="@{/css/bootstrap.css}" href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/app.css}" href="css/app.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/font-awesome.css}" href="css/font-awesome.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/ionicons.css}" href="css/ionicons.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/AdminLTE.css}" href="css/AdminLTE.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/skins/_all-skins.css}" href="css/skins/_all-skins.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body>
+<div class="wrapper">
+    <header class="main-header app-header">
+        <div th:include="commonComponenets :: app-header"></div>
+    </header>
+    <aside class="main-sidebar" th:if="${user.isAdmin()}">
+        <section class="sidebar">
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                    <span class="input-group-btn">
+                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </form>
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header page-nav-left-font">系统管理</li>
+                <li class="">
+                    <a href="javascript:void(0)" th:href="@{'/user/info/' + ${user.getJobNum()}}" >
+                        <i class="fa fa-user"></i>
+                        <span>操作记录</span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="#">
+                        <i class="fa fa-clock-o"></i>
+                        <span>账户信息</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+    </aside>
+    <section class="content-wrapper">
+        <div class="content body">
+            <section id="user-info-div" class="user-block invoice">
+                <a href="#user-info-div">个人信息</a>
+                <div class="row info-block">
+                    <div class="col-sm-3">
+                        <label>工号：</label>
+                        <span th:text="${user.getJobNum()}"></span>
+                    </div>
+                    <div class="col-sm-3">
+                        <label>拥有权限：</label>
+                        <span th:text="${user.getRoleName()}"></span>
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary"><i class="fa fa-edit"></i>  修改个人信息</button>
+                    </div>
+                </div>
+            </section>
+            <section id="user-his-div" th:fragment="user-his-div" class="user-block invoice">
+                <a href="#user-his-div" th:if="${user.getRoleName() ne 'admin'}">我的操作记录</a>
+                <a href="#user-his-div" th:if="${user.getRoleName() eq 'admin'}">系统操作记录</a>
+                <div class="info-block">
+                    <form class="container form-inline" id="his-search-form" role="form" action="#" th:action="@{/user/refresh}" th:object="${recordQueryCondition}" method="get">
+                        <div class="form-group">
+                            <!-- 当前页 -->
+                            <label>
+                                <input type="hidden" id="hisPageNumInput" name="hisPageNumInput" th:field="*{pageNum}" class="form-control" />
+                            </label>
+                        </div>
+                        <div class="form-group form-group-inline">
+                            <label>每页显示行数：
+                                <select th:field="*{pageSize}" class="form-control">
+                                    <option th:selected="*{pageSize eq 5}" th:value="5">5</option>
+                                    <option th:selected="*{pageSize eq 10}" th:value="10">10</option>
+                                    <option th:selected="*{pageSize eq 20}" th:value="20">20</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="form-group form-group-inline">
+                            <label>操作类型：
+                                <select th:field="*{operation}" class="form-control">
+                                    <option th:selected="*{operation eq null}" th:value="null">所有操作</option>
+                                    <option th:selected="*{operation eq '查看'}" th:value="查看">查看</option>
+                                    <option th:selected="*{operation eq '添加'}" th:value="添加">添加</option>
+                                    <option th:selected="*{operation eq '删除'}" th:value="删除">删除</option>
+                                    <option th:selected="*{operation eq '修改'}" th:value="修改">修改</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="form-group form-group-inline">
+                            <label>按时间：
+                                <select th:field="*{descend}" class="form-control">
+                                    <option th:selected="*{descend eq true}" th:value="true">倒序</option>
+                                    <option th:selected="*{descend eq false}" th:value="false">正序</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="form-group form-group-inline" th:if="${user.isAdmin()}">
+                            <label>范围：
+                                <select th:field="*{jobNum}" class="form-control">
+                                    <option th:selected="*{#strings.isEmpty(jobNum)}" th:value="null">所有</option>
+                                    <option th:selected="*{!#strings.isEmpty(jobNum)}" th:value="${user.jobNum}">个人</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="form-group form-group-inline input-group">
+                            <input type="text" th:field="*{keyword}" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button type="submit" name="search" id="his-search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                        <div class="form-group form-group-inline">
+                            <a type="button" th:href="@{/userPage}"><button class="btn btn-default">重置</button></a>
+                        </div>
+                    </form>
+                    <div class="with:80%">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>工号</th>
+                                <th>操作</th>
+                                <th>#案号</th>
+                                <th>卷宗名称</th>
+                                <th>页数</th>
+                                <th>修改前</th>
+                                <th>修改后</th>
+                                <th th:if="${user.isAdmin()}">已反馈</th>
+                                <th>操作时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(operationRecords)}">
+                                <td colspan="3">没有操作记录！</td>
+                            </tr>
+                            <tr th:each="record : ${operationRecords}">
+                                <th th:text="${record.jobNum}">-</th>
+                                <td th:text="${record.operation}">-</td>
+                                <td th:text="${record.caseNum}">-</td>
+                                <td th:text="${record.dossierName}">-</td>
+                                <td th:text="${record.pageNum}">-</td>
+                                <td th:text="${record.before}">-</td>
+                                <td th:text="${record.after}">-</td>
+                                <td th:if="${user.isAdmin()}" th:text="${record.status}">-</td>
+                                <td th:text="${#dates.format(record.operateTime, 'yyyy-MM-dd hh:mm:ss')}">-</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer no-margin-top">
+                        <ul class="pagination pull-right no-margin">
+                            <li>
+                                <a th:onclick="changePage(0)" >首页</a>
+                            </li>
+                            <li th:if="${operationRecords.hasPrevious()}">
+                                <a th:onclick="changePage([[${operationRecords.previousPageable().getPageNumber()}]])" th:text="上一页"></a>
+                            </li>
+                            <li th:each="pageNum:${#numbers.sequence(0, operationRecords.getTotalPages() - 1)}">
+                                <a th:onclick="changePage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum ne operationRecords.pageable.getPageNumber()}"></a>
+                                <a th:onclick="changePage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum eq operationRecords.pageable.getPageNumber()}" th:style="'font-weight:bold;background: #6faed9;'"></a>
+                            </li>
+                            <li th:if="${operationRecords.hasNext()}">
+                                <a th:onclick="changePage([[${operationRecords.nextPageable().getPageNumber()}]])" th:text="下一页"></a>
+                            </li>
+                            <li>
+                                <a th:onclick="changePage([[${operationRecords.getTotalPages() - 1}]])">尾页</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</div>
+</body>
+<script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.media.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
+<script type="text/javascript" th:src="@{/js/adminlte.js}"></script>
+<script type="text/javascript" th:src="@{/js/app.js}"></script>
+<script>
+    $("#his-search-form select").change(function () {
+        $("#his-search-form").submit();
+    });
+
+    function changePage(pageNum) {
+        $("#hisPageNumInput").val(pageNum);
+        $("#his-search-form").submit();
+    }
+</script>
+</html>

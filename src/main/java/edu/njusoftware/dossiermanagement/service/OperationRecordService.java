@@ -32,10 +32,11 @@ public class OperationRecordService {
      * 存储普通的卷宗操作记录
      * @param caseNum
      * @param dossierId
+     * @param dossierName
      * @param operation
      */
-    public static void saveNormalDossierOperationRecord(String caseNum, long dossierId, String operation) {
-        OperationRecord record = new OperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId, operation, new Date());
+    public static void saveNormalDossierOperationRecord(String caseNum, long dossierId, String dossierName, String operation) {
+        OperationRecord record = new OperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId, dossierName, operation, new Date());
         operationRecordRepository.save(record);
     }
 
@@ -43,12 +44,13 @@ public class OperationRecordService {
      * 存储修正OCR结果的卷宗操作记录
      * @param caseNum
      * @param dossierId
+     * @param dossierName
      * @param before
      * @param after
      */
-    public static void saveOCRResultModificationOperationRecord(String caseNum, long dossierId, int pageNum, String before, String after) {
-        OperationRecord record = new OperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId, pageNum,
-                Constants.OPERATION_MODIFY, new Date(), before, after, 0);
+    public static void saveOCRResultModificationOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String before, String after) {
+        OperationRecord record = new OperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId, dossierName,
+                pageNum, Constants.OPERATION_MODIFY, new Date(), before, after, 0);
         operationRecordRepository.save(record);
     }
 }

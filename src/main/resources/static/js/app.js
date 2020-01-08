@@ -56,3 +56,17 @@ function updateCurrentDossier(dossierId) {
     $('#div-media-container').load('/dossier/updateCurrentDossier/' + dossierId);
 }
 
+// function updateHisList() {
+//     var recordQueryCondition = [[${recordQueryCondition}]];
+//     $.ajax({
+//         url: '../user/his',
+//         type: 'post',
+//         dataType: 'json',
+//         data: recordQueryCondition,
+//         cache: false,
+//         async: true,
+//         success: function (data) {
+//             $('user-his-div').load(data);
+//         }
+//     });
+// }
