@@ -2,6 +2,7 @@ package edu.njusoftware.dossiermanagement.util;
 
 import edu.njusoftware.dossiermanagement.domain.User;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.DigestUtils;
 
 public class SecurityUtils {
     /**
@@ -18,5 +19,14 @@ public class SecurityUtils {
      */
     public static User getLoginUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    /**
+     * md5加密用户密码
+     * @param password
+     * @return
+     */
+    public static String encodePassword(String password) {
+        return DigestUtils.md5DigestAsHex(password.getBytes());
     }
 }

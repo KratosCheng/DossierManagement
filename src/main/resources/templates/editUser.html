@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="zh">
+<head>
+    <title>卷宗管理系统</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <link th:href="@{/css/bootstrap.css}" href="/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/app.css}" href="css/app.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="app">
+    <div th:include="commonComponenets :: app-header"></div>
+    <div id="form-div" style="margin-top: 20px">
+        <form class="form-horizontal" role="form" th:object="${user}" method="post">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">工号</label>
+                <label><input type="text" th:field="*{jobNum}" /> </label>
+                <span th:if="${#fields.hasErrors('jobNum')}" th:errors="*{jobNum}" th:style="'color:red;'"></span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">密码</label>
+                <label><input type="text" th:field="*{password}" /> </label>
+                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" th:style="'color:red;'"></span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">角色</label>
+                <label>
+                    <select th:field="*{roleName}" class="form-control">
+                        <option th:selected="*{#strings.equals('admin', roleName)}" th:value="admin">系统管理员</option>
+                        <option th:selected="*{#strings.equals('judge', roleName)}" th:value="judge">法官</option>
+                        <option th:selected="*{#strings.equals('partner', roleName)}" th:value="partner">合作方</option>
+                        <option th:selected="*{#strings.equals('visitor', roleName)}" th:value="visitor">访客</option>
+                    </select>
+                </label>
+                <span th:if="${#fields.hasErrors('roleName')}" th:errors="*{roleName}" th:style="'color:red;'"></span>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">创建者</label>
+                <label><input type="text" th:field="*{creator}" /> </label>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">创建时间</label>
+                <label><input type="text" th:field="*{createTime}" /> </label>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1 control-label">
+                    <button type="button" th:onclick="addUser()" class="btn btn-default">确认</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+<script>
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token)
+    });
+
+    function addUser() {
+        var formData = new FormData($("#dossierAddForm")[0]);
+        // var dossier = [[${dossier}]];
+        // formData.append("file", $('#file')[0].files[0]);
+        // formData.append("dossier", dossier);
+
+        if ($("#file").val() !== "") {
+            $.ajax({
+                async: false,
+                type: "post",
+                url: "../dossier/add",
+                data: formData,
+                processData: false,			//对数据不做处理
+                cache:false,      				//上传文件不需要缓存
+                contentType: false,
+                mimeType:"multipart/form-data",
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.code === 0) {
+                        alert("添加成功！");
+                        self.location = document.referrer; // 返回上一页面
+                    } else {
+                        alert(result.code + result);
+                        window.location.reload();
+                    }
+                },
+                error: function (r) {
+                    alert("error" + r.msg);
+                    window.location.reload();
+                }
+            })
+        }
+    }
+</script>
+</html>

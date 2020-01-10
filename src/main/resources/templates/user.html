@@ -40,12 +40,12 @@
                     </a>
                 </li>
                 <li class="">
-                    <a href="#user-his-div">
+                    <a th:onclick="showHisList()">
                         <i class="fa fa-clock-o"></i>
                         <span>操作记录</span>
                     </a>
                 </li>
-                <li class="" th:if="${user.isAdmin()}">
+                <li class="" th:onclick="showAccountList()" th:if="${user.isAdmin()}">
                     <a href="#admin-user-list-div">
                         <i class="fa fa-clock-o"></i>
                         <span>账户管理</span>
@@ -186,7 +186,7 @@
                     </div>
                 </div>
             </section>
-            <section id="admin-user-list-div" th:fragment="user-list-div" th:if="${user.isAdmin()}" class="user-block invoice">
+            <section id="admin-user-list-div" style="display: none" th:fragment="user-list-div" th:if="${user.isAdmin()}" class="user-block invoice">
                 <a href="#admin-user-list-div">系统账户列表</a>
                 <div id="account-list-container" class="info-block">
                     <div id="account-list-div" th:fragment="account-list-div">
@@ -241,6 +241,8 @@
                                 <tr>
                                     <th>工号</th>
                                     <th>角色</th>
+                                    <th>创建者</th>
+                                    <th>创建时间</th>
                                     <th>修改</th>
                                     <th>删除</th>
                                 </tr>
@@ -252,14 +254,20 @@
                                 <tr th:each="account : ${users}">
                                     <td th:text="${account.jobNum}">-</td>
                                     <td th:text="${account.roleName}">-</td>
+                                    <td th:text="${account.creator}">-</td>
+                                    <td th:text="${account.createTime}">-</td>
                                     <td>修改</td>
                                     <td>删除</td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
+
                         <div class="modal-footer no-margin-top">
                             <ul class="pagination pull-right no-margin">
+                                <li>
+                                    <a th:href="@{/addUser}" >添加账号</a>
+                                </li>
                                 <li>
                                     <a th:onclick="changeAccountsPage(0)" >首页</a>
                                 </li>
@@ -365,6 +373,17 @@
             }
         })
     }
+    
+    function showAccountList() {
+        $("#admin-user-list-div").show();
+        $("#user-his-div").hide();
+    }
+
+    function showHisList() {
+        $("#user-his-div").show();
+        $("#admin-user-list-div").hide();
+    }
+
 
 </script>
 </html>

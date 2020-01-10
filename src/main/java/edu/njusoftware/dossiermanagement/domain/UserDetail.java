@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,8 +15,8 @@ public class UserDetail extends User implements UserDetails {
 
     private List<Role> authorities;
 
-    public UserDetail(String jobNum, String password, String roleId, int status) {
-        super(jobNum, password, roleId, status);
+    public UserDetail(String jobNum, String password, String roleId, String creator, Date createTime) {
+        super(jobNum, password, roleId, creator, createTime);
     }
 
     public void setAuthorities(List<Role> authorities) {

@@ -142,4 +142,17 @@ public class PageController {
 
         return "addDossier";
     }
+
+    /**
+     * 添加账号页面
+     */
+    @RequestMapping(value = "/addUser", method = RequestMethod.GET)
+    public String addUser(Model model) {
+        User user = new User();
+        user.setCreator(SecurityUtils.getLoginUserName());
+        user.setCreateTime(new Date());
+        model.addAttribute("user", user);
+        model.addAttribute("title", "添加账号");
+        return "editUser";
+    }
 }

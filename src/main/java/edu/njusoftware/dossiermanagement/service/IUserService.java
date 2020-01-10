@@ -22,4 +22,6 @@ public interface IUserService {
     Page<OperationRecord> getOperationRecords(RecordQueryCondition recordQueryCondition);
 
     Page<User> getUsers(AccountQueryCondition accountQueryCondition);
+
+    boolean saveUser(User user);
 }

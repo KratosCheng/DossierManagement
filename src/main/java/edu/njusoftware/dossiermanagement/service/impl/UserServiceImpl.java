@@ -7,6 +7,7 @@ import edu.njusoftware.dossiermanagement.repository.OperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.RoleRepository;
 import edu.njusoftware.dossiermanagement.repository.UserRepository;
 import edu.njusoftware.dossiermanagement.service.IUserService;
+import edu.njusoftware.dossiermanagement.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -50,7 +52,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             return null;
         }
 
-        UserDetail userDetail = new UserDetail(user.getJobNum(), user.getPassword(), user.getRoleName(), user.getStatus());
+        UserDetail userDetail = new UserDetail(user.getJobNum(), user.getPassword(), user.getRoleName(), user.getCreator(), user.getCreateTime());
         List<Role> roleList = roleRepository.findAllByName(userDetail.getRoleName());
         userDetail.setAuthorities(roleList);
         return userDetail;
@@ -144,5 +146,14 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             }
         }, pageable);
         return page;
+    }
+
+    @Override
+    public boolean saveUser(User user) {
+        user.setPassword(SecurityUtils.encodePassword(user.getPassword()));
+        if (user.getCreateTime() == null) {
+            user.setCreateTime(new Date());
+        }
+        return userRepository.save(user) != null;
     }
 }
