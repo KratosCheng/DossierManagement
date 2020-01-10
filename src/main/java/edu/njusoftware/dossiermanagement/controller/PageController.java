@@ -4,12 +4,12 @@ import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.OperationRecord;
 import edu.njusoftware.dossiermanagement.domain.User;
+import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.service.IUserService;
-import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,8 +85,15 @@ public class PageController {
         recordQueryCondition.setPageNum(0);
         recordQueryCondition.setPageSize(10);
         // admin用户默认查询系统所有操作记录，其他用户只能查询自己的
-        if (!Constants.ROLE_ADMIN.equals(SecurityUtils.getLoginUser().getRoleName())) {
+        if (!user.isAdmin()) {
             recordQueryCondition.setJobNum(user.getJobNum());
+        } else {
+            AccountQueryCondition accountQueryCondition = new AccountQueryCondition();
+            accountQueryCondition.setAccountPageNum(0);
+            accountQueryCondition.setAccountPageSize(10);
+            Page<User> users = userService.getUsers(accountQueryCondition);
+            model.addAttribute("accountQueryCondition", accountQueryCondition);
+            model.addAttribute("users", users);
         }
 
         Page<OperationRecord> operationRecords = userService.getOperationRecords(recordQueryCondition);

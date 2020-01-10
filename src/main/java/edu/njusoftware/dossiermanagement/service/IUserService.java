@@ -2,6 +2,7 @@ package edu.njusoftware.dossiermanagement.service;
 
 import edu.njusoftware.dossiermanagement.domain.OperationRecord;
 import edu.njusoftware.dossiermanagement.domain.User;
+import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import org.springframework.data.domain.Page;
 
@@ -19,4 +20,6 @@ public interface IUserService {
     List<User> getAllUsersByRoleName(String roleName);
 
     Page<OperationRecord> getOperationRecords(RecordQueryCondition recordQueryCondition);
+
+    Page<User> getUsers(AccountQueryCondition accountQueryCondition);
 }

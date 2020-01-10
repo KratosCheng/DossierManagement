@@ -1,6 +1,7 @@
 package edu.njusoftware.dossiermanagement.service.impl;
 
 import edu.njusoftware.dossiermanagement.domain.*;
+import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.repository.OperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.RoleRepository;
@@ -113,6 +114,30 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                             criteriaBuilder.or(criteriaBuilder.like(root.get("jobNum").as(String.class), pattern),
                                     criteriaBuilder.like(root.get("caseNum").as(String.class), pattern),
                                     criteriaBuilder.like(root.get("dossierName").as(String.class), pattern));
+                    list.add(keywordPredicate);
+                }
+                return criteriaBuilder.and(list.toArray(new Predicate[0]));
+            }
+        }, pageable);
+        return page;
+    }
+
+    @Override
+    public Page<User> getUsers(AccountQueryCondition accountQueryCondition) {
+        Pageable pageable = PageRequest.of(accountQueryCondition.getAccountPageNum(), accountQueryCondition.getAccountPageSize(),
+                accountQueryCondition.isAccountDescend() ? Sort.Direction.DESC : Sort.Direction.ASC, "jobNum");
+        Page<User> page = userRepository.findAll(new Specification<User>(){
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<Predicate>();
+                if (!StringUtils.isEmpty(accountQueryCondition.getRole())) {
+                    list.add(criteriaBuilder.equal(root.get("roleName").as(String.class), accountQueryCondition.getRole()));
+                }
+
+                // 工号模糊查询
+                if (!StringUtils.isEmpty(accountQueryCondition.getAccountKeyword())) {
+                    String pattern = "%" + accountQueryCondition.getAccountKeyword() + "%";
+                    Predicate keywordPredicate = criteriaBuilder.like(root.get("jobNum").as(String.class), pattern);
                     list.add(keywordPredicate);
                 }
                 return criteriaBuilder.and(list.toArray(new Predicate[0]));
