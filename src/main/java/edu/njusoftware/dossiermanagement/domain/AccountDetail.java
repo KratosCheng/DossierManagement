@@ -11,11 +11,11 @@ import java.util.List;
  * @author 程曦
  * 用户实体类
  */
-public class UserDetail extends User implements UserDetails {
+public class AccountDetail extends Account implements UserDetails {
 
     private List<Role> authorities;
 
-    public UserDetail(String jobNum, String password, String roleId, String creator, Date createTime) {
+    public AccountDetail(String jobNum, String password, String roleId, String creator, Date createTime) {
         super(jobNum, password, roleId, creator, createTime);
     }
 
@@ -55,7 +55,7 @@ public class UserDetail extends User implements UserDetails {
 
     @Override
     public String toString() {
-        return "UserDetail{" +
+        return "AccountDetail{" +
                 "authorities=" + authorities +
                 '}';
     }

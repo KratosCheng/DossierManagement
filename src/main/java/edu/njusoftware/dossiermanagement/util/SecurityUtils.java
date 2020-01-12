@@ -1,6 +1,6 @@
 package edu.njusoftware.dossiermanagement.util;
 
-import edu.njusoftware.dossiermanagement.domain.User;
+import edu.njusoftware.dossiermanagement.domain.Account;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.DigestUtils;
 
@@ -17,8 +17,8 @@ public class SecurityUtils {
      * 获取当前登录用户
      * @return
      */
-    public static User getLoginUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public static Account getLoginUser() {
+        return (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
     /**

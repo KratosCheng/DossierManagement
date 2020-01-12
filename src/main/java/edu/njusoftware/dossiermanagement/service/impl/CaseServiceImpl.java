@@ -3,10 +3,9 @@ package edu.njusoftware.dossiermanagement.service.impl;
 import edu.njusoftware.dossiermanagement.controller.UserController;
 import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
-import edu.njusoftware.dossiermanagement.domain.OperationRecord;
 import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.repository.CaseRepository;
-import edu.njusoftware.dossiermanagement.repository.OperationRecordRepository;
+import edu.njusoftware.dossiermanagement.repository.DossierOperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.DossierRepository;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
@@ -29,7 +28,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,7 +41,7 @@ public class CaseServiceImpl implements ICaseService {
     private DossierRepository dossierRepository;
 
     @Autowired
-    private OperationRecordRepository operationRepository;
+    private DossierOperationRecordRepository operationRepository;
 
     @Override
     public CaseInfo getCaseInfo(String caseNum) {

@@ -1,7 +1,7 @@
 package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
-import edu.njusoftware.dossiermanagement.domain.OperationRecord;
+import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.req.AddDirectoryReq;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
@@ -54,7 +54,7 @@ public class DossierController {
      * @return
      */
     @RequestMapping("/his/all/{caseNum}")
-    public List<OperationRecord> getRecordsByCaseNum(@PathVariable String caseNum) {
+    public List<DossierOperationRecord> getRecordsByCaseNum(@PathVariable String caseNum) {
         return dossierService.getDossierOperationRecordsByCaseNum(caseNum);
     }
 
@@ -64,7 +64,7 @@ public class DossierController {
      * @return
      */
     @RequestMapping("/his/dossier/{dossierId}")
-    public List<OperationRecord> getRecordsByDossierId(@PathVariable int dossierId) {
+    public List<DossierOperationRecord> getRecordsByDossierId(@PathVariable int dossierId) {
         return dossierService.getDossierOperationRecordsByDossierId(dossierId);
     }
 
@@ -74,7 +74,7 @@ public class DossierController {
      * @return
      */
     @RequestMapping("/his/dossier/{jobNum}")
-    public List<OperationRecord> getRecordsByDossierId(@PathVariable String jobNum) {
+    public List<DossierOperationRecord> getRecordsByDossierId(@PathVariable String jobNum) {
         return dossierService.getDossierOperationRecordsByJobNum(jobNum);
     }
 

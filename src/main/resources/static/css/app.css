@@ -67,7 +67,7 @@
     font-size: 16px;
 }
 
-.user-block a {
+.user-block .info-header {
     font-size: 20px;
     margin-bottom: 10px;
 }
@@ -82,4 +82,9 @@
 
 .form-group-inline {
     margin-left: 20px;
+}
+
+.form-hint {
+    margin-left: 3%;
+    font-size: 12px;
 }

@@ -10,10 +10,10 @@ import java.util.Date;
 /**
  * 卷宗操作记录
  */
-@Entity(name = "his_user_dossier")
+@Entity(name = "his_dossier")
 @DynamicInsert
 @DynamicUpdate
-public class OperationRecord {
+public class DossierOperationRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -42,14 +42,16 @@ public class OperationRecord {
     private Date operateTime;
 
     @Nullable
-    private String before;
+    @Column(name = "old_value")
+    private String oldValue;
 
     @Nullable
-    private String after;
+    @Column(name = "current_value")
+    private String currentValue;
 
     private int status;
 
-    public OperationRecord() {
+    public DossierOperationRecord() {
     }
 
     /**
@@ -61,7 +63,7 @@ public class OperationRecord {
      * @param operation
      * @param operateTime
      */
-    public OperationRecord(String jobNum, String caseNum, long dossierId, String dossierName, String operation, Date operateTime) {
+    public DossierOperationRecord(String jobNum, String caseNum, long dossierId, String dossierName, String operation, Date operateTime) {
         this.jobNum = jobNum;
         this.caseNum = caseNum;
         this.dossierId = dossierId;
@@ -79,12 +81,12 @@ public class OperationRecord {
      * @param pageNum
      * @param operation
      * @param operateTime
-     * @param before
-     * @param after
+     * @param oldValue
+     * @param currentValue
      * @param status
      */
-    public OperationRecord(String jobNum, String caseNum, long dossierId, String dossierName, int pageNum,
-                           String operation, Date operateTime, String before, String after, int status) {
+    public DossierOperationRecord(String jobNum, String caseNum, long dossierId, String dossierName, int pageNum,
+                                  String operation, Date operateTime, String oldValue, String currentValue, int status) {
         this.jobNum = jobNum;
         this.caseNum = caseNum;
         this.dossierId = dossierId;
@@ -92,8 +94,8 @@ public class OperationRecord {
         this.pageNum = pageNum;
         this.operation = operation;
         this.operateTime = operateTime;
-        this.before = before;
-        this.after = after;
+        this.oldValue = oldValue;
+        this.currentValue = currentValue;
         this.status = status;
     }
 
@@ -104,7 +106,7 @@ public class OperationRecord {
      * @param operation
      * @param operateTime
      */
-    public OperationRecord(String jobNum, String caseNum, String operation, Date operateTime) {
+    public DossierOperationRecord(String jobNum, String caseNum, String operation, Date operateTime) {
         this.jobNum = jobNum;
         this.caseNum = caseNum;
         this.operation = operation;
@@ -176,20 +178,20 @@ public class OperationRecord {
         this.operateTime = operateTime;
     }
 
-    public String getBefore() {
-        return before;
+    public String getOldValue() {
+        return oldValue;
     }
 
-    public void setBefore(String before) {
-        this.before = before;
+    public void setOldValue(String oldValue) {
+        this.oldValue = oldValue;
     }
 
-    public String getAfter() {
-        return after;
+    public String getCurrentValue() {
+        return currentValue;
     }
 
-    public void setAfter(String after) {
-        this.after = after;
+    public void setCurrentValue(String currentValue) {
+        this.currentValue = currentValue;
     }
 
     public int getStatus() {
@@ -210,8 +212,8 @@ public class OperationRecord {
                 ", pageNum=" + pageNum +
                 ", operation='" + operation + '\'' +
                 ", operateTime=" + operateTime +
-                ", before='" + before + '\'' +
-                ", after='" + after + '\'' +
+                ", before='" + oldValue + '\'' +
+                ", after='" + currentValue + '\'' +
                 ", status=" + status +
                 '}';
     }

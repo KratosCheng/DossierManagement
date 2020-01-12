@@ -1,7 +1,7 @@
 package edu.njusoftware.dossiermanagement.service;
 
-import edu.njusoftware.dossiermanagement.domain.OperationRecord;
-import edu.njusoftware.dossiermanagement.domain.User;
+import edu.njusoftware.dossiermanagement.domain.Account;
+import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import org.springframework.data.domain.Page;
@@ -9,19 +9,21 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IUserService {
-    User addUser(User user);
+    Account addUser(Account user);
 
-    User modifyUserRole(String jobNum, String roleName);
+    Account modifyUserRole(String jobNum, String roleName);
 
-    User getUserByJobNum(String jobNum);
+    Account getUserByJobNum(String jobNum);
 
-    List<User> getAllUsers();
+    List<Account> getAllUsers();
 
-    List<User> getAllUsersByRoleName(String roleName);
+    List<Account> getAllUsersByRoleName(String roleName);
 
-    Page<OperationRecord> getOperationRecords(RecordQueryCondition recordQueryCondition);
+    Page<DossierOperationRecord> getOperationRecords(RecordQueryCondition recordQueryCondition);
 
-    Page<User> getUsers(AccountQueryCondition accountQueryCondition);
+    Page<Account> getUsers(AccountQueryCondition accountQueryCondition);
 
-    boolean saveUser(User user);
+    boolean saveUser(Account user);
+
+    boolean removeUserByJobNum(String jobNum);
 }

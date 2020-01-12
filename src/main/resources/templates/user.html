@@ -57,7 +57,7 @@
     <section class="content-wrapper">
         <div class="content body">
             <section id="user-info-div" class="user-block invoice">
-                <a href="#user-info-div">个人信息</a>
+                <a href="#user-info-div" class="info-header">个人信息</a>
                 <div class="row info-block">
                     <div class="col-sm-3">
                         <label>工号：</label>
@@ -68,13 +68,13 @@
                         <span th:text="${user.getRoleName()}"></span>
                     </div>
                     <div class="col-sm-2">
-                        <button class="btn btn-primary"><i class="fa fa-edit"></i>  修改个人信息</button>
+                        <button th:onclick="showModifyDialog([[${user}]])" class="btn btn-primary"><i class="fa fa-edit"></i>  修改个人信息</button>
                     </div>
                 </div>
             </section>
             <section id="user-his-div" th:fragment="user-his-div" class="user-block invoice">
-                <a href="#user-his-div" th:if="${!user.isAdmin()}">我的操作记录</a>
-                <a href="#user-his-div" th:if="${user.isAdmin()}">系统操作记录</a>
+                <a href="#user-his-div" class="info-header" th:if="${!user.isAdmin()}">我的操作记录</a>
+                <a href="#user-his-div" class="info-header" th:if="${user.isAdmin()}">系统操作记录</a>
                 <div id="his-list-container" class="info-block">
                     <div id="his-list-div" th:fragment="his-list-div">
                         <form class="container form-inline" id="his-search-form" role="form" action="#" th:object="${recordQueryCondition}" method="get">
@@ -146,17 +146,17 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:if="${#lists.isEmpty(operationRecords)}">
+                                <tr th:if="${#lists.isEmpty(dossierOperationRecords)}">
                                     <td colspan="3">没有操作记录！</td>
                                 </tr>
-                                <tr th:each="record : ${operationRecords}">
+                                <tr th:each="record : ${dossierOperationRecords}">
                                     <th th:text="${record.jobNum}">-</th>
                                     <td th:text="${record.operation}">-</td>
                                     <td th:text="${record.caseNum}">-</td>
                                     <td th:text="${record.dossierName}">-</td>
                                     <td th:text="${record.pageNum}">-</td>
-                                    <td th:text="${record.before}">-</td>
-                                    <td th:text="${record.after}">-</td>
+                                    <td th:text="${record.oldValue}">-</td>
+                                    <td th:text="${record.currentValue}">-</td>
                                     <td th:if="${user.isAdmin()}" th:text="${record.status}">-</td>
                                     <td th:text="${#dates.format(record.operateTime, 'yyyy-MM-dd hh:mm:ss')}">-</td>
                                 </tr>
@@ -168,18 +168,18 @@
                                 <li>
                                     <a th:onclick="changeHisPage(0)" >首页</a>
                                 </li>
-                                <li th:if="${operationRecords.hasPrevious()}">
-                                    <a th:onclick="changeHisPage([[${operationRecords.previousPageable().getPageNumber()}]])" th:text="上一页"></a>
+                                <li th:if="${dossierOperationRecords.hasPrevious()}">
+                                    <a th:onclick="changeHisPage([[${dossierOperationRecords.previousPageable().getPageNumber()}]])" th:text="上一页"></a>
                                 </li>
-                                <li th:each="pageNum:${#numbers.sequence(0, operationRecords.getTotalPages() - 1)}">
-                                    <a th:onclick="changeHisPage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum ne operationRecords.pageable.getPageNumber()}"></a>
-                                    <a th:onclick="changeHisPage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum eq operationRecords.pageable.getPageNumber()}" th:style="'font-weight:bold;background: #6faed9;'"></a>
+                                <li th:each="pageNum:${#numbers.sequence(0, dossierOperationRecords.getTotalPages() - 1)}">
+                                    <a th:onclick="changeHisPage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum ne dossierOperationRecords.pageable.getPageNumber()}"></a>
+                                    <a th:onclick="changeHisPage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum eq dossierOperationRecords.pageable.getPageNumber()}" th:style="'font-weight:bold;background: #6faed9;'"></a>
                                 </li>
-                                <li th:if="${operationRecords.hasNext()}">
-                                    <a th:onclick="changeHisPage([[${operationRecords.nextPageable().getPageNumber()}]])" th:text="下一页"></a>
+                                <li th:if="${dossierOperationRecords.hasNext()}">
+                                    <a th:onclick="changeHisPage([[${dossierOperationRecords.nextPageable().getPageNumber()}]])" th:text="下一页"></a>
                                 </li>
                                 <li>
-                                    <a th:onclick="changeHisPage([[${operationRecords.getTotalPages() - 1}]])">尾页</a>
+                                    <a th:onclick="changeHisPage([[${dossierOperationRecords.getTotalPages() - 1}]])">尾页</a>
                                 </li>
                             </ul>
                         </div>
@@ -187,7 +187,7 @@
                 </div>
             </section>
             <section id="admin-user-list-div" style="display: none" th:fragment="user-list-div" th:if="${user.isAdmin()}" class="user-block invoice">
-                <a href="#admin-user-list-div">系统账户列表</a>
+                <a href="#admin-user-list-div" class="info-header">系统账户列表</a>
                 <div id="account-list-container" class="info-block">
                     <div id="account-list-div" th:fragment="account-list-div">
                         <form class="container form-inline" id="account-search-form" role="form" action="#" th:object="${accountQueryCondition}" method="get">
@@ -255,18 +255,17 @@
                                     <td th:text="${account.jobNum}">-</td>
                                     <td th:text="${account.roleName}">-</td>
                                     <td th:text="${account.creator}">-</td>
-                                    <td th:text="${account.createTime}">-</td>
-                                    <td>修改</td>
-                                    <td>删除</td>
+                                    <td th:text="${#dates.format(account.createTime, 'yyyy-MM-dd hh:mm:ss')}">-</td>
+                                    <td><a th:onclick="showModifyDialog([[${account}]])">修改</a> </td>
+                                    <td><a th:onclick="deleteUser([[${account.jobNum}]])">删除</a> </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-
                         <div class="modal-footer no-margin-top">
                             <ul class="pagination pull-right no-margin">
                                 <li>
-                                    <a th:href="@{/addUser}" >添加账号</a>
+                                    <a th:onclick="showAddUserDialog()" >添加账号</a>
                                 </li>
                                 <li>
                                     <a th:onclick="changeAccountsPage(0)" >首页</a>
@@ -289,6 +288,54 @@
                     </div>
                 </div>
             </section>
+            <div id="modify_user_dialog" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" title="编辑用户" >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel2">
+                                编辑用户信息
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <form id="modify-user-form" class="form-horizontal" role="form" method="post">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">工号</label>
+                                    <label><input type="text" readonly id="modifyJobNum" name="jobNum" /> </label>
+                                    <span class="form-hint" hidden>工号不可编辑</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">密码</label>
+                                    <label><input type="text" id="modifyPassword" name="password" /> </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">角色</label>
+                                    <label>
+                                        <select id="modifyRoleName" name="roleName" class="form-control">
+                                            <option value="admin">系统管理员</option>
+                                            <option value="judge">法官</option>
+                                            <option value="partner">合作方</option>
+                                            <option value="visitor">访客</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">创建者</label>
+                                    <label><input type="text" disabled id="modifyCreator" name="creator" /> </label>
+                                    <span class="form-hint" hidden>创建者不可编辑</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">创建时间</label>
+                                    <label><input type="text" disabled id="modifyCreateTime" name="createTime" /> </label>
+                                    <span class="form-hint" hidden>创建时间不可编辑</span>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" th:onclick="modifyUser()" class="btn btn-primary">确认</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </div>
@@ -384,6 +431,72 @@
         $("#admin-user-list-div").hide();
     }
 
+    function showModifyDialog(modifyUser) {
+        $("#modifyJobNum").val(modifyUser.jobNum);
+        document.getElementById("modifyJobNum").setAttribute("readonly", "true");
+        $("#modifyPassword").val(modifyUser.password);
+        $("#modifyRoleName").val(modifyUser.roleName);
+        $("#modifyCreator").val(modifyUser.creator);
+        $("#modifyCreateTime").val(modifyUser.createTime);
+        $("#modify_user_dialog").modal('show');
+        $(".form-hint").show();
+    }
+
+    function modifyUser() {
+        var formData = new FormData($("#modify-user-form")[0]);
+
+        $.ajax({
+            type: "post",
+            url: "../admin/updateUser",
+            data: formData,
+            processData: false,			//对数据不做处理
+            // cache:false,      				//上传文件不需要缓存
+            contentType: false,
+            mimeType:"multipart/form-data",
+            success: function (result) {
+                result = JSON.parse(result);
+                if (result.code === 0) {
+                    alert("用户信息编辑成功！");
+                    $("#modify_user_dialog").modal('hide');
+                    accountReset();     // 刷新用户表
+                } else {
+                    alert(result.code + result);
+                }
+            },
+            error: function (r) {
+                alert("error" + r.msg);
+            }
+        })
+    }
+
+    function showAddUserDialog() {
+        $("#modify-user-form")[0].reset();
+        document.getElementById("modifyJobNum").removeAttribute("readonly");
+        $("#modify_user_dialog").modal('show')
+        $(".form-hint").hide();
+    }
+
+    function deleteUser(jobNum) {
+        if (confirm("操作不可逆，确认删除用户（" + jobNum + "）?")) {
+            $.ajax({
+                type: "get",
+                url: "../admin/removeUser/" + jobNum,
+                success: function (result) {
+                    result = JSON.parse(result);
+                    if (result.code === 0) {
+                        alert("用户信息编辑成功！");
+                        $("#modify_user_dialog").modal('hide');
+                        accountReset();     // 刷新用户表
+                    } else {
+                        alert(result.code + result);
+                    }
+                },
+                error: function (r) {
+                    alert("error" + r.msg);
+                }
+            })
+        }
+    }
 
 </script>
 </html>

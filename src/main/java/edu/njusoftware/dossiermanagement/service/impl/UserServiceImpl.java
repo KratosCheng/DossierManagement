@@ -3,21 +3,27 @@ package edu.njusoftware.dossiermanagement.service.impl;
 import edu.njusoftware.dossiermanagement.domain.*;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
-import edu.njusoftware.dossiermanagement.repository.OperationRecordRepository;
+import edu.njusoftware.dossiermanagement.repository.DossierOperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.RoleRepository;
 import edu.njusoftware.dossiermanagement.repository.UserRepository;
 import edu.njusoftware.dossiermanagement.service.IUserService;
+import edu.njusoftware.dossiermanagement.service.OperationRecordService;
+import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.SecurityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -30,6 +36,8 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements IUserService, UserDetailsService {
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -37,7 +45,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private OperationRecordRepository operationRecordRepository;
+    private DossierOperationRecordRepository dossierOperationRecordRepository;
 
     /**
      * 根据用户名获取该用户的所有信息， 包括用户信息和权限点
@@ -47,12 +55,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String jobNum) throws UsernameNotFoundException {
-        User user = userRepository.findFirstByJobNum(jobNum);
+        Account user = userRepository.findFirstByJobNum(jobNum);
         if (user == null) {
             return null;
         }
 
-        UserDetail userDetail = new UserDetail(user.getJobNum(), user.getPassword(), user.getRoleName(), user.getCreator(), user.getCreateTime());
+        AccountDetail userDetail = new AccountDetail(user.getJobNum(), user.getPassword(), user.getRoleName(), user.getCreator(), user.getCreateTime());
         List<Role> roleList = roleRepository.findAllByName(userDetail.getRoleName());
         userDetail.setAuthorities(roleList);
         return userDetail;
@@ -64,13 +72,13 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
      * @return
      */
     @Override
-    public User addUser(User user) {
+    public Account addUser(Account user) {
         return userRepository.save(user);
     }
 
     @Override
-    public User modifyUserRole(String jobNum, String roleName) {
-        User user = userRepository.findFirstByJobNum(jobNum);
+    public Account modifyUserRole(String jobNum, String roleName) {
+        Account user = userRepository.findFirstByJobNum(jobNum);
         if (user == null) {
             return null;
         }
@@ -79,27 +87,27 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public User getUserByJobNum(String jobNum) {
+    public Account getUserByJobNum(String jobNum) {
         return userRepository.findFirstByJobNum(jobNum);
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<Account> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public List<User> getAllUsersByRoleName(String roleName) {
+    public List<Account> getAllUsersByRoleName(String roleName) {
         return userRepository.findAllByRoleName(roleName);
     }
 
     @Override
-    public Page<OperationRecord> getOperationRecords(RecordQueryCondition recordQueryCondition) {
+    public Page<DossierOperationRecord> getOperationRecords(RecordQueryCondition recordQueryCondition) {
         Pageable pageable = PageRequest.of(recordQueryCondition.getPageNum(), recordQueryCondition.getPageSize(),
                 recordQueryCondition.isDescend() ? Sort.Direction.DESC : Sort.Direction.ASC, "operateTime");
-        Page<OperationRecord> page = operationRecordRepository.findAll(new Specification<OperationRecord>(){
+        Page<DossierOperationRecord> page = dossierOperationRecordRepository.findAll(new Specification<DossierOperationRecord>(){
             @Override
-            public Predicate toPredicate(Root<OperationRecord> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<DossierOperationRecord> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<Predicate>();
                 if (!StringUtils.isEmpty(recordQueryCondition.getOperation())) {
                     list.add(criteriaBuilder.equal(root.get("operation").as(String.class), recordQueryCondition.getOperation()));
@@ -125,12 +133,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public Page<User> getUsers(AccountQueryCondition accountQueryCondition) {
+    public Page<Account> getUsers(AccountQueryCondition accountQueryCondition) {
         Pageable pageable = PageRequest.of(accountQueryCondition.getAccountPageNum(), accountQueryCondition.getAccountPageSize(),
                 accountQueryCondition.isAccountDescend() ? Sort.Direction.DESC : Sort.Direction.ASC, "jobNum");
-        Page<User> page = userRepository.findAll(new Specification<User>(){
+        Page<Account> page = userRepository.findAll(new Specification<Account>(){
             @Override
-            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+            public Predicate toPredicate(Root<Account> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<Predicate>();
                 if (!StringUtils.isEmpty(accountQueryCondition.getRole())) {
                     list.add(criteriaBuilder.equal(root.get("roleName").as(String.class), accountQueryCondition.getRole()));
@@ -148,12 +156,44 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         return page;
     }
 
+    @Transactional
     @Override
-    public boolean saveUser(User user) {
-        user.setPassword(SecurityUtils.encodePassword(user.getPassword()));
-        if (user.getCreateTime() == null) {
+    public boolean saveUser(Account user) {
+        Account oldUser = getUserByJobNum(user.getJobNum());
+        if (oldUser == null) {
+            // 添加用户
+            user.setPassword(SecurityUtils.encodePassword(user.getPassword()));
+            user.setCreator(SecurityUtils.getLoginUserName());
             user.setCreateTime(new Date());
+            OperationRecordService.saveAccountOperation(SecurityUtils.getLoginUserName(), user.getJobNum(), Constants.OPERATION_ADD);
+        } else {
+            // 修改用户
+            user.setCreator(oldUser.getCreator());
+            user.setCreateTime(oldUser.getCreateTime());
+            // 修改了密码
+            if (!oldUser.getPassword().equals(user.getPassword())) {
+                user.setPassword(SecurityUtils.encodePassword(user.getPassword()));
+                OperationRecordService.savaUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
+                        Constants.OPERATION_MODIFY, "password", oldUser.getPassword(), user.getPassword());
+            }
+            // 修改了角色
+            if (!oldUser.getRoleName().equals(user.getRoleName())) {
+                OperationRecordService.savaUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
+                        Constants.OPERATION_MODIFY, "role", oldUser.getRoleName(), user.getRoleName());
+            }
         }
+        logger.debug(SecurityUtils.getLoginUserName() + " updated user: " + user.getJobNum());
         return userRepository.save(user) != null;
+    }
+
+    @Override
+    public boolean removeUserByJobNum(String jobNum) {
+        User user = userRepository.removeByJobNum(jobNum);
+        if (user == null) {
+            logger.error(SecurityUtils.getLoginUserName() + " tries to delete unknown user: " + jobNum);
+            return false;
+        }
+        logger.debug(SecurityUtils.getLoginUserName() + " deleted user: " + jobNum);
+        return true;
     }
 }

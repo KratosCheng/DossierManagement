@@ -1,9 +1,9 @@
 package edu.njusoftware.dossiermanagement.controller;
 
+import edu.njusoftware.dossiermanagement.domain.Account;
 import edu.njusoftware.dossiermanagement.domain.CaseInfo;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
-import edu.njusoftware.dossiermanagement.domain.OperationRecord;
-import edu.njusoftware.dossiermanagement.domain.User;
+import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
@@ -79,7 +79,7 @@ public class PageController {
      */
     @RequestMapping("/userPage")
     public String getUserMainPage(Model model) {
-        User user = userService.getUserByJobNum(SecurityUtils.getLoginUserName());
+        Account user = userService.getUserByJobNum(SecurityUtils.getLoginUserName());
 
         RecordQueryCondition recordQueryCondition = new RecordQueryCondition();
         recordQueryCondition.setPageNum(0);
@@ -91,17 +91,18 @@ public class PageController {
             AccountQueryCondition accountQueryCondition = new AccountQueryCondition();
             accountQueryCondition.setAccountPageNum(0);
             accountQueryCondition.setAccountPageSize(10);
-            Page<User> users = userService.getUsers(accountQueryCondition);
+            Page<Account> users = userService.getUsers(accountQueryCondition);
             model.addAttribute("accountQueryCondition", accountQueryCondition);
             model.addAttribute("users", users);
         }
 
-        Page<OperationRecord> operationRecords = userService.getOperationRecords(recordQueryCondition);
+        Page<DossierOperationRecord> dossierOperationRecords = userService.getOperationRecords(recordQueryCondition);
 
-        model.addAttribute(user);
+        model.addAttribute("user", user);
         model.addAttribute("title", "用户主页");
         model.addAttribute("recordQueryCondition", recordQueryCondition);
-        model.addAttribute("operationRecords", operationRecords);
+        model.addAttribute("dossierOperationRecords", dossierOperationRecords);
+        model.addAttribute("userToEdit", new Account());
         return "user";
     }
 
@@ -148,7 +149,7 @@ public class PageController {
      */
     @RequestMapping(value = "/addUser", method = RequestMethod.GET)
     public String addUser(Model model) {
-        User user = new User();
+        Account user = new Account();
         user.setCreator(SecurityUtils.getLoginUserName());
         user.setCreateTime(new Date());
         model.addAttribute("user", user);

@@ -1,9 +1,9 @@
 package edu.njusoftware.dossiermanagement.service.impl;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
-import edu.njusoftware.dossiermanagement.domain.OperationRecord;
+import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.mapper.DossierMapper;
-import edu.njusoftware.dossiermanagement.repository.OperationRecordRepository;
+import edu.njusoftware.dossiermanagement.repository.DossierOperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.DossierRepository;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.service.OperationRecordService;
@@ -21,7 +21,7 @@ public class DossierServiceImpl implements IDossierService {
     private DossierRepository dossierRepository;
 
     @Autowired
-    private OperationRecordRepository operationRecordRepository;
+    private DossierOperationRecordRepository dossierOperationRecordRepository;
 
     @Autowired
     private DossierMapper dossierMapper;
@@ -49,18 +49,18 @@ public class DossierServiceImpl implements IDossierService {
     }
 
     @Override
-    public List<OperationRecord> getDossierOperationRecordsByDossierId(long dossierId) {
-        return operationRecordRepository.findAllByDossierId(dossierId);
+    public List<DossierOperationRecord> getDossierOperationRecordsByDossierId(long dossierId) {
+        return dossierOperationRecordRepository.findAllByDossierId(dossierId);
     }
 
     @Override
-    public List<OperationRecord> getDossierOperationRecordsByCaseNum(String caseNum) {
+    public List<DossierOperationRecord> getDossierOperationRecordsByCaseNum(String caseNum) {
         return dossierMapper.findRecordsByCaseNum(caseNum);
     }
 
     @Override
-    public List<OperationRecord> getDossierOperationRecordsByJobNum(String jobNum) {
-        return operationRecordRepository.findAllByJobNum(jobNum);
+    public List<DossierOperationRecord> getDossierOperationRecordsByJobNum(String jobNum) {
+        return dossierOperationRecordRepository.findAllByJobNum(jobNum);
     }
 
     @Override

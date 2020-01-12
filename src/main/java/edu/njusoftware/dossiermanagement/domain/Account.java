@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity(name = "entity_user")
-public class User {
+public class Account {
     // 工号
     @Id
     @NotEmpty(message = "工号不能为空")
@@ -36,7 +36,7 @@ public class User {
     @Column(name = "create_time")
     private Date createTime;
 
-    public User(String jobNum, String password, String roleName, String creator, Date createTime) {
+    public Account(String jobNum, String password, String roleName, String creator, Date createTime) {
         this.jobNum = jobNum;
         this.password = password;
         this.roleName = roleName;
@@ -44,7 +44,7 @@ public class User {
         this.createTime = createTime;
     }
 
-    public User() {
+    public Account() {
     }
 
     public boolean isAdmin() {
@@ -93,7 +93,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Account{" +
                 "jobNum='" + jobNum + '\'' +
                 ", password='" + password + '\'' +
                 ", roleName='" + roleName + '\'' +

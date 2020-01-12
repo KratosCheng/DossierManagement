@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="edu.njusoftware.dossiermanagement.mapper.DossierMapper">
 
-    <resultMap id="DossierOperationRecordResultMap" type="edu.njusoftware.dossiermanagement.domain.OperationRecord">
+    <resultMap id="DossierOperationRecordResultMap" type="edu.njusoftware.dossiermanagement.domain.DossierOperationRecord">
         <result column="id" jdbcType="INTEGER" property="id" />
         <result column="job_num" jdbcType="CHAR" property="jobNum" />
         <result column="dossier_id" jdbcType="INTEGER" property="dossierId" />
@@ -13,7 +13,7 @@
         <result column="status" jdbcType="INTEGER" property="status" />
     </resultMap>
 
-    <select id="findRecordsByCaseNum" resultType="edu.njusoftware.dossiermanagement.domain.OperationRecord">
+    <select id="findRecordsByCaseNum" resultType="edu.njusoftware.dossiermanagement.domain.DossierOperationRecord">
         select * from his_user_dossier
          where dossier_id in
           (select id from entity_dossier where case_num = #{caseNum})

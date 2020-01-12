@@ -1,7 +1,7 @@
 package edu.njusoftware.dossiermanagement.controller;
 
-import edu.njusoftware.dossiermanagement.domain.OperationRecord;
-import edu.njusoftware.dossiermanagement.domain.User;
+import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.Account;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.service.IUserService;
@@ -34,7 +34,7 @@ public class UserController {
      */
     @RequestMapping("/info/{jobNum}")
     public String getUserInfo(Model model, @PathVariable String jobNum) {
-        User user = userService.getUserByJobNum(jobNum);
+        Account user = userService.getUserByJobNum(jobNum);
         model.addAttribute("userInfo", user);
         return "user::modify-user-div";
     }
@@ -44,7 +44,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/list/all")
-    public List<User> getAllUsers() {
+    public List<Account> getAllUsers() {
         return userService.getAllUsers();
     }
 
@@ -56,12 +56,12 @@ public class UserController {
      */
     @RequestMapping("/hisRefresh")
     public String getOperationRecords(Model model, RecordQueryCondition recordQueryCondition) {
-        User user = SecurityUtils.getLoginUser();
+        Account user = SecurityUtils.getLoginUser();
         if (!user.isAdmin()) {
             recordQueryCondition.setJobNum(user.getJobNum());
         }
-        Page<OperationRecord> operationRecords = userService.getOperationRecords(recordQueryCondition);
-        model.addAttribute("operationRecords", operationRecords);
+        Page<DossierOperationRecord> dossierOperationRecords = userService.getOperationRecords(recordQueryCondition);
+        model.addAttribute("dossierOperationRecords", dossierOperationRecords);
         model.addAttribute("user", user);
         return "user::his-list-div";
     }
@@ -73,16 +73,16 @@ public class UserController {
      */
     @RequestMapping("/hisReset")
     public String resetOperationRecords(Model model) {
-        User user = SecurityUtils.getLoginUser();
+        Account user = SecurityUtils.getLoginUser();
         RecordQueryCondition recordQueryCondition = new RecordQueryCondition();
         recordQueryCondition.setPageNum(0);
         recordQueryCondition.setPageSize(10);
         if (!user.isAdmin()) {
             recordQueryCondition.setJobNum(user.getJobNum());
         }
-        Page<OperationRecord> operationRecords = userService.getOperationRecords(recordQueryCondition);
+        Page<DossierOperationRecord> dossierOperationRecords = userService.getOperationRecords(recordQueryCondition);
         model.addAttribute("recordQueryCondition", recordQueryCondition);
-        model.addAttribute("operationRecords", operationRecords);
+        model.addAttribute("dossierOperationRecords", dossierOperationRecords);
         model.addAttribute("user", user);
         return "user::his-list-div";
     }
@@ -95,7 +95,7 @@ public class UserController {
      */
     @RequestMapping("/accountRefresh")
     public String getAccounts(Model model, AccountQueryCondition accountQueryCondition) {
-        Page<User> users = userService.getUsers(accountQueryCondition);
+        Page<Account> users = userService.getUsers(accountQueryCondition);
         model.addAttribute("users", users);
         model.addAttribute("user", SecurityUtils.getLoginUser());
         return "user::account-list-div";
@@ -111,7 +111,7 @@ public class UserController {
         AccountQueryCondition accountQueryCondition = new AccountQueryCondition();
         accountQueryCondition.setAccountPageNum(0);
         accountQueryCondition.setAccountPageSize(10);
-        Page<User> users = userService.getUsers(accountQueryCondition);
+        Page<Account> users = userService.getUsers(accountQueryCondition);
         model.addAttribute("accountQueryCondition", accountQueryCondition);
         model.addAttribute("users", users);
         model.addAttribute("user", SecurityUtils.getLoginUser());
