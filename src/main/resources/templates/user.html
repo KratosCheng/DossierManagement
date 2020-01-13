@@ -16,7 +16,7 @@
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body>
+<body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <header class="main-header app-header">
         <div th:include="commonComponenets :: app-header"></div>
@@ -51,11 +51,28 @@
                         <span>账户操作记录</span>
                     </a>
                 </li>
-                <li class="" th:onclick="showAccountList()" th:if="${user.isAdmin()}">
-                    <a href="#admin-user-list-div">
+                <li class="treeview" th:if="${user.isAdmin()}">
+                    <a href="#">
                         <i class="fa fa-cogs"></i>
-                        <span>账户管理</span>
+                        <span>系统管理</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
                     </a>
+                    <ul class="treeview-menu">
+                        <li th:onclick="showAccountList()">
+                            <a href="#admin-user-list-div">
+                                <i class="fa fa-users"></i>
+                                <span>账户管理</span>
+                            </a>
+                        </li>
+                        <li th:onclick="showFeedbackList()">
+                            <a href="#admin-user-list-div">
+                                <i class="fa fa-line-chart"></i>
+                                <span>OCR模型强化</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </section>
@@ -91,7 +108,7 @@
                                 </label>
                             </div>
                             <div class="form-group form-group-inline">
-                                <label>每页显示行数：
+                                <label>每页行数：
                                     <select id="hisPageSize" th:field="*{pageSize}" class="form-control">
                                         <option th:selected="*{pageSize eq 5}" th:value="5">5</option>
                                         <option th:selected="*{pageSize eq 10}" th:value="10">10</option>
@@ -100,13 +117,23 @@
                                 </label>
                             </div>
                             <div class="form-group form-group-inline">
-                                <label>操作类型：
+                                <label>操作：
                                     <select th:field="*{operation}" class="form-control">
-                                        <option th:selected="*{operation eq null}" th:value="null">所有操作</option>
+                                        <option th:selected="*{operation eq null}" th:value="null">所有</option>
                                         <option th:selected="*{operation eq '查看'}" th:value="查看">查看</option>
                                         <option th:selected="*{operation eq '添加'}" th:value="添加">添加</option>
                                         <option th:selected="*{operation eq '删除'}" th:value="删除">删除</option>
                                         <option th:selected="*{operation eq '修改'}" th:value="修改">修改</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="form-group form-group-inline">
+                                <label>状态：
+                                    <select th:field="*{status}" class="form-control">
+                                        <option th:selected="*{status eq 0}" th:value="0">所有</option>
+                                        <option th:selected="*{status eq 1}" th:value="1">无</option>
+                                        <option th:selected="*{status eq 2}" th:value="2">待反馈</option>
+                                        <option th:selected="*{status eq 3}" th:value="3">已反馈</option>
                                     </select>
                                 </label>
                             </div>
@@ -147,7 +174,7 @@
                                     <th>页数</th>
                                     <th>修改前</th>
                                     <th>修改后</th>
-                                    <th th:if="${user.isAdmin()}">已反馈</th>
+                                    <th th:if="${user.isAdmin()}">状态</th>
                                     <th>操作时间</th>
                                 </tr>
                                 </thead>
@@ -163,7 +190,11 @@
                                     <td th:text="${record.pageNum}">-</td>
                                     <td th:text="${record.oldValue}">-</td>
                                     <td th:text="${record.currentValue}">-</td>
-                                    <td th:if="${user.isAdmin()}" th:text="${record.status}">-</td>
+                                    <td th:if="${user.isAdmin()}">
+                                        <span th:if="${record.status eq 1}">无</span>
+                                        <span style="color: red" th:if="${record.status eq 2}">待反馈</span>
+                                        <span th:if="${record.status eq 3}">已反馈</span>
+                                    </td>
                                     <td th:text="${#dates.format(record.operateTime, 'yyyy-MM-dd hh:mm:ss')}">-</td>
                                 </tr>
                                 </tbody>
@@ -171,6 +202,9 @@
                         </div>
                         <div class="modal-footer no-margin-top">
                             <ul class="pagination pull-right no-margin">
+                                <li>
+                                    <a th:if="${recordQueryCondition.status eq 2 and !dossierOperationRecords.isEmpty()}" th:onclick="reinforce()">强化模型</a>
+                                </li>
                                 <li>
                                     <a th:onclick="changeHisPage(0)" >首页</a>
                                 </li>
@@ -453,42 +487,6 @@
 <script type="text/javascript" th:src="@{/js/app.js}"></script>
 <script type="text/javascript" th:src="@{/js/userpage.js}"></script>
 <script>
-    $(document).on("change", "#operation-search-form", function () {
-        operationSubmit();
-    });
 
-    function changeHisPage(pageNum) {
-        $("#operationPageNumInput").val(pageNum);
-        operationSubmit();
-    }
-
-    function operationSubmit() {
-        var formData = new FormData($("#operation-search-form")[0]);
-
-        $.ajax({
-            //几个参数需要注意一下
-            type: "post",//方法类型
-            url: "../user/operationRefresh", //url
-            data: formData,
-            processData: false,			//对数据不做处理
-            contentType: false,
-            success: function (result) {
-                console.log(result);
-                $('#operation-list-container').html(result);
-            }
-        })
-    }
-
-    function operationReset() {
-        $.ajax({
-            //几个参数需要注意一下
-            type: "get",//方法类型
-            url: "../user/operationReset", //url
-            success: function (result) {
-                console.log(result);
-                $('#operation-list-container').html(result)
-            }
-        })
-    }
 </script>
 </html>

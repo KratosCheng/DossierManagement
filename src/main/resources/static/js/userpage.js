@@ -43,6 +43,23 @@ function hisReset() {
     })
 }
 
+function showFeedbackList() {
+    $.ajax({
+        //几个参数需要注意一下
+        type: "get",//方法类型
+        url: "../user/getFeedbackList", //url
+        success: function (result) {
+            console.log(result);
+            $('#his-list-container').html(result);
+            showHisList();
+        }
+    })
+}
+
+function reinforce() {
+    alert("待开发");
+}
+
 $(document).on("change", "#account-search-form", function () {
     accountSubmit();
 });
@@ -75,6 +92,44 @@ function accountReset() {
         success: function (result) {
             console.log(result);
             $('#account-list-container').html(result)
+        }
+    })
+}
+
+$(document).on("change", "#operation-search-form", function () {
+    operationSubmit();
+});
+
+function changeOperationPage(pageNum) {
+    $("#operationPageNumInput").val(pageNum);
+    operationSubmit();
+}
+
+function operationSubmit() {
+    var formData = new FormData($("#operation-search-form")[0]);
+
+    $.ajax({
+        //几个参数需要注意一下
+        type: "post",//方法类型
+        url: "../user/operationRefresh", //url
+        data: formData,
+        processData: false,			//对数据不做处理
+        contentType: false,
+        success: function (result) {
+            console.log(result);
+            $('#operation-list-container').html(result);
+        }
+    })
+}
+
+function operationReset() {
+    $.ajax({
+        //几个参数需要注意一下
+        type: "get",//方法类型
+        url: "../user/operationReset", //url
+        success: function (result) {
+            console.log(result);
+            $('#operation-list-container').html(result)
         }
     })
 }

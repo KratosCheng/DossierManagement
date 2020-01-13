@@ -90,6 +90,22 @@ public class UserController {
     }
 
     /**
+     * 获取待反馈操作记录表
+     * @param model
+     * @return
+     */
+    @RequestMapping("/getFeedbackList")
+    public String getFeedbackList(Model model) {
+        Account user = SecurityUtils.getLoginUser();
+        RecordQueryCondition recordQueryCondition = new RecordQueryCondition(0, 10, 2);
+        Page<DossierOperationRecord> dossierOperationRecords = userService.getOperationRecords(recordQueryCondition);
+        model.addAttribute("recordQueryCondition", recordQueryCondition);
+        model.addAttribute("dossierOperationRecords", dossierOperationRecords);
+        model.addAttribute("user", user);
+        return "user::his-list-div";
+    }
+
+    /**
      * 根据管理员提交表单刷新账户表
      * @param model
      * @param accountQueryCondition

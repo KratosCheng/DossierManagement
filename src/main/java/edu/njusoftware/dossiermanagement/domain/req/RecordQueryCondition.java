@@ -22,6 +22,20 @@ public class RecordQueryCondition {
     // 修改操作状态
     private int status;
 
+    public RecordQueryCondition(int pageNum, int pageSize) {
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+    }
+
+    public RecordQueryCondition(int pageNum, int pageSize, int status) {
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+        this.status = status;
+    }
+
+    public RecordQueryCondition() {
+    }
+
     public int getPageNum() {
         return pageNum;
     }

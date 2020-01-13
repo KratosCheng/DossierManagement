@@ -122,6 +122,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
                     list.add(criteriaBuilder.equal(root.get("jobNum").as(String.class), recordQueryCondition.getJobNum()));
                 }
 
+                if (recordQueryCondition.getStatus() != 0) {
+                    list.add(criteriaBuilder.equal(root.get("status").as(Integer.class), recordQueryCondition.getStatus()));
+                }
+
                 // 案号案由模糊查询
                 if (!StringUtils.isEmpty(recordQueryCondition.getKeyword())) {
                     String pattern = "%" + recordQueryCondition.getKeyword() + "%";
