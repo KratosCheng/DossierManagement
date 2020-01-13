@@ -1,9 +1,7 @@
 package edu.njusoftware.dossiermanagement.controller;
 
-import edu.njusoftware.dossiermanagement.domain.Account;
-import edu.njusoftware.dossiermanagement.domain.CaseInfo;
-import edu.njusoftware.dossiermanagement.domain.Dossier;
-import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.*;
+import edu.njusoftware.dossiermanagement.domain.req.AccountOperationQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
@@ -88,12 +86,16 @@ public class PageController {
         if (!user.isAdmin()) {
             recordQueryCondition.setJobNum(user.getJobNum());
         } else {
-            AccountQueryCondition accountQueryCondition = new AccountQueryCondition();
-            accountQueryCondition.setAccountPageNum(0);
-            accountQueryCondition.setAccountPageSize(10);
+            AccountQueryCondition accountQueryCondition = new AccountQueryCondition(0, 10);
             Page<Account> users = userService.getUsers(accountQueryCondition);
             model.addAttribute("accountQueryCondition", accountQueryCondition);
             model.addAttribute("users", users);
+
+            AccountOperationQueryCondition accountOperationQueryCondition =
+                    new AccountOperationQueryCondition(0, 10);
+            Page<UserOperationRecord> userOperationRecords = userService.getUserOperationRecords(accountOperationQueryCondition);
+            model.addAttribute("accountOperationQueryCondition", accountOperationQueryCondition);
+            model.addAttribute("userOperationRecords", userOperationRecords);
         }
 
         Page<DossierOperationRecord> dossierOperationRecords = userService.getOperationRecords(recordQueryCondition);

@@ -2,6 +2,8 @@ package edu.njusoftware.dossiermanagement.service;
 
 import edu.njusoftware.dossiermanagement.domain.Account;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.UserOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.req.AccountOperationQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,8 @@ public interface IUserService {
     Page<DossierOperationRecord> getOperationRecords(RecordQueryCondition recordQueryCondition);
 
     Page<Account> getUsers(AccountQueryCondition accountQueryCondition);
+
+    Page<UserOperationRecord> getUserOperationRecords(AccountOperationQueryCondition accountOperationQueryCondition);
 
     boolean saveUser(Account user);
 

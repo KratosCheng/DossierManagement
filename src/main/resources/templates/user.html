@@ -42,12 +42,18 @@
                 <li class="">
                     <a th:onclick="showHisList()">
                         <i class="fa fa-clock-o"></i>
-                        <span>操作记录</span>
+                        <span>卷宗操作记录</span>
+                    </a>
+                </li>
+                <li class="" th:onclick="showAccountHisList()" th:if="${user.isAdmin()}">
+                    <a href="#admin-user-list-div">
+                        <i class="fa fa-history"></i>
+                        <span>账户操作记录</span>
                     </a>
                 </li>
                 <li class="" th:onclick="showAccountList()" th:if="${user.isAdmin()}">
                     <a href="#admin-user-list-div">
-                        <i class="fa fa-clock-o"></i>
+                        <i class="fa fa-cogs"></i>
                         <span>账户管理</span>
                     </a>
                 </li>
@@ -288,6 +294,106 @@
                     </div>
                 </div>
             </section>
+            <section id="admin-operation-list-div" style="display: none" th:fragment="admin-operation-list-div" th:if="${user.isAdmin()}" class="user-block invoice">
+                <a href="#admin-operation-list-div" class="info-header">账户信息操作记录列表</a>
+                <div id="operation-list-container" class="info-block">
+                    <div id="operation-list-div" th:fragment="operation-list-div">
+                        <form class="container form-inline" id="operation-search-form" role="form" action="#" th:object="${accountOperationQueryCondition}" method="get">
+                            <div class="form-group">
+                                <!-- 当前页 -->
+                                <label>
+                                    <input type="hidden" id="operationPageNumInput" th:field="*{operationPageNum}" class="form-control" />
+                                </label>
+                            </div>
+                            <div class="form-group form-group-inline">
+                                <label>每页显示行数：
+                                    <select id="operationPageSize" th:field="*{operationPageSize}" class="form-control">
+                                        <option th:selected="*{operationPageSize eq 5}" th:value="5">5</option>
+                                        <option th:selected="*{operationPageSize eq 10}" th:value="10">10</option>
+                                        <option th:selected="*{operationPageSize eq 20}" th:value="20">20</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="form-group form-group-inline">
+                                <label>操作类型：
+                                    <select th:field="*{operationType}" class="form-control">
+                                        <option th:selected="*{#strings.isEmpty(operationType)}" th:value="null">所有操作</option>
+                                        <option th:selected="*{operationType eq '添加'}" th:value="添加">添加</option>
+                                        <option th:selected="*{operationType eq '删除'}" th:value="删除">删除</option>
+                                        <option th:selected="*{operationType eq '修改'}" th:value="修改">修改</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="form-group form-group-inline">
+                                <label>按时间：
+                                    <select id="operationDescend" th:field="*{operationDescend}" class="form-control">
+                                        <option th:selected="*{operationDescend}" th:value="true">倒序</option>
+                                        <option th:selected="*{!operationDescend}" th:value="false">正序</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="form-group form-group-inline input-group">
+                                <input type="text" id="operationKeyword" th:field="*{operationKeyword}" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                <button type="button" id="operation-search-btn" th:onclick="operationSubmit()" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+                            </div>
+                            <div class="form-group form-group-inline">
+                                <button type="button" th:onclick="operationReset()" class="btn btn-default">重置</button>
+                            </div>
+                        </form>
+                        <div class="with:80%">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>工号</th>
+                                    <th>操作</th>
+                                    <th>修改属性</th>
+                                    <th>旧值</th>
+                                    <th>新值</th>
+                                    <th>操作时间</th>
+                                    <th>处理人</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${#lists.isEmpty(userOperationRecords)}">
+                                    <td colspan="2">没有操作记录！</td>
+                                </tr>
+                                <tr th:each="record : ${userOperationRecords}">
+                                    <td th:text="${record.jobNum}">-</td>
+                                    <td th:text="${record.operation}">-</td>
+                                    <td th:text="${record.attr}">-</td>
+                                    <td th:text="${record.oldValue}">-</td>
+                                    <td th:text="${record.currentValue}">-</td>
+                                    <td th:text="${#dates.format(record.operateTime, 'yyyy-MM-dd hh:mm:ss')}">-</td>
+                                    <td th:text="${record.handler}">-</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer no-margin-top">
+                            <ul class="pagination pull-right no-margin">
+                                <li>
+                                    <a th:onclick="changeOperationPage(0)" >首页</a>
+                                </li>
+                                <li th:if="${userOperationRecords.hasPrevious()}">
+                                    <a th:onclick="changeOperationPage([[${userOperationRecords.previousPageable().getPageNumber()}]])" th:text="上一页"></a>
+                                </li>
+                                <li th:each="pageNum:${#numbers.sequence(0, userOperationRecords.getTotalPages() - 1)}">
+                                    <a th:onclick="changeOperationPage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum ne userOperationRecords.pageable.getPageNumber()}"></a>
+                                    <a th:onclick="changeOperationPage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum eq userOperationRecords.pageable.getPageNumber()}" th:style="'font-weight:bold;background: #6faed9;'"></a>
+                                </li>
+                                <li th:if="${userOperationRecords.hasNext()}">
+                                    <a th:onclick="changeOperationPage([[${accountQueryCondition.getAccountPageNum() + 1}]])" th:text="下一页"></a>
+                                </li>
+                                <li>
+                                    <a th:onclick="changeOperationPage([[${userOperationRecords.getTotalPages() - 1}]])">尾页</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <div id="modify_user_dialog" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" title="编辑用户" >
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -345,158 +451,44 @@
 <script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
 <script type="text/javascript" th:src="@{/js/adminlte.js}"></script>
 <script type="text/javascript" th:src="@{/js/app.js}"></script>
+<script type="text/javascript" th:src="@{/js/userpage.js}"></script>
 <script>
-    $(document).on("change", "#his-search-form", function () {
-        hisSubmit();
+    $(document).on("change", "#operation-search-form", function () {
+        operationSubmit();
     });
 
     function changeHisPage(pageNum) {
-        $("#hisPageNumInput").val(pageNum);
-        hisSubmit();
+        $("#operationPageNumInput").val(pageNum);
+        operationSubmit();
     }
 
-    function hisSubmit() {
-        var formData = new FormData($("#his-search-form")[0]);
+    function operationSubmit() {
+        var formData = new FormData($("#operation-search-form")[0]);
 
         $.ajax({
             //几个参数需要注意一下
             type: "post",//方法类型
-            // dataType: "json", //预期服务器返回的数据类型
-            url: "../user/hisRefresh", //url
+            url: "../user/operationRefresh", //url
             data: formData,
             processData: false,			//对数据不做处理
             contentType: false,
             success: function (result) {
                 console.log(result);
-                $('#his-list-container').html(result);
+                $('#operation-list-container').html(result);
             }
         })
     }
 
-    function hisReset() {
+    function operationReset() {
         $.ajax({
             //几个参数需要注意一下
             type: "get",//方法类型
-            url: "../user/hisReset", //url
+            url: "../user/operationReset", //url
             success: function (result) {
                 console.log(result);
-                $('#his-list-container').html(result)
+                $('#operation-list-container').html(result)
             }
         })
     }
-
-    $(document).on("change", "#account-search-form", function () {
-        accountSubmit();
-    });
-
-    function changeAccountsPage(pageNum) {
-        $("#accountPageNumInput").val(pageNum);
-        accountSubmit();
-    }
-
-    function accountSubmit() {
-        var formData = new FormData($("#account-search-form")[0]);
-
-        $.ajax({
-            type: "post",
-            url: "../user/accountRefresh",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                console.log(result);
-                $('#account-list-container').html(result);
-            }
-        })
-    }
-
-    function accountReset() {
-        $.ajax({
-            type: "get",
-            url: "../user/accountReset",
-            success: function (result) {
-                console.log(result);
-                $('#account-list-container').html(result)
-            }
-        })
-    }
-    
-    function showAccountList() {
-        $("#admin-user-list-div").show();
-        $("#user-his-div").hide();
-    }
-
-    function showHisList() {
-        $("#user-his-div").show();
-        $("#admin-user-list-div").hide();
-    }
-
-    function showModifyDialog(modifyUser) {
-        $("#modifyJobNum").val(modifyUser.jobNum);
-        document.getElementById("modifyJobNum").setAttribute("readonly", "true");
-        $("#modifyPassword").val(modifyUser.password);
-        $("#modifyRoleName").val(modifyUser.roleName);
-        $("#modifyCreator").val(modifyUser.creator);
-        $("#modifyCreateTime").val(modifyUser.createTime);
-        $("#modify_user_dialog").modal('show');
-        $(".form-hint").show();
-    }
-
-    function modifyUser() {
-        var formData = new FormData($("#modify-user-form")[0]);
-
-        $.ajax({
-            type: "post",
-            url: "../admin/updateUser",
-            data: formData,
-            processData: false,			//对数据不做处理
-            // cache:false,      				//上传文件不需要缓存
-            contentType: false,
-            mimeType:"multipart/form-data",
-            success: function (result) {
-                result = JSON.parse(result);
-                if (result.code === 0) {
-                    alert("用户信息编辑成功！");
-                    $("#modify_user_dialog").modal('hide');
-                    accountReset();     // 刷新用户表
-                } else {
-                    alert(result.code + result);
-                }
-            },
-            error: function (r) {
-                alert("error" + r.msg);
-            }
-        })
-    }
-
-    function showAddUserDialog() {
-        $("#modify-user-form")[0].reset();
-        document.getElementById("modifyJobNum").removeAttribute("readonly");
-        $("#modify_user_dialog").modal('show')
-        $(".form-hint").hide();
-    }
-
-    function deleteUser(jobNum) {
-        if (confirm("操作不可逆，确认删除用户（" + jobNum + "）?")) {
-            $.ajax({
-                type: "get",
-                url: "../admin/removeUser/" + jobNum,
-                success: function (result) {
-                    result = JSON.parse(result);
-                    if (result.code === 0) {
-                        alert("用户信息编辑成功！");
-                        $("#modify_user_dialog").modal('hide');
-                        accountReset();     // 刷新用户表
-                    } else {
-                        alert(result.code + result);
-                    }
-                },
-                error: function (r) {
-                    alert("error" + r.msg);
-                }
-            })
-        }
-    }
-
 </script>
 </html>

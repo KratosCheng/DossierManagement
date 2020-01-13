@@ -16,6 +16,14 @@ public class AccountQueryCondition {
     // 用户角色
     private String role;
 
+    public AccountQueryCondition(int accountPageNum, int accountPageSize) {
+        this.accountPageNum = accountPageNum;
+        this.accountPageSize = accountPageSize;
+    }
+
+    public AccountQueryCondition() {
+    }
+
     public int getAccountPageNum() {
         return accountPageNum;
     }

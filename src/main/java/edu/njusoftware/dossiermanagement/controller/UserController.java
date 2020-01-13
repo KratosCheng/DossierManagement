@@ -2,6 +2,8 @@ package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.Account;
+import edu.njusoftware.dossiermanagement.domain.UserOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.req.AccountOperationQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.service.IUserService;
@@ -116,5 +118,34 @@ public class UserController {
         model.addAttribute("users", users);
         model.addAttribute("user", SecurityUtils.getLoginUser());
         return "user::account-list-div";
+    }
+
+    /**
+     * 根据管理员提交表单刷新账户操作记录表
+     * @param model
+     * @param accountOperationQueryCondition
+     * @return
+     */
+    @RequestMapping("/operationRefresh")
+    public String getOperations(Model model, AccountOperationQueryCondition accountOperationQueryCondition) {
+        Page<UserOperationRecord> userOperationRecords = userService.getUserOperationRecords(accountOperationQueryCondition);
+        model.addAttribute("userOperationRecords", userOperationRecords);
+        model.addAttribute("user", SecurityUtils.getLoginUser());
+        return "user::operation-list-div";
+    }
+
+    /**
+     * 重置账号操作记录表
+     * @param model
+     * @return
+     */
+    @RequestMapping("/operationReset")
+    public String resetOperations(Model model) {
+        AccountOperationQueryCondition accountOperationQueryCondition = new AccountOperationQueryCondition(0, 10);
+        Page<UserOperationRecord> userOperationRecords = userService.getUserOperationRecords(accountOperationQueryCondition);
+        model.addAttribute("userOperationRecords", userOperationRecords);
+        model.addAttribute("user", SecurityUtils.getLoginUser());
+        model.addAttribute("accountOperationQueryCondition", accountOperationQueryCondition);
+        return "user::operation-list-div";
     }
 }

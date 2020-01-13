@@ -1,10 +1,12 @@
 package edu.njusoftware.dossiermanagement.service.impl;
 
 import edu.njusoftware.dossiermanagement.domain.*;
+import edu.njusoftware.dossiermanagement.domain.req.AccountOperationQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.repository.DossierOperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.RoleRepository;
+import edu.njusoftware.dossiermanagement.repository.UserOperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.UserRepository;
 import edu.njusoftware.dossiermanagement.service.IUserService;
 import edu.njusoftware.dossiermanagement.service.OperationRecordService;
@@ -46,6 +48,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Autowired
     private DossierOperationRecordRepository dossierOperationRecordRepository;
+
+    @Autowired
+    private UserOperationRecordRepository userOperationRecordRepository;
 
     /**
      * 根据用户名获取该用户的所有信息， 包括用户信息和权限点
@@ -156,6 +161,32 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         return page;
     }
 
+    @Override
+    public Page<UserOperationRecord> getUserOperationRecords(AccountOperationQueryCondition accountOperationQueryCondition) {
+        Pageable pageable = PageRequest.of(accountOperationQueryCondition.getOperationPageNum(), accountOperationQueryCondition.getOperationPageSize(),
+                accountOperationQueryCondition.isOperationDescend() ? Sort.Direction.DESC : Sort.Direction.ASC, "operateTime");
+        Page<UserOperationRecord> page = userOperationRecordRepository.findAll(new Specification<UserOperationRecord>() {
+            @Override
+            public Predicate toPredicate(Root<UserOperationRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<>();
+                if (!StringUtils.isEmpty(accountOperationQueryCondition.getOperationType())) {
+                    list.add(criteriaBuilder.equal(root.get("operation").as(String.class), accountOperationQueryCondition.getOperationType()));
+                }
+
+                // 工号模糊查询
+                if (!StringUtils.isEmpty(accountOperationQueryCondition.getOperationKeyword())) {
+                    String pattern = "%" + accountOperationQueryCondition.getOperationKeyword() + "%";
+                    Predicate keywordPredicate = criteriaBuilder.or(
+                            criteriaBuilder.like(root.get("jobNum").as(String.class), pattern),
+                            criteriaBuilder.like(root.get("handler").as(String.class), pattern));
+                    list.add(keywordPredicate);
+                }
+                return criteriaBuilder.and(list.toArray(new Predicate[0]));
+            }
+        }, pageable);
+        return page;
+    }
+
     @Transactional
     @Override
     public boolean saveUser(Account user) {
@@ -186,6 +217,11 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         return userRepository.save(user) != null;
     }
 
+    /**
+     * 删除用户
+     * @param jobNum
+     * @return
+     */
     @Override
     public boolean removeUserByJobNum(String jobNum) {
         User user = userRepository.removeByJobNum(jobNum);
