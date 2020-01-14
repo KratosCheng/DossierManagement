@@ -149,7 +149,6 @@ public class DossierController {
         try {
 //            in = new FileInputStream(new File("C:/Users/Kratos/Desktop/dossier/test/音频证据/荣耀-35.mp3"));
             in = new FileInputStream(new File(dossier.getPath()));
-            in = new FileInputStream(new File(dossier.getPath()));
             out = response.getOutputStream();
             byte[] b = new byte[512];
             while ((in.read(b)) != -1) {

@@ -77,8 +77,9 @@
                         <source th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" />
                         Your browser does not support the video tag.
                     </video>
-                    <iframe id="pdf-iframe" class="media-container" th:case="pdf" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}"></iframe>
-                    <embed class="media-container" type="application/pdf" th:case="*" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" th:title="${currentDossier.name}" />
+                    <iframe id="pdf-iframe" class="media-container" th:case="pdf" th:src="@{'/js/pdfjs/web/viewer.html?file=http://localhost:8080' + '/dossier/getFile/' + ${currentDossier.id}}"></iframe>
+<!--                    <iframe id="pdf-iframe" class="media-container" th:case="pdf" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}"></iframe>-->
+                    <embed class="media-container" th:case="*" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" th:title="${currentDossier.name}" />
                 </div>
             </div>
         </div>
@@ -90,7 +91,9 @@
 <script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
 <script type="text/javascript" th:src="@{/js/adminlte.js}"></script>
 <script type="text/javascript" th:src="@{/js/app.js}"></script>
+<script type="text/javascript" th:src="@{/js/pdfjs/build/pdf.js}"></script>
+<script type="text/javascript" th:src="@{/js/pdfjs/build/pdf.worker.js}"></script>
 <script>
-
+    var viewer = new
 </script>
 </html>
