@@ -140,7 +140,7 @@ public class DossierController {
      * @param session
      * @param dossierId
      */
-    @RequestMapping("/getFile/{dossierId}")
+    @RequestMapping("/common/getFile/{dossierId}")
     public void getFile(HttpServletRequest request, HttpServletResponse response, HttpSession session, @PathVariable long dossierId) {
         Dossier dossier = dossierService.getDossier(dossierId);
         response.setContentType(fileTypeMap.get(dossier.getFileType()));
@@ -167,7 +167,7 @@ public class DossierController {
      * @param dossierId
      * @return
      */
-    @RequestMapping("/updateCurrentDossier/{dossierId}")
+    @RequestMapping("/common/updateCurrentDossier/{dossierId}")
     public String updateCurrentDossier(Model model, @PathVariable long dossierId) {
         model.addAttribute("currentDossier", dossierService.getDossier(dossierId));
         return "casePage::#div-media-container";

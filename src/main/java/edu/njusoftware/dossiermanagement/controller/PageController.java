@@ -46,11 +46,11 @@ public class PageController {
     @RequestMapping({"/", "/index"})
     public String index(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum,
                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-        Page<CaseInfo> caseList = caseService.getCaseList(pageNum, pageSize);
         CaseQueryCondition caseQueryCondition = new CaseQueryCondition();
         caseQueryCondition.setPageNum(0);
         caseQueryCondition.setPageSize(10);
         caseQueryCondition.setDescend(false);
+        Page<CaseInfo> caseList = caseService.getCaseList(caseQueryCondition);
         model.addAttribute("caseList", caseList);
         model.addAttribute("caseQueryCondition", caseQueryCondition);
         model.addAttribute("title", "案件列表");
@@ -121,6 +121,7 @@ public class PageController {
         model.addAttribute("directoryList", dossierService.getDirectoriesByCaseNum(caseNum));
         model.addAttribute("directoryMap", dossierService.getDirectoryMap(caseNum));
         model.addAttribute("title", "案件主页 #" + caseNum);
+        model.addAttribute("user", SecurityUtils.getLoginUser());
         return "casePage";
     }
 

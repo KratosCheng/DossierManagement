@@ -57,12 +57,6 @@ public class CaseServiceImpl implements ICaseService {
     }
 
     @Override
-    public Page<CaseInfo> getCaseList(int pageNum, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return caseRepository.findAll(pageable);
-    }
-
-    @Override
     public List<CaseInfo> getCasesByType(String type) {
         return null;
     }

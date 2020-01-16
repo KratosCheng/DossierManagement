@@ -50,7 +50,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="/" th:href="@{/addDossier(caseNum=${caseInfo.caseNum}, directory=${directory})}">
+                            <a href="/" th:if="${user.roleName ne 'visitor'}" th:href="@{/addDossier(caseNum=${caseInfo.caseNum}, directory=${directory})}">
                                 <i class="fa ion-plus-round fa-remove"></i>
                                 <span>添加卷宗/证据材料</span>
                             </a>
@@ -58,7 +58,7 @@
                     </ul>
                 </li>
             </ul>
-            <form class="sidebar-form">
+            <form th:if="${user.roleName ne 'visitor'}" class="sidebar-form">
                 <div class="input-group">
                     <label for="directoryName"></label><input type="text" id="directoryName" name="directoryName" class="form-control" placeholder="添加目录...">
                     <span class="input-group-btn">
@@ -68,19 +68,16 @@
             </form>
         </section>
     </aside>
-    <section class="content-wrapper">
+    <section id="div-media-content" class="content-wrapper">
         <div id="div-media-container" th:fragment="div-media-container" style="min-height: inherit">
-            <div style="min-height: inherit" th:if="${currentDossier} ne null">
-                <div style="min-height: inherit; min-width: inherit"  th:switch="${currentDossier.fileType}">
-                    <audio class="media-container" th:case="'audio'" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
-                    <video class="media-container" th:case="'video'" controls="controls">
-                        <source th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" />
-                        Your browser does not support the video tag.
-                    </video>
-                    <iframe id="pdf-iframe" class="media-container" th:case="pdf" th:src="@{'/js/pdfjs/web/viewer.html?file=http://localhost:8080' + '/dossier/getFile/' + ${currentDossier.id}}"></iframe>
-<!--                    <iframe id="pdf-iframe" class="media-container" th:case="pdf" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}"></iframe>-->
-                    <embed class="media-container" th:case="*" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" th:title="${currentDossier.name}" />
-                </div>
+            <div class="media-container" th:if="${currentDossier} ne null" th:switch="${currentDossier.fileType}">
+                <audio style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
+                <video th:case="'video'" controls="controls">
+                    <source th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" />
+                    Your browser does not support the video tag.
+                </video>
+                <iframe style="min-height: inherit; min-width: 100%" th:case="pdf" th:src="@{'/js/pdfjs/web/viewer.html?file=http://localhost:8080' + '/dossier/common/getFile/' + ${currentDossier.id}}"></iframe>
+                <embed th:case="*" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" th:title="${currentDossier.name}" />
             </div>
         </div>
     </section>
@@ -94,6 +91,6 @@
 <script type="text/javascript" th:src="@{/js/pdfjs/build/pdf.js}"></script>
 <script type="text/javascript" th:src="@{/js/pdfjs/build/pdf.worker.js}"></script>
 <script>
-    var viewer = new
+
 </script>
 </html>

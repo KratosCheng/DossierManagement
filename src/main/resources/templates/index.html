@@ -75,8 +75,7 @@
                         <th>结案时间</th>
                         <th>案件类型</th>
                         <th>审理阶段</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,8 +91,8 @@
                         <td th:text="${caseInfo.stage}">-</td>
                         <td>
                             <a th:href="@{'/case/' + ${caseInfo.caseNum}}">查看卷宗</a>
+                            <a href="javascript:void(0)" th:onclick="removeCase([[${caseInfo.caseNum}]])">删除</a>
                         </td>
-                        <td><a href="javascript:void(0)" th:onclick="removeCase([[${caseInfo.caseNum}]])">删除</a></td>
                     </tr>
                 </tbody>
             </table>

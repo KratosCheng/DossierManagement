@@ -12,8 +12,6 @@ public interface ICaseService {
 
     List<CaseInfo> getAllCases();
 
-    Page<CaseInfo> getCaseList(int pageNum, int pageSize);
-
     List<CaseInfo> getCasesByType(String type);
 
     boolean saveCase(CaseInfo caseInfo);
