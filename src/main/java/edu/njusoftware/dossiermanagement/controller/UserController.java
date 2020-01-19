@@ -7,7 +7,7 @@ import edu.njusoftware.dossiermanagement.domain.req.AccountOperationQueryConditi
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.service.IUserService;
-import edu.njusoftware.dossiermanagement.util.SecurityUtils;
+import edu.njusoftware.dossiermanagement.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @Controller
@@ -46,8 +48,17 @@ public class UserController {
      * @return
      */
     @RequestMapping("/list/all")
-    public List<Account> getAllUsers() {
-        return userService.getAllUsers();
+    public String getAllUsers() throws IOException, ParseException {
+        String sourcePath = "C:/Users/Kratos/Desktop/dossier/(2014)滨刑初字第0079号/音频证据/20141105_庭审记录.m4a";
+//        String sourcePath = "C:/Users/Kratos/Desktop/dossier/(2014)滨刑初字第0079号/音频证据/20141107_谈话笔录.m4a";
+        String targetPath = "C:/Users/Kratos/Desktop/dossier/(2014)滨刑初字第0079号/音频证据/20141107_谈话笔录/process/20141107_谈话笔录.mp3";
+        String pcmPath = "C:/Users/Kratos/Desktop/dossier/(2014)滨刑初字第0079号/音频证据/20141107_庭审记录/process/20141107_庭审记录.pcm";
+//        List<String> strings = VoiceSpeech.RecognizePcmfileByte(pcmPath);
+        FileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPath, 0F, 15F);
+//        BaiduSpeechUtils.convertMP32Pcm(targetPath, pcmPath);
+//        MscTest mscTest = new MscTest();
+//        mscTest.RecognizePcmfileByte(pcmPath);
+        return BaiduSpeechUtils.aSpeechRecognition(pcmPath);
     }
 
     /**

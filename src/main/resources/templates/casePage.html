@@ -71,9 +71,9 @@
     <section id="div-media-content" class="content-wrapper">
         <div id="div-media-container" th:fragment="div-media-container" style="min-height: inherit">
             <div class="media-container" th:if="${currentDossier} ne null" th:switch="${currentDossier.fileType}">
-                <audio style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
+                <audio style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
                 <video th:case="'video'" controls="controls">
-                    <source th:src="@{'/dossier/getFile/' + ${currentDossier.id}}" />
+                    <source th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" />
                     Your browser does not support the video tag.
                 </video>
                 <iframe style="min-height: inherit; min-width: 100%" th:case="pdf" th:src="@{'/js/pdfjs/web/viewer.html?file=http://localhost:8080' + '/dossier/common/getFile/' + ${currentDossier.id}}"></iframe>

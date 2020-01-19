@@ -29,4 +29,6 @@ public interface IDossierService {
     void addDirectory(String caseNum, String directoryName);
 
     String getFilePathById(long dossierId);
+
+    void processDossierContent(long id);
 }

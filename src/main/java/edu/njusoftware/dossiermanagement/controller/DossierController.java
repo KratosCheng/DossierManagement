@@ -109,45 +109,18 @@ public class DossierController {
         return new BaseResponse(Constants.CODE_SUCCESS, Constants.MSG_SUCCESS);
     }
 
-//    @RequestMapping("/getFile/{dossierId}")
-//    public ResponseEntity<FileSystemResource> getFile(@PathVariable long dossierId) {
-////        Dossier dossier = dossierService.getDossier(dossierId);
-////        File file = new File(dossier.getPath());
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-////        headers.add("Content-Disposition", "attachment; filename=" + dossier.getName());
-//        headers.add("Pragma", "no-cache");
-//        headers.add("Expires", "0");
-//        headers.add("Last-Modified", new Date().toString());
-//        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
-//
-//        File file = new File("C:/Users/Kratos/Desktop/dossier/test/卷宗扫描件/requirements.pdf");
-//        headers.add("Content-Disposition", "attachment; filename=\"requirements.pdf\"");
-//
-//        return ResponseEntity
-//                .ok()
-//                .headers(headers)
-//                .contentLength(file.length())
-//                .contentType(MediaType.parseMediaType("application/octet-stream"))
-//                .body(new FileSystemResource(file));
-//    }
-
     /**
      * 返回前端展示的卷宗多媒体文件
-     * @param request
      * @param response
-     * @param session
      * @param dossierId
      */
     @RequestMapping("/common/getFile/{dossierId}")
-    public void getFile(HttpServletRequest request, HttpServletResponse response, HttpSession session, @PathVariable long dossierId) {
+    public void getFile(HttpServletResponse response, @PathVariable long dossierId) {
         Dossier dossier = dossierService.getDossier(dossierId);
         response.setContentType(fileTypeMap.get(dossier.getFileType()));
         FileInputStream in;
         OutputStream out;
         try {
-//            in = new FileInputStream(new File("C:/Users/Kratos/Desktop/dossier/test/音频证据/荣耀-35.mp3"));
             in = new FileInputStream(new File(dossier.getPath()));
             out = response.getOutputStream();
             byte[] b = new byte[512];
@@ -188,7 +161,8 @@ public class DossierController {
             dossier.setName(fileNameParts[0]);
         }
 
-        String filePath = Constants.DOSSIER_BASE_DIRECTORY + dossier.getCaseNum() + "/" + dossier.getDirectory() + "/" + dossier.getName() + "." + fileNameParts[1];
+        String filePath = Constants.DOSSIER_BASE_DIRECTORY + dossier.getCaseNum() + "/" +
+                dossier.getDirectory() + "/" + dossier.getName() + "/" + dossier.getName() + "." + fileNameParts[1];
 
         try {
             File destFile = new File(filePath);
@@ -204,7 +178,12 @@ public class DossierController {
         dossier.setPath(filePath);
         dossier.setUploadUser(SecurityUtils.getLoginUserName());
         dossier.setUploadTime(new Date());
-        return dossierService.saveDossier(dossier) ? new BaseResponse(0, "上传卷宗成功！") :
-                new BaseResponse(1, "上传失败！Error to store dossier!");
+
+        if (!dossierService.saveDossier(dossier)) {
+            return new BaseResponse(1, "上传失败！Error to store dossier!");
+        }
+        dossierService.processDossierContent(dossier.getId());
+        return new BaseResponse(0, "上传卷宗成功！");
+
     }
 }

@@ -112,4 +112,13 @@ public class DossierServiceImpl implements IDossierService {
     public String getFilePathById(long dossierId) {
         return dossierMapper.getFilePathById(dossierId);
     }
+
+    /**
+     *
+     * @param id
+     */
+    @Override
+    public void processDossierContent(long id) {
+
+    }
 }
