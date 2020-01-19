@@ -182,7 +182,7 @@ public class DossierController {
         if (!dossierService.saveDossier(dossier)) {
             return new BaseResponse(1, "上传失败！Error to store dossier!");
         }
-        dossierService.processDossierContent(dossier.getId());
+        dossierService.processDossierContent(dossier);
         return new BaseResponse(0, "上传卷宗成功！");
 
     }

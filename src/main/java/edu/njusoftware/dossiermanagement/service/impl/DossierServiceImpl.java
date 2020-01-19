@@ -5,6 +5,8 @@ import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.mapper.DossierMapper;
 import edu.njusoftware.dossiermanagement.repository.DossierOperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.DossierRepository;
+import edu.njusoftware.dossiermanagement.service.DossierTextProcessor;
+import edu.njusoftware.dossiermanagement.service.DossierTextProcessorFactory;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.service.OperationRecordService;
 import edu.njusoftware.dossiermanagement.util.Constants;
@@ -25,6 +27,9 @@ public class DossierServiceImpl implements IDossierService {
 
     @Autowired
     private DossierMapper dossierMapper;
+
+    @Autowired
+    private DossierTextProcessorFactory dossierTextProcessorFactory;
 
     @Override
     public Dossier getDossier(long id) {
@@ -115,10 +120,11 @@ public class DossierServiceImpl implements IDossierService {
 
     /**
      *
-     * @param id
+     * @param dossier
      */
     @Override
-    public void processDossierContent(long id) {
-
+    public void processDossierContent(Dossier dossier) {
+        DossierTextProcessor processor = dossierTextProcessorFactory.getDossierTextProcessor(dossier.getFileType());
+        processor.process(dossier);
     }
 }

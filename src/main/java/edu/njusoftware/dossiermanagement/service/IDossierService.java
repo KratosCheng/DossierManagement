@@ -30,5 +30,5 @@ public interface IDossierService {
 
     String getFilePathById(long dossierId);
 
-    void processDossierContent(long id);
+    void processDossierContent(Dossier dossier);
 }
