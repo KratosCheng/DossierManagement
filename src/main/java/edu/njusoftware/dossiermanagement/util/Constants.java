@@ -48,4 +48,6 @@ public interface Constants {
     int CODE_RESOURCE_NOT_FOUND = 2;
 
     String MSG_RESOURCE_NOT_FOUND = "找不到请求的资源";
+
+    String TIME_INFO_SEPARATOR = "_";
 }

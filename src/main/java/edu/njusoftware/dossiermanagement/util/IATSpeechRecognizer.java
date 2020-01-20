@@ -1,12 +1,12 @@
 package edu.njusoftware.dossiermanagement.util;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.iflytek.cloud.speech.*;
 import edu.njusoftware.dossiermanagement.controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class VoiceSpeech {
+@Component
+public class IATSpeechRecognizer {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     // 初始化设置SpeechUtility对象
@@ -25,12 +26,16 @@ public class VoiceSpeech {
 
     private static List<String> resultList = new LinkedList<>();
 
+    private static boolean completed = false;
+
     /**
      * 调用讯飞语音识别sdk，识别pcm音频文件
      * @param filePath
      */
-    public static List<String> RecognizePcmfileByte(String filePath) {
+    @Retryable(value = SpeechResultException.class)
+    public List<String> recognizePcmFileByte(String filePath) throws SpeechResultException {
         resultList.clear();
+        completed = false;
 
         SpeechRecognizer recognizer = SpeechRecognizer.getRecognizer();
         recognizer.setParameter(SpeechConstant.AUDIO_SOURCE, "-1");
@@ -58,7 +63,7 @@ public class VoiceSpeech {
 
                 // 等待音频解析完成，recognizer.isListening()返回true，说明解析工作还在进行
                 while(recognizer.isListening()) {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 }
             }
 
@@ -73,7 +78,10 @@ public class VoiceSpeech {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }//end of try-catch-finally
+        }
+        if (!completed) {
+            throw new SpeechResultException();
+        }
         return resultList;
     }
 
@@ -97,10 +105,9 @@ public class VoiceSpeech {
         public void onResult(RecognizerResult result, boolean islast) {
             resultList.add(result.getResultString());
 
-
-//            if (islast) {
-//                iatSpeechInitUI();
-//            }
+            if (islast) {
+                completed = true;
+            }
         }
 
         public void onVolumeChanged(int volume) {
@@ -120,9 +127,12 @@ public class VoiceSpeech {
     /**
      * 听写结束，恢复初始状态
      */
-    public void iatSpeechInitUI() {
-        //labelWav.setIcon(new ImageIcon("res/mic_01.png"));
-        //jbtnRecognizer.setEnabled(true);
-        //((JLabel) jbtnRecognizer.getComponent(0)).setText("开始听写");
+    @Recover
+    public void logSpeechRecognizeError() {
+        logger.error("Error to recognize file with 3 attempts, no last result received!");
+    }
+
+    public class SpeechResultException extends Exception {
+
     }
 }

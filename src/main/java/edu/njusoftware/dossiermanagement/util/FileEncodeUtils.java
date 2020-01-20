@@ -9,6 +9,7 @@ public class FileEncodeUtils {
      *  第一个参数source表示要解码的源文件。
      *  第二个参数target是将要创建和编码的目标文件。
      * 请注意，此方法是阻塞的：只有在转码操作完成（或失败）后，该方法才会返回
+     * @param
      * @return boolean
      */
     public static boolean convertingAudioToPcmFormat(String sourcePath, String targetPath, float offset, float duration) {
@@ -54,12 +55,12 @@ public class FileEncodeUtils {
              * 它为转码操作设置偏移量。源文件将从其开始的偏移秒开始重新编码。例如，如果您想剪切源文件的前五秒，
              * 则应在传递给编码器的EncodingAttributes对象上调用setOffset（5）。
              */
-//            attrs.setOffset(offset);
+            attrs.setOffset(offset);
             /*
              * 它设置转码操作的持续时间。只有源的持续时间秒才会在目标文件中重新编码。例如，如果您想从源中提取和转码30秒的一部分，
              * 则应在传递给编码器的EncodingAttributes对象上调用setDuration（30）
              */
-//            attrs.setDuration(duration);
+            attrs.setDuration(duration);
 
             // Encode/编码
             Encoder encoder = new Encoder();
