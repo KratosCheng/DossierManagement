@@ -46,6 +46,7 @@ public class IATSpeechRecognizer {
         recognizer.setParameter(SpeechConstant.VAD_EOS, "10000");
         recognizer.startListening(recognizerListener);
 
+        logger.debug("Start to recognize file : " + filePath);
         FileInputStream fis = null;
         final byte[] buffer = new byte[64*1024];
         try {
@@ -80,6 +81,7 @@ public class IATSpeechRecognizer {
             }
         }
         if (!completed) {
+            logger.error("Error to recognize file " + filePath);
             throw new SpeechResultException();
         }
         return resultList;
@@ -103,8 +105,8 @@ public class IATSpeechRecognizer {
          * @param islast
          */
         public void onResult(RecognizerResult result, boolean islast) {
+            logger.debug("Receive recognized result [" + result.getResultString() + "], islast : " + islast);
             resultList.add(result.getResultString());
-
             if (islast) {
                 completed = true;
             }
@@ -128,8 +130,8 @@ public class IATSpeechRecognizer {
      * 听写结束，恢复初始状态
      */
     @Recover
-    public void logSpeechRecognizeError() {
-        logger.error("Error to recognize file with 3 attempts, no last result received!");
+    public void recover(SpeechResultException e) {
+        logger.error("Error to recognize file with 3 attempts, no last result received! Error is " + e.getMessage());
     }
 
     public class SpeechResultException extends Exception {

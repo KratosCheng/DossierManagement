@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.njusoftware.dossiermanagement.domain.Dossier;
+import edu.njusoftware.dossiermanagement.domain.DossierContent;
+import edu.njusoftware.dossiermanagement.repository.DossierContentRepository;
 import edu.njusoftware.dossiermanagement.service.DossierTextProcessor;
 import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.FileEncodeUtils;
@@ -29,10 +31,22 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
     @Autowired
     private IATSpeechRecognizer recognizer;
 
+    @Autowired
+    private DossierContentRepository dossierContentRepository;
+
     @Override
     public void process(Dossier dossier) {
-        String sourcePath = dossier.getPath();
-        // 将用户上传文件转码为pcm
+        processDossierAudioFile(dossier.getId(), dossier.getName(), dossier.getPath());
+    }
+
+    /**
+     * 处理卷宗的音频文件，并调用语音识别接口
+     * @param dossierId
+     * @param dossierName
+     * @param sourcePath
+     */
+    public void processDossierAudioFile(long dossierId, String dossierName, String sourcePath) {
+        // 将用户上传音频文件转码为pcm
         File sourceFile = new File(sourcePath);
         long duration = 0L;
         try {
@@ -46,11 +60,13 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
         int part = 0;
         // 切割长音频文件为60s，并编码为pcm格式
         while (part < total) {
-            String pcmPartPath = sourceFile.getParent() + File.separator + dossier.getName() + "_" + part + ".pcm";
+            String pcmPartPath = sourceFile.getParent() + File.separator + dossierName + "_" + part + ".pcm";
+            logger.debug("Start to encode file " + pcmPartPath);
             if (FileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPartPath, partStart, partDuration)) {
-                dealPcmFiles(pcmPartPath, part, dossier.getId());
+                logger.debug("Success to encode file " + pcmPartPath);
+                dealPcmFiles(pcmPartPath, part, dossierId);
             } else {
-                logger.error("Encode dossier file " + dossier.getName() + " to pcm format raised an error in part" + part);
+                logger.error("Error to encode dossier file " + dossierName + " to pcm format in part" + part);
             }
             part++;
             partStart += partDuration;
@@ -58,7 +74,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
     }
 
     /**
-     * 调用语音识别接口处理pcm文件
+     * 调用语音识别接口处理pcm文件，并存储当前pcm分块的信息
      * @param pcmFilePath
      */
     private void dealPcmFiles(String pcmFilePath, int part, long dossierId) {
@@ -87,8 +103,9 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
             JsonArray wsArray = result.get("ws").getAsJsonArray();
             for (int i = 0; i < wsArray.size(); i++) {
                 JsonObject cwObject = wsArray.get(i).getAsJsonObject();
-                // 计算当前中文词在整个音频文件中的起始位置
-                long bg = (part * partDuration * 1000) + cwObject.get("bg").getAsInt();
+//                long bg = (part * partDuration * 1000) + cwObject.get("bg").getAsInt();
+                // 获取当前中文词在当前音频文件分区中的起始位置
+                long bg = cwObject.get("bg").getAsLong();
                 // 通过关键字cw得到第二个数组
                 JsonArray cwArray = cwObject.get("cw").getAsJsonArray();
                 parseContent(cwArray, bg, content, timeInfo);
@@ -96,6 +113,11 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
         }
 
         timeInfo.deleteCharAt(timeInfo.length() - 1);
+        logger.debug("Dossier " + dossierId + " part " + part + " content : " + content.toString()
+                + " | time info : " + timeInfo.toString());
+        DossierContent dossierContent =
+                new DossierContent(dossierId, Constants.FILE_TYPE_AUDIO, part, timeInfo.toString(), content.toString());
+        dossierContentRepository.save(dossierContent);
     }
 
     /**
