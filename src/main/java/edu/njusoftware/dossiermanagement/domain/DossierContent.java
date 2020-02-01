@@ -21,7 +21,7 @@ public class DossierContent {
     private String fileType;
 
     // pdf的第几页，音视频卷宗的第几个部分（60s）
-    private long part;
+    private int part;
 
     // 位置信息
     @Column(name = "location_info")
@@ -30,7 +30,7 @@ public class DossierContent {
     // 纯文本内容
     private String content;
 
-    public DossierContent(long dossierId, String fileType, long part, String locationInfo, String content) {
+    public DossierContent(long dossierId, String fileType, int part, String locationInfo, String content) {
         this.dossierId = dossierId;
         this.fileType = fileType;
         this.part = part;
@@ -65,11 +65,11 @@ public class DossierContent {
         this.fileType = fileType;
     }
 
-    public long getPart() {
+    public int getPart() {
         return part;
     }
 
-    public void setPart(long part) {
+    public void setPart(int part) {
         this.part = part;
     }
 

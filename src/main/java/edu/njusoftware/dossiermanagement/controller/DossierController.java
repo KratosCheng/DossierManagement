@@ -4,6 +4,7 @@ import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.req.AddDirectoryReq;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
+import edu.njusoftware.dossiermanagement.service.IDossierContentService;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.SecurityUtils;
@@ -37,6 +38,9 @@ public class DossierController {
 
     @Autowired
     private IDossierService dossierService;
+
+    @Autowired
+    private IDossierContentService dossierContentService;
 
     @RequestMapping("/common/info/{id}")
     public Dossier getDossier(@PathVariable long id) {
@@ -143,6 +147,8 @@ public class DossierController {
     @RequestMapping("/common/updateCurrentDossier/{dossierId}")
     public String updateCurrentDossier(Model model, @PathVariable long dossierId) {
         model.addAttribute("currentDossier", dossierService.getDossier(dossierId));
+        // 设置显示第一部分的文本内容
+        model.addAttribute("dossierContent", dossierContentService.getDossierContent(dossierId, 0));
         return "casePage::#div-media-container";
     }
 

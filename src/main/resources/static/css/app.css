@@ -54,6 +54,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    float: left;
 }
 
 .case-search-form {
@@ -89,4 +90,15 @@
 .form-hint {
     margin-left: 3%;
     font-size: 12px;
+}
+
+.text-container {
+    min-height: inherit;
+    width: 20%;
+    float: left;
+}
+
+.text-content {
+    margin-top: 5px;
+    width: 100%;
 }
