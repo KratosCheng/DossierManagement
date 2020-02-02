@@ -79,29 +79,31 @@
                 <iframe style="min-height: inherit; min-width: 100%" th:case="pdf" th:src="@{'/js/pdfjs/web/viewer.html?file=http://localhost:8080' + '/dossier/common/getFile/' + ${currentDossier.id}}"></iframe>
                 <embed th:case="*" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" th:title="${currentDossier.name}" />
             </div>
-            <div class="text-container" th:if="${dossierContent} ne null">
-                <div class="box box-info">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">卷宗文本内容</h3>
-                    </div>
-                    <div class="box-body">
-                        <form id="dossierContentForm" role="form" th:object="${dossierContent}">
-                            <div class="form-group">
-                                <label style="width: 100%">
-                                    <input hidden th:field="*{dossierId}">
-                                    <span>第</span>
-                                    <input readonly type="text" style="width: 60px" th:field="*{part}">
-                                    <span th:if="${dossierContent.fileType eq 'pdf'}">页</span>
-                                    <span th:if="${dossierContent.fileType ne 'pdf'}">段</span>
-                                    <textarea type="text" id="ta-content" class="form-control text-content" rows="20" readonly th:field="*{content}"></textarea>
-                                </label>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="box-footer">
-                        <button id="btn_modify" type="button" th:onclick="showTextModification()" class="btn btn-primary">修正文本内容</button>
-                        <button id="btn_cancel" type="button" th:onclick="cancelTextModification([[${dossierContent.content}]])" style="display: none" class="btn btn-default">取消</button>
-                        <button id="btn_submit" type="submit" style="display: none" class="btn btn-info pull-right">确认</button>
+            <div id="div-text-container" th:fragment="div-text-container" style="min-height: inherit">
+                <div class="text-container" th:if="${dossierContent} ne null">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">卷宗文本内容</h3>
+                        </div>
+                        <div class="box-body">
+                            <form id="dossierContentForm" role="form" th:object="${dossierContent}">
+                                <div class="form-group">
+                                    <label style="width: 100%">
+                                        <input hidden th:field="*{dossierId}">
+                                        <span>第</span>
+                                        <input readonly type="text" style="width: 60px" th:field="*{part}">
+                                        <span th:if="${dossierContent.fileType eq 'pdf'}">页</span>
+                                        <span th:if="${dossierContent.fileType ne 'pdf'}">段</span>
+                                        <textarea th:onchange="allowSubmit()" type="text" id="ta-content" class="form-control text-content" rows="20" readonly th:field="*{content}"></textarea>
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="box-footer">
+                            <button id="btn_modify" type="button" th:onclick="showTextModification()" class="btn btn-primary">修正文本内容</button>
+                            <button id="btn_cancel" type="button" th:onclick="cancelTextModification([[${dossierContent.content}]])" style="display: none" class="btn btn-default">取消</button>
+                            <button id="btn_submit" form="dossierContentForm" type="button" th:onclick="rectifyDossierContent()" disabled style="display: none" class="btn btn-info pull-right">确认</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,11 +119,16 @@
 <script type="text/javascript" th:src="@{/js/pdfjs/build/pdf.js}"></script>
 <script type="text/javascript" th:src="@{/js/pdfjs/build/pdf.worker.js}"></script>
 <script>
+    function allowSubmit() {
+        $("#btn_submit").removeAttr("disabled");
+    }
+
     function showTextModification() {
         $("#ta-content").removeAttr("readonly");
         $("#btn_cancel").show();
         $("#btn_submit").show();
         $("#btn_modify").hide();
+        $("#btn_submit").attr("disabled", "disabled");
     }
 
     function cancelTextModification(textContent) {
@@ -130,6 +137,23 @@
         $("#btn_cancel").hide();
         $("#btn_submit").hide();
         $("#btn_modify").show();
+    }
+
+    function rectifyDossierContent() {
+        var formData = new FormData($("#dossierContentForm")[0]);
+
+        $.ajax({
+            //几个参数需要注意一下
+            type: "post",//方法类型
+            url: "../dossier/rectifyContent", //url
+            data: formData,
+            processData: false,			//对数据不做处理
+            contentType: false,
+            success: function (result) {
+                alert("卷宗文本内容修改成功！");
+                $('#div-text-container').html(result);
+            }
+        })
     }
 </script>
 </html>

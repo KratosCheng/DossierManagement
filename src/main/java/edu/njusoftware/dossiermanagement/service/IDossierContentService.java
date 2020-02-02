@@ -1,5 +1,6 @@
 package edu.njusoftware.dossiermanagement.service;
 
+import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.DossierContent;
 
 /**
@@ -13,4 +14,13 @@ public interface IDossierContentService {
      * @return
      */
     DossierContent getDossierContent(long dossierId, int part);
+
+    /**
+     * 修正卷宗文本内容
+     * @param dossierId
+     * @param content
+     * @param part
+     * @return
+     */
+    DossierContent rectifyDossierContent(long dossierId, int part, String content);
 }

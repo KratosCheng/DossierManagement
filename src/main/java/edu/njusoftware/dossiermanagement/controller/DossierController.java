@@ -1,6 +1,7 @@
 package edu.njusoftware.dossiermanagement.controller;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
+import edu.njusoftware.dossiermanagement.domain.DossierContent;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.req.AddDirectoryReq;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
@@ -191,5 +192,19 @@ public class DossierController {
         dossierService.processDossierContent(dossier);
         return new BaseResponse(0, "上传卷宗成功！");
 
+    }
+
+    /**
+     * 修正卷宗文本内容
+     * @param model
+     * @param dossierContent
+     * @return
+     */
+    @RequestMapping(value = "/rectifyContent")
+    public String rectifyContent(Model model, DossierContent dossierContent) {
+        DossierContent newDossierContent = dossierContentService.rectifyDossierContent(
+                dossierContent.getDossierId(), dossierContent.getPart(), dossierContent.getContent());
+        model.addAttribute("dossierContent", newDossierContent);
+        return "casePage::#div-text-container";
     }
 }
