@@ -208,12 +208,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             // 修改了密码
             if (!oldUser.getPassword().equals(user.getPassword())) {
                 user.setPassword(SecurityUtils.encodePassword(user.getPassword()));
-                OperationRecordService.savaUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
+                OperationRecordService.saveUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
                         Constants.OPERATION_MODIFY, "password", oldUser.getPassword(), user.getPassword());
             }
             // 修改了角色
             if (!oldUser.getRoleName().equals(user.getRoleName())) {
-                OperationRecordService.savaUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
+                OperationRecordService.saveUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
                         Constants.OPERATION_MODIFY, "role", oldUser.getRoleName(), user.getRoleName());
             }
         }

@@ -7,6 +7,7 @@ import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.DossierContent;
 import edu.njusoftware.dossiermanagement.repository.DossierContentRepository;
 import edu.njusoftware.dossiermanagement.service.DossierTextProcessor;
+import edu.njusoftware.dossiermanagement.service.OperationRecordService;
 import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.FileEncodeUtils;
 import edu.njusoftware.dossiermanagement.util.IATSpeechRecognizer;
@@ -36,7 +37,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
 
     @Override
     public void process(Dossier dossier) {
-        processDossierAudioFile(dossier.getId(), dossier.getName(), dossier.getPath());
+        processDossierAudioFile(dossier.getId(), dossier.getName(), dossier.getPath(), dossier.getCaseNum());
     }
 
     /**
@@ -44,8 +45,9 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
      * @param dossierId
      * @param dossierName
      * @param sourcePath
+     * @param caseNum
      */
-    public void processDossierAudioFile(long dossierId, String dossierName, String sourcePath) {
+    public void processDossierAudioFile(long dossierId, String dossierName, String sourcePath, String caseNum) {
         // 将用户上传音频文件转码为pcm
         File sourceFile = new File(sourcePath);
         long duration = 0L;
@@ -64,7 +66,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
             logger.debug("Start to encode file " + pcmPartPath);
             if (FileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPartPath, partStart, partDuration)) {
                 logger.debug("Success to encode file " + pcmPartPath);
-                dealPcmFiles(pcmPartPath, part, dossierId);
+                dealPcmFiles(pcmPartPath, part, dossierId, caseNum, dossierName);
             } else {
                 logger.error("Error to encode dossier file " + dossierName + " to pcm format in part" + part);
             }
@@ -77,7 +79,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
      * 调用语音识别接口处理pcm文件，并存储当前pcm分块的信息
      * @param pcmFilePath
      */
-    private void dealPcmFiles(String pcmFilePath, int part, long dossierId) {
+    private void dealPcmFiles(String pcmFilePath, int part, long dossierId, String caseNum, String dossierName) {
         logger.debug("Start to recognize " + pcmFilePath + " of dossier:" + dossierId + " part" + part);
         List<String> resultStrings = null;
         try {
@@ -118,6 +120,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
         DossierContent dossierContent =
                 new DossierContent(dossierId, Constants.FILE_TYPE_AUDIO, part, timeInfo.toString(), content.toString());
         dossierContentRepository.save(dossierContent);
+        OperationRecordService.saveContentRecognitionOperationRecord(caseNum, dossierId, dossierName, part, content.toString());
     }
 
     /**

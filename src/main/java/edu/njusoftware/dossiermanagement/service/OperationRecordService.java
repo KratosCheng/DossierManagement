@@ -47,16 +47,29 @@ public class OperationRecordService {
     }
 
     /**
-     * 存储修正OCR结果的卷宗操作记录
+     * 存储修正卷宗文本内容的卷宗操作记录
      * @param caseNum
      * @param dossierId
      * @param dossierName
      * @param before
      * @param after
      */
-    public static void saveOCRResultModificationOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String before, String after) {
+    public static void saveContentModificationOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String before, String after) {
         DossierOperationRecord record = new DossierOperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId, dossierName,
-                pageNum, Constants.OPERATION_MODIFY, new Date(), before, after, 0);
+                pageNum, Constants.OPERATION_MODIFY, new Date(), before, after, 2);
+        dossierOperationRecordRepository.save(record);
+    }
+
+    /**
+     * 存储系统识别卷宗文本内容的卷宗操作记录
+     * @param caseNum
+     * @param dossierId
+     * @param dossierName
+     * @param after
+     */
+    public static void saveContentRecognitionOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String after) {
+        DossierOperationRecord record = new DossierOperationRecord("system", caseNum, dossierId, dossierName,
+                pageNum, Constants.OPERATION_MODIFY, new Date(), null, after, 3);
         dossierOperationRecordRepository.save(record);
     }
 
@@ -80,7 +93,7 @@ public class OperationRecordService {
      * @param before
      * @param after
      */
-    public static void savaUserModificationOperation(String operator, String jobNum, String operation,
+    public static void saveUserModificationOperation(String operator, String jobNum, String operation,
                                                      String field, String before, String after) {
         UserOperationRecord userOperationRecord =
                 new UserOperationRecord(operator, jobNum, operation, field, before, after, new Date());
