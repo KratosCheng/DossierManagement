@@ -122,7 +122,7 @@ public class PageController {
         model.addAttribute("directoryMap", dossierService.getDirectoryMap(caseNum));
         model.addAttribute("title", "案件主页 #" + caseNum);
         model.addAttribute("user", SecurityUtils.getLoginUser());
-        model.addAttribute("contentHisList", new ArrayList<DossierOperationRecord>());
+//        model.addAttribute("contentHisList", new ArrayList<DossierOperationRecord>());
         return "casePage";
     }
 
