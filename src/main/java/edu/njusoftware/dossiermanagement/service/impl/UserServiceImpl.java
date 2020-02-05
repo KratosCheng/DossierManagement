@@ -52,6 +52,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Autowired
     private UserOperationRecordRepository userOperationRecordRepository;
 
+    @Autowired
+    private OperationRecordService operationRecordService;
+
     /**
      * 根据用户名获取该用户的所有信息， 包括用户信息和权限点
      * @param jobNum
@@ -200,7 +203,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             user.setPassword(SecurityUtils.encodePassword(user.getPassword()));
             user.setCreator(SecurityUtils.getLoginUserName());
             user.setCreateTime(new Date());
-            OperationRecordService.saveAccountOperation(SecurityUtils.getLoginUserName(), user.getJobNum(), Constants.OPERATION_ADD);
+            operationRecordService.saveAccountOperation(SecurityUtils.getLoginUserName(), user.getJobNum(), Constants.OPERATION_ADD);
         } else {
             // 修改用户
             user.setCreator(oldUser.getCreator());
@@ -208,12 +211,12 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             // 修改了密码
             if (!oldUser.getPassword().equals(user.getPassword())) {
                 user.setPassword(SecurityUtils.encodePassword(user.getPassword()));
-                OperationRecordService.saveUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
+                operationRecordService.saveUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
                         Constants.OPERATION_MODIFY, "password", oldUser.getPassword(), user.getPassword());
             }
             // 修改了角色
             if (!oldUser.getRoleName().equals(user.getRoleName())) {
-                OperationRecordService.saveUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
+                operationRecordService.saveUserModificationOperation(SecurityUtils.getLoginUserName(), user.getJobNum(),
                         Constants.OPERATION_MODIFY, "role", oldUser.getRoleName(), user.getRoleName());
             }
         }

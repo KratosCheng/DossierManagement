@@ -207,4 +207,17 @@ public class DossierController {
         model.addAttribute("dossierContent", newDossierContent);
         return "casePage::#div-text-container";
     }
+
+    /**
+     * 获取卷宗文本内容的历史操作记录
+     * @param model
+     * @param dossierId
+     * @param part
+     * @return
+     */
+    @RequestMapping(value = "/contentHis")
+    public String getContentHis(Model model, long dossierId, int part) {
+        model.addAttribute("contentHisList", dossierContentService.getContentHis(dossierId, part));
+        return "casePage::#text_his_dialog";
+    }
 }

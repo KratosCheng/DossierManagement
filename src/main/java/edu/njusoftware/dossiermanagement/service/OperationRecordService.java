@@ -7,9 +7,11 @@ import edu.njusoftware.dossiermanagement.repository.UserOperationRecordRepositor
 import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class OperationRecordService {
@@ -29,7 +31,7 @@ public class OperationRecordService {
      * @param caseNum
      * @param operation
      */
-    public static void saveCaseOperationRecord(String caseNum, String operation) {
+    public void saveCaseOperationRecord(String caseNum, String operation) {
         DossierOperationRecord record = new DossierOperationRecord(SecurityUtils.getLoginUserName(), caseNum, operation, new Date());
         dossierOperationRecordRepository.save(record);
     }
@@ -41,7 +43,7 @@ public class OperationRecordService {
      * @param dossierName
      * @param operation
      */
-    public static void saveNormalDossierOperationRecord(String caseNum, long dossierId, String dossierName, String operation) {
+    public void saveNormalDossierOperationRecord(String caseNum, long dossierId, String dossierName, String operation) {
         DossierOperationRecord record = new DossierOperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId, dossierName, operation, new Date());
         dossierOperationRecordRepository.save(record);
     }
@@ -54,7 +56,7 @@ public class OperationRecordService {
      * @param before
      * @param after
      */
-    public static void saveContentModificationOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String before, String after) {
+    public void saveContentModificationOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String before, String after) {
         DossierOperationRecord record = new DossierOperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId, dossierName,
                 pageNum, Constants.OPERATION_MODIFY, new Date(), before, after, 2);
         dossierOperationRecordRepository.save(record);
@@ -67,7 +69,7 @@ public class OperationRecordService {
      * @param dossierName
      * @param after
      */
-    public static void saveContentRecognitionOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String after) {
+    public void saveContentRecognitionOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String after) {
         DossierOperationRecord record = new DossierOperationRecord("system", caseNum, dossierId, dossierName,
                 pageNum, Constants.OPERATION_MODIFY, new Date(), null, after, 3);
         dossierOperationRecordRepository.save(record);
@@ -79,7 +81,7 @@ public class OperationRecordService {
      * @param jobNum
      * @param operation
      */
-    public static void saveAccountOperation(String operator, String jobNum, String operation) {
+    public void saveAccountOperation(String operator, String jobNum, String operation) {
         UserOperationRecord userOperationRecord = new UserOperationRecord(operator, jobNum, operation, new Date());
         userOperationRecordRepository.save(userOperationRecord);
     }
@@ -93,10 +95,20 @@ public class OperationRecordService {
      * @param before
      * @param after
      */
-    public static void saveUserModificationOperation(String operator, String jobNum, String operation,
+    public void saveUserModificationOperation(String operator, String jobNum, String operation,
                                                      String field, String before, String after) {
         UserOperationRecord userOperationRecord =
                 new UserOperationRecord(operator, jobNum, operation, field, before, after, new Date());
         userOperationRecordRepository.save(userOperationRecord);
+    }
+
+    /**
+     * 获取卷宗某部分的修改记录
+     * @param dossierId
+     * @param part
+     */
+    public List<DossierOperationRecord> getDossierContentPartHis(long dossierId, int part) {
+        return dossierOperationRecordRepository.findAllByDossierIdAndPageNumAndOperation(dossierId,
+                part, Constants.OPERATION_MODIFY, Sort.by(Sort.Direction.DESC, "operateTime"));
     }
 }

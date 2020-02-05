@@ -35,6 +35,9 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
     @Autowired
     private DossierContentRepository dossierContentRepository;
 
+    @Autowired
+    private OperationRecordService operationRecordService;
+
     @Override
     public void process(Dossier dossier) {
         processDossierAudioFile(dossier.getId(), dossier.getName(), dossier.getPath(), dossier.getCaseNum());
@@ -120,7 +123,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
         DossierContent dossierContent =
                 new DossierContent(dossierId, Constants.FILE_TYPE_AUDIO, part, timeInfo.toString(), content.toString());
         dossierContentRepository.save(dossierContent);
-        OperationRecordService.saveContentRecognitionOperationRecord(caseNum, dossierId, dossierName, part, content.toString());
+        operationRecordService.saveContentRecognitionOperationRecord(caseNum, dossierId, dossierName, part, content.toString());
     }
 
     /**

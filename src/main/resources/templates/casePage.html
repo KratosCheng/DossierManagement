@@ -68,41 +68,92 @@
             </form>
         </section>
     </aside>
-    <section id="div-media-content" class="content-wrapper">
-        <div id="div-media-container" th:fragment="div-media-container" style="min-height: inherit">
-            <div class="media-container" th:if="${currentDossier} ne null" th:switch="${currentDossier.fileType}">
-                <audio style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
-                <video th:case="'video'" controls="controls">
-                    <source th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" />
-                    Your browser does not support the video tag.
-                </video>
-                <iframe style="min-height: inherit; min-width: 100%" th:case="pdf" th:src="@{'/js/pdfjs/web/viewer.html?file=http://localhost:8080' + '/dossier/common/getFile/' + ${currentDossier.id}}"></iframe>
-                <embed th:case="*" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" th:title="${currentDossier.name}" />
+    <section class="content-wrapper">
+        <div id="div-media-content" style="min-height: inherit">
+            <div id="div-media-container" th:fragment="div-media-container" style="min-height: inherit">
+                <div class="media-container" th:if="${currentDossier} ne null" th:switch="${currentDossier.fileType}">
+                    <audio style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
+                    <video th:case="'video'" controls="controls">
+                        <source th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <iframe style="min-height: inherit; min-width: 100%" th:case="pdf" th:src="@{'/js/pdfjs/web/viewer.html?file=http://localhost:8080' + '/dossier/common/getFile/' + ${currentDossier.id}}"></iframe>
+                    <embed th:case="*" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" th:title="${currentDossier.name}" />
+                </div>
+                <div id="div-text-container" th:fragment="div-text-container" style="min-height: inherit">
+                    <div class="text-container" th:if="${dossierContent} ne null">
+                        <div class="box box-info">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">卷宗文本内容</h3>
+                            </div>
+                            <div class="box-body">
+                                <form id="dossierContentForm" role="form" th:object="${dossierContent}">
+                                    <div class="form-group">
+                                        <label style="width: 100%">
+                                            <input hidden th:field="*{dossierId}">
+                                            <span>第</span>
+                                            <input readonly type="text" style="width: 60px" th:field="*{part}">
+                                            <span th:if="${dossierContent.fileType eq 'pdf'}">页</span>
+                                            <span th:if="${dossierContent.fileType ne 'pdf'}">段</span>
+                                            <textarea th:onchange="allowSubmit()" type="text" id="ta-content" class="form-control text-content" rows="20" readonly th:field="*{content}"></textarea>
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="box-footer">
+                                <button id="btn_modify" type="button" th:onclick="showTextModification()" class="btn btn-primary">修正文本内容</button>
+                                <button id="btn_his" type="button" th:onclick="showTextModificationHis([[${dossierContent.dossierId}]],[[${dossierContent.part}]])" class="btn btn-toolbar">历史修改记录</button>
+                                <button id="btn_cancel" type="button" th:onclick="cancelTextModification([[${dossierContent.content}]])" style="display: none" class="btn btn-default">取消</button>
+                                <button id="btn_submit" form="dossierContentForm" type="button" th:onclick="rectifyDossierContent()" disabled style="display: none" class="btn btn-info pull-right">确认</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="div-text-container" th:fragment="div-text-container" style="min-height: inherit">
-                <div class="text-container" th:if="${dossierContent} ne null">
-                    <div class="box box-info">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">卷宗文本内容</h3>
+        </div>
+        <div id="div-his-container">
+            <div id="text_his_dialog" th:fragment="text_his_dialog" class="modal fade" role="dialog" aria-hidden="true" title="历史记录" >
+                <div class="modal-dialog" style="max-height: 80%">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">
+                                卷宗历史记录
+                            </h4>
                         </div>
-                        <div class="box-body">
-                            <form id="dossierContentForm" role="form" th:object="${dossierContent}">
-                                <div class="form-group">
-                                    <label style="width: 100%">
-                                        <input hidden th:field="*{dossierId}">
-                                        <span>第</span>
-                                        <input readonly type="text" style="width: 60px" th:field="*{part}">
-                                        <span th:if="${dossierContent.fileType eq 'pdf'}">页</span>
-                                        <span th:if="${dossierContent.fileType ne 'pdf'}">段</span>
-                                        <textarea th:onchange="allowSubmit()" type="text" id="ta-content" class="form-control text-content" rows="20" readonly th:field="*{content}"></textarea>
-                                    </label>
-                                </div>
-                            </form>
+                        <div class="modal-body">
+                            <ul class="timeline">
+                                <li th:each="record : ${contentHisList}">
+                                    <i class="fa fa-user bg-aqua" th:if="${record.jobNum ne 'system'}"></i>
+                                    <i class="fa fa-server bg-yellow" th:if="${record.jobNum eq 'system'}"></i>
+                                    <div class="timeline-item">
+                                        <span class="time">
+                                            <i class="fa fa-clock-o"></i>
+                                            <span th:text="${#dates.format(record.operateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                        </span>
+                                        <h3 class="timeline-header">
+                                            <a href="#" th:text="${record.jobNum}"></a>
+                                            <span th:if="${record.jobNum ne 'system'}">修正卷宗文本内容</span>
+                                            <span th:if="${record.jobNum eq 'system'}">识别卷宗文本内容</span>
+                                            <span th:if="${record.status eq 2}">(待反馈)</span>
+                                            <span th:if="${record.status eq 3}">(已反馈)</span>
+                                            <span th:if="${record.status eq 4}">(被覆盖)</span>
+                                        </h3>
+                                        <div class="timeline-body">
+                                            <p th:text="${record.currentValue}"></p>
+                                        </div>
+                                        <div class="timeline-footer">
+                                            <a th:if="${record.status ne 2}" th:onclick="resetContentHis([[${record.dossierId}]], [[${record.pageNum}]], [[${record.currentValue}]])" class="btn btn-primary btn-xs">重置为此版本</a>
+                                            <a class="btn btn-danger btn-xs">Delete</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="fa fa-clock-o bg-gray"></i>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="box-footer">
-                            <button id="btn_modify" type="button" th:onclick="showTextModification()" class="btn btn-primary">修正文本内容</button>
-                            <button id="btn_cancel" type="button" th:onclick="cancelTextModification([[${dossierContent.content}]])" style="display: none" class="btn btn-default">取消</button>
-                            <button id="btn_submit" form="dossierContentForm" type="button" th:onclick="rectifyDossierContent()" disabled style="display: none" class="btn btn-info pull-right">确认</button>
+                        <div class="modal-footer">
+                            <button type="button" th:onclick="exitContentHis()" class="btn btn-primary">退出</button>
                         </div>
                     </div>
                 </div>
@@ -128,6 +179,7 @@
         $("#btn_cancel").show();
         $("#btn_submit").show();
         $("#btn_modify").hide();
+        $("#btn_his").hide();
         $("#btn_submit").attr("disabled", "disabled");
     }
 
@@ -137,6 +189,25 @@
         $("#btn_cancel").hide();
         $("#btn_submit").hide();
         $("#btn_modify").show();
+        $("#btn_his").show();
+    }
+    
+    function showTextModificationHis(dossierId, part) {
+        alert(dossierId + " " + part);
+        $.ajax({
+            type: "post",
+            url: "../dossier/contentHis",
+            data: {dossierId : dossierId, part : part},
+            // dataType: 'json',
+            // contentType: 'application/json;charset=UTF-8',
+            success: function (result) {
+                $("#div-his-container").html(result);
+                $("#text_his_dialog").modal('show');
+            },
+            error: function (r) {
+                alert("error" + r);
+            }
+        })
     }
 
     function rectifyDossierContent() {
@@ -154,6 +225,17 @@
                 $('#div-text-container').html(result);
             }
         })
+    }
+
+    function exitContentHis() {
+        $("#text_his_dialog").modal('hide');
+    }
+
+    function resetContentHis(dossierId, part, content) {
+        alert(dossierId + "" + part + content);
+        $("#ta-content").val(content);
+        rectifyDossierContent();
+        $('#div-his-container').modal('hide');
     }
 </script>
 </html>

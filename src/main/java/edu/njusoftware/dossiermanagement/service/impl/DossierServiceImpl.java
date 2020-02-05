@@ -31,6 +31,9 @@ public class DossierServiceImpl implements IDossierService {
     @Autowired
     private DossierTextProcessorFactory dossierTextProcessorFactory;
 
+    @Autowired
+    private OperationRecordService operationRecordService;
+
     @Override
     public Dossier getDossier(long id) {
         Optional<Dossier> optionalDossier = dossierRepository.findById(id);
@@ -48,7 +51,7 @@ public class DossierServiceImpl implements IDossierService {
         if (savedDossier == null) {
             return false;
         }
-        OperationRecordService.saveNormalDossierOperationRecord(dossier.getCaseNum(), savedDossier.getId(),
+        operationRecordService.saveNormalDossierOperationRecord(dossier.getCaseNum(), savedDossier.getId(),
                 savedDossier.getName(), Constants.OPERATION_ADD);
         return true;
     }
@@ -74,7 +77,7 @@ public class DossierServiceImpl implements IDossierService {
         if (removedDossier == null) {
             return false;
         }
-        OperationRecordService.saveNormalDossierOperationRecord(removedDossier.getCaseNum(), removedDossier.getId(),
+        operationRecordService.saveNormalDossierOperationRecord(removedDossier.getCaseNum(), removedDossier.getId(),
                 removedDossier.getName(), Constants.OPERATION_REMOVE);
         return true;
     }

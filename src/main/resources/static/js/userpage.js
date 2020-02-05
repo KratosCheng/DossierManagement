@@ -193,7 +193,7 @@ function modifyUser() {
 function showAddUserDialog() {
     $("#modify-user-form")[0].reset();
     document.getElementById("modifyJobNum").removeAttribute("readonly");
-    $("#modify_user_dialog").modal('show')
+    $("#modify_user_dialog").modal('show');
     $(".form-hint").hide();
 }
 

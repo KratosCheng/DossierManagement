@@ -1,6 +1,9 @@
 package edu.njusoftware.dossiermanagement.service;
 
 import edu.njusoftware.dossiermanagement.domain.DossierContent;
+import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+
+import java.util.List;
 
 /**
  * 对卷宗文本内容进行操作的Service
@@ -22,4 +25,12 @@ public interface IDossierContentService {
      * @return
      */
     DossierContent rectifyDossierContent(long dossierId, int part, String content);
+
+    /**
+     * 获取卷宗某部分的修改记录
+     * @param dossierId
+     * @param part
+     * @return
+     */
+    List<DossierOperationRecord> getContentHis(long dossierId, int part);
 }

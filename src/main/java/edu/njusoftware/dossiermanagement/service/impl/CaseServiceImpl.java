@@ -41,12 +41,12 @@ public class CaseServiceImpl implements ICaseService {
     private DossierRepository dossierRepository;
 
     @Autowired
-    private DossierOperationRecordRepository operationRepository;
+    private OperationRecordService operationRecordService;
 
     @Override
     public CaseInfo getCaseInfo(String caseNum) {
         // 存储删除操作记录
-        OperationRecordService.saveCaseOperationRecord(caseNum, Constants.OPERATION_VIEW);
+        operationRecordService.saveCaseOperationRecord(caseNum, Constants.OPERATION_VIEW);
 
         return caseRepository.findFirstByCaseNum(caseNum);
     }
@@ -67,7 +67,7 @@ public class CaseServiceImpl implements ICaseService {
             return false;
         }
         // 存储添加操作记录
-        OperationRecordService.saveCaseOperationRecord(caseInfo.getCaseNum(), Constants.OPERATION_ADD);
+        operationRecordService.saveCaseOperationRecord(caseInfo.getCaseNum(), Constants.OPERATION_ADD);
         return true;
     }
 
@@ -90,7 +90,7 @@ public class CaseServiceImpl implements ICaseService {
         processInfo.append(" succeed");
         logger.info(processInfo.toString());
         // 存储删除操作记录
-        OperationRecordService.saveCaseOperationRecord(caseNum, Constants.OPERATION_REMOVE);
+        operationRecordService.saveCaseOperationRecord(caseNum, Constants.OPERATION_REMOVE);
         return new BaseResponse(Constants.CODE_SUCCESS, Constants.MSG_SUCCESS);
     }
 
