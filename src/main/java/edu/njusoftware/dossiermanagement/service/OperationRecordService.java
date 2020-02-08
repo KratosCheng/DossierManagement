@@ -27,6 +27,14 @@ public class OperationRecordService {
     }
 
     /**
+     * 根据id查找卷宗操作记录
+     * @param id
+     */
+    public DossierOperationRecord getDossierOperationRecordById(long id) {
+        return dossierOperationRecordRepository.findById(id).get();
+    }
+
+    /**
      * 存储案件的操作记录
      * @param caseNum
      * @param operation
@@ -53,12 +61,15 @@ public class OperationRecordService {
      * @param caseNum
      * @param dossierId
      * @param dossierName
+     * @param pageNum
      * @param before
      * @param after
+     * @param locationInfo
      */
-    public void saveContentModificationOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum, String before, String after) {
-        DossierOperationRecord record = new DossierOperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId, dossierName,
-                pageNum, Constants.OPERATION_MODIFY, new Date(), before, after, 2);
+    public void saveContentModificationOperationRecord(String caseNum, long dossierId, String dossierName, int pageNum,
+                                                       String before, String after, String locationInfo) {
+        DossierOperationRecord record = new DossierOperationRecord(SecurityUtils.getLoginUserName(), caseNum, dossierId,
+                dossierName, pageNum, Constants.OPERATION_MODIFY, new Date(), before, after, locationInfo, 2);
         dossierOperationRecordRepository.save(record);
     }
 

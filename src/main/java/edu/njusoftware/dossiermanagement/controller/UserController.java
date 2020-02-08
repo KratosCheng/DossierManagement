@@ -9,6 +9,7 @@ import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.service.IUserService;
+import edu.njusoftware.dossiermanagement.service.impl.DossierContentService;
 import edu.njusoftware.dossiermanagement.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +55,10 @@ public class UserController {
      */
     @RequestMapping("/list/all")
     public String getAllUsers() throws IOException, ParseException {
-        Dossier dossier = dossierService.getDossier(62);
-        dossierService.processDossierContent(dossier);
+        StringDifferenceUtils.getTempString("aaaabdff", "baaadf");
+//        DossierContentService.test();
+//        Dossier dossier = dossierService.getDossier(62);
+//        dossierService.processDossierContent(dossier);
 //        List<String> strings = IATSpeechRecognizer.RecognizePcmfileByte(pcmPath);
 //        FileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPath, 0F, 15F);
         return "hahah";

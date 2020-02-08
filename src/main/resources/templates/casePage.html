@@ -104,7 +104,7 @@
                                 <button id="btn_modify" type="button" th:onclick="showTextModification()" class="btn btn-primary">修正文本内容</button>
                                 <button id="btn_his" type="button" th:onclick="showTextModificationHis([[${dossierContent.dossierId}]],[[${dossierContent.part}]])" class="btn btn-toolbar">历史修改记录</button>
                                 <button id="btn_cancel" type="button" th:onclick="cancelTextModification([[${dossierContent.content}]])" style="display: none" class="btn btn-default">取消</button>
-                                <button id="btn_submit" form="dossierContentForm" type="button" th:onclick="rectifyDossierContent()" disabled style="display: none" class="btn btn-info pull-right">确认</button>
+                                <button id="btn_submit" form="dossierContentForm" type="button" th:onclick="rectifyDossierContent([[${dossierContent.content}]])" disabled style="display: none" class="btn btn-info pull-right">确认</button>
                             </div>
                         </div>
                     </div>
@@ -142,7 +142,7 @@
                                             <p th:text="${record.currentValue}"></p>
                                         </div>
                                         <div class="timeline-footer">
-                                            <a th:if="${record.status ne 2}" th:onclick="resetContentHis([[${record.dossierId}]], [[${record.pageNum}]], [[${record.currentValue}]])" class="btn btn-primary btn-xs">重置为此版本</a>
+                                            <a th:if="${record.status ne 2}" th:onclick="resetContentHis([[${record.id}]])" class="btn btn-primary btn-xs">重置为此版本</a>
                                             <a class="btn btn-danger btn-xs">Delete</a>
                                         </div>
                                     </div>
@@ -210,32 +210,63 @@
         })
     }
 
-    function rectifyDossierContent() {
+    function rectifyDossierContent(before) {
         var formData = new FormData($("#dossierContentForm")[0]);
 
-        $.ajax({
-            //几个参数需要注意一下
-            type: "post",//方法类型
-            url: "../dossier/rectifyContent", //url
-            data: formData,
-            processData: false,			//对数据不做处理
-            contentType: false,
-            success: function (result) {
-                alert("卷宗文本内容修改成功！");
-                $('#div-text-container').html(result);
-            }
-        })
+        if (validateRectification(before)) {
+            $.ajax({
+                //几个参数需要注意一下
+                type: "post",//方法类型
+                url: "../dossier/rectifyContent", //url
+                data: formData,
+                processData: false,			//对数据不做处理
+                contentType: false,
+                success: function (result) {
+                    alert("卷宗文本内容修改成功！");
+                    $('#div-text-container').html(result);
+                },
+                error : function (r) {
+                    console.error(r);
+                    alert("修改失败！");
+                }
+            })
+        } else {
+            alert("修改操作过大，请检查是否正确！");
+        }
+    }
+
+    function validateRectification(before) {
+        var after = $("#ta-content").val();
+        alert(after);
+        return Math.abs(before.length - after.length) < 20;
     }
 
     function exitContentHis() {
         $("#text_his_dialog").modal('hide');
     }
 
-    function resetContentHis(dossierId, part, content) {
-        alert(dossierId + "" + part + content);
-        $("#ta-content").val(content);
-        rectifyDossierContent();
-        $('#div-his-container').modal('hide');
+    function resetContentHis(operationRecordId) {
+        // alert(dossierId + "" + part + content);
+        // var before = $("#ta-content").val();
+        // $("#ta-content").val(content);
+        // rectifyDossierContent(before);
+        $.ajax({
+            //几个参数需要注意一下
+            type: "get",//方法类型
+            url: "../dossier/resetContent/" + operationRecordId, //url
+            data: null,
+            processData: false,			//对数据不做处理
+            contentType: false,
+            success: function (result) {
+                alert("卷宗文本内容重置成功！");
+                $('#div-text-container').html(result);
+                $('#div-his-container').modal('hide');
+            },
+            error : function (r) {
+                console.error(r);
+                alert("重置失败！");
+            }
+        })
     }
 </script>
 </html>

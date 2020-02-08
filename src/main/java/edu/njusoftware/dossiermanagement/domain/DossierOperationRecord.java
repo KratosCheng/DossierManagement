@@ -49,6 +49,10 @@ public class DossierOperationRecord {
     @Column(name = "current_value")
     private String currentValue;
 
+    @Nullable
+    @Column(name = "additional_info")
+    private String additionalInfo;
+
     private int status;
 
     public DossierOperationRecord() {
@@ -111,6 +115,35 @@ public class DossierOperationRecord {
         this.caseNum = caseNum;
         this.operation = operation;
         this.operateTime = operateTime;
+    }
+
+    /**
+     * 卷宗操作记录
+     * @param jobNum
+     * @param caseNum
+     * @param dossierId
+     * @param dossierName
+     * @param pageNum
+     * @param operation
+     * @param operateTime
+     * @param oldValue
+     * @param currentValue
+     * @param status
+     */
+    public DossierOperationRecord(String jobNum, String caseNum, long dossierId, String dossierName, int pageNum,
+                                  String operation, Date operateTime, String oldValue, String currentValue,
+                                  String additionalInfo, int status) {
+        this.jobNum = jobNum;
+        this.caseNum = caseNum;
+        this.dossierId = dossierId;
+        this.dossierName = dossierName;
+        this.pageNum = pageNum;
+        this.operation = operation;
+        this.operateTime = operateTime;
+        this.oldValue = oldValue;
+        this.currentValue = currentValue;
+        this.additionalInfo = additionalInfo;
+        this.status = status;
     }
 
     public long getId() {
@@ -192,6 +225,15 @@ public class DossierOperationRecord {
 
     public void setCurrentValue(String currentValue) {
         this.currentValue = currentValue;
+    }
+
+    @Nullable
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(@Nullable String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 
     public int getStatus() {

@@ -202,8 +202,9 @@ public class DossierController {
      */
     @RequestMapping(value = "/rectifyContent")
     public String rectifyContent(Model model, DossierContent dossierContent) {
+        // 消除空格
         DossierContent newDossierContent = dossierContentService.rectifyDossierContent(
-                dossierContent.getDossierId(), dossierContent.getPart(), dossierContent.getContent());
+                dossierContent.getDossierId(), dossierContent.getPart(), dossierContent.getContent().replace(" ", ""));
         model.addAttribute("dossierContent", newDossierContent);
         return "casePage::#div-text-container";
     }
@@ -219,5 +220,17 @@ public class DossierController {
     public String getContentHis(Model model, long dossierId, int part) {
         model.addAttribute("contentHisList", dossierContentService.getContentHis(dossierId, part));
         return "casePage::#text_his_dialog";
+    }
+
+    /**
+     * 重置卷宗文本内容
+     * @param operationRecordId
+     * @return
+     */
+    @RequestMapping(value = "/resetContent/{operationRecordId}")
+    public String resetContent(Model model, @PathVariable long operationRecordId) {
+        DossierContent newDossierContent = dossierContentService.resetDossierContent(operationRecordId);
+        model.addAttribute("dossierContent", newDossierContent);
+        return "casePage::#div-text-container";
     }
 }

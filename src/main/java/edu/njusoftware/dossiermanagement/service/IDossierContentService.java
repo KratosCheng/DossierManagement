@@ -33,4 +33,11 @@ public interface IDossierContentService {
      * @return
      */
     List<DossierOperationRecord> getContentHis(long dossierId, int part);
+
+    /**
+     * 重置卷宗文本内容
+     * @param operationRecordId
+     * @return
+     */
+    DossierContent resetDossierContent(long operationRecordId);
 }

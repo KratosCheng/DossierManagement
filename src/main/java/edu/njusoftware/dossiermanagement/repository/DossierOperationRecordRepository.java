@@ -15,4 +15,6 @@ public interface DossierOperationRecordRepository extends JpaRepository<DossierO
     List<DossierOperationRecord> findAllByJobNum(String jobNum);
 
     List<DossierOperationRecord> findAllByDossierIdAndPageNumAndOperation(long dossierId, int pageNum, String operation, Sort sort);
+
+    DossierOperationRecord findFirstById(long id);
 }
