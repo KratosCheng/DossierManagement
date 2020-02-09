@@ -2,6 +2,7 @@ package edu.njusoftware.dossiermanagement.service;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.rsp.CaseSearchResult;
 
 import java.util.List;
 import java.util.Map;
@@ -31,4 +32,6 @@ public interface IDossierService {
     String getFilePathById(long dossierId);
 
     void processDossierContent(Dossier dossier);
+
+    List<CaseSearchResult> caseSearch(String caseNum, String keyword);
 }

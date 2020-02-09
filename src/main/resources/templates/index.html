@@ -12,7 +12,7 @@
 </head>
 <body>
     <div id="app">
-        <div th:include="commonComponenets :: app-header"></div>
+        <div th:include="commonComponents :: app-header"></div>
         <div>
             <form class="form-inline case-search-form" id="case-search-form" role="form" action="#" th:action="@{/case/list}" th:object="${caseQueryCondition}" method="get">
                 <div class="form-group">
@@ -102,7 +102,7 @@
 
                 <!-- 新建案件 -->
                 <li>
-                    <a th:href="'/case/add'">新建案件</a>
+                    <a th:onclick="showAddCase()">新建案件</a>
                 </li>
 
                 <!-- 首页 -->
@@ -133,9 +133,72 @@
 
             </ul>
         </div>
+        <div id="div-add-case" class="modal fade" role="dialog" aria-hidden="true" style="max-width: 30%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        新建案件
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addCaseForm" class="form-horizontal" role="form" action="#" th:action="@{/case/add}" th:object="${caseInfo}" method="post">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">案号</label>
+                            <label><input type="text" th:field="*{caseNum}" /> </label>
+                            <span th:if="${#fields.hasErrors('caseNum')}" th:errors="*{caseNum}" th:style="'color:red;'"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">案由</label>
+                            <label><input type="text" th:field="*{summary}" /> </label>
+                            <span th:if="${#fields.hasErrors('summary')}" th:errors="*{summary}" th:style="'color:red;'"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">立案时间</label>
+                            <label><input type="date" th:field="*{filingTime}" /> </label>
+                            <span th:if="${#fields.hasErrors('filingTime')}" th:errors="*{filingTime}" th:style="'color:red;'"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">结案时间</label>
+                            <label><input type="date" th:field="*{closingTime}" /> </label>
+                            <span th:if="${#fields.hasErrors('closingTime')}" th:errors="*{closingTime}" th:style="'color:red;'"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">案件类型</label>
+                            <label>
+                                <select th:field="*{type}" class="form-control">
+                                    <option th:value="刑事">刑事</option>
+                                    <option th:value="民事">民事</option>
+                                    <option th:value="行政">行政</option>
+                                    <option th:value="赔偿">赔偿</option>
+                                    <option th:value="执行">执行</option>
+                                </select>
+                            </label>
+                            <span th:if="${#fields.hasErrors('type')}" th:errors="*{type}" th:style="'color:red;'"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">案件审理阶段</label>
+                            <label>
+                                <select class="form-control">
+                                    <option>立案</option>
+                                    <option>审理中</option>
+                                    <option>结案</option>
+                                </select>
+                            </label>
+                            <span th:if="${#fields.hasErrors('stage')}" th:errors="*{stage}" th:style="'color:red;'"></span>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="addCaseForm" class="btn btn-primary pull-left">确认</button>
+                    <button type="button" th:onclick="hideAddCase()" class="btn btn-default">取消</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
+<script type="text/javascript" th:src="@{/js/adminlte.js}"></script>
 <script type="text/javascript" th:src="@{/js/app.js}"></script>
 <script>
     $("select").change(function () {
@@ -145,6 +208,14 @@
     function changePage(pageNum) {
         $("#pageNumInput").val(pageNum);
         $("#case-search-form").submit();
+    }
+
+    function showAddCase() {
+        $("#div-add-case").modal('show');
+    }
+
+    function hideAddCase() {
+        $("#div-add-case").modal('hide');
     }
 </script>
 </html>

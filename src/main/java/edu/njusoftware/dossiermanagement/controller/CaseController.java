@@ -64,6 +64,8 @@ public class CaseController {
     public String getCaseList(Model model, @ModelAttribute CaseQueryCondition caseQueryCondition) {
         Page<CaseInfo> caseList = caseService.getCaseList(caseQueryCondition);
         model.addAttribute("caseList", caseList);
+        model.addAttribute("caseInfo", new CaseInfo());
+        model.addAttribute("title", "案件列表");
         return "index";
     }
 
@@ -85,7 +87,7 @@ public class CaseController {
             return "addCase";
         }
         logger.info(SecurityUtils.getLoginUserName() + "created case: #" + caseInfo.getCaseNum());
-        return caseService.saveCase(caseInfo) ? "redirect:/index" : "redirect:/error";
+        return caseService.saveCase(caseInfo) ? "index" : "redirect:/error";
     }
 
     /**

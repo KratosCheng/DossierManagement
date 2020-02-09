@@ -2,6 +2,7 @@ package edu.njusoftware.dossiermanagement.service.impl;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.rsp.CaseSearchResult;
 import edu.njusoftware.dossiermanagement.mapper.DossierMapper;
 import edu.njusoftware.dossiermanagement.repository.DossierOperationRecordRepository;
 import edu.njusoftware.dossiermanagement.repository.DossierRepository;
@@ -129,5 +130,12 @@ public class DossierServiceImpl implements IDossierService {
     public void processDossierContent(Dossier dossier) {
         DossierTextProcessor processor = dossierTextProcessorFactory.getDossierTextProcessor(dossier.getFileType());
         processor.process(dossier);
+    }
+
+    @Override
+    public List<CaseSearchResult> caseSearch(String caseNum, String keyword) {
+        List<Dossier> dossiers = getDossiersByCaseNum(caseNum);
+
+        return null;
     }
 }

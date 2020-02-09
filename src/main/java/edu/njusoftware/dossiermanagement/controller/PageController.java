@@ -53,6 +53,7 @@ public class PageController {
         Page<CaseInfo> caseList = caseService.getCaseList(caseQueryCondition);
         model.addAttribute("caseList", caseList);
         model.addAttribute("caseQueryCondition", caseQueryCondition);
+        model.addAttribute("caseInfo", new CaseInfo());
         model.addAttribute("title", "案件列表");
         return "index";
     }
@@ -62,13 +63,13 @@ public class PageController {
      * @param model
      * @return
      */
-    @RequestMapping("/addCase")
-    public String addCase(Model model) {
-        CaseInfo caseInfo = new CaseInfo();
-        model.addAttribute(caseInfo);
-        model.addAttribute("title", "添加案件");
-        return "addCase";
-    }
+//    @RequestMapping("/addCase")
+//    public String addCase(Model model) {
+//        CaseInfo caseInfo = new CaseInfo();
+//        model.addAttribute(caseInfo);
+//        model.addAttribute("title", "添加案件");
+//        return "commonComponents:addCase";
+//    }
 
     /**
      * 用户个人主页

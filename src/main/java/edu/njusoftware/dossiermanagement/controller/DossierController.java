@@ -5,6 +5,7 @@ import edu.njusoftware.dossiermanagement.domain.DossierContent;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.req.AddDirectoryReq;
 import edu.njusoftware.dossiermanagement.domain.rsp.BaseResponse;
+import edu.njusoftware.dossiermanagement.domain.rsp.CaseSearchResult;
 import edu.njusoftware.dossiermanagement.service.IDossierContentService;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.util.Constants;
@@ -232,5 +233,19 @@ public class DossierController {
         DossierContent newDossierContent = dossierContentService.resetDossierContent(operationRecordId);
         model.addAttribute("dossierContent", newDossierContent);
         return "casePage::#div-text-container";
+    }
+
+    /**
+     * 在案件中查找关键字
+     * @param model
+     * @param caseNum
+     * @param keyword
+     * @return
+     */
+    @RequestMapping(value = "/caseSearch")
+    public String caseSearch(Model model, String caseNum, String keyword) {
+        List<CaseSearchResult> caseSearchResults = dossierService.caseSearch(caseNum, keyword);
+        model.addAttribute("caseSearchResults", caseSearchResults);
+        return null;
     }
 }

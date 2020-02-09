@@ -19,15 +19,15 @@
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
     <header class="main-header app-header">
-        <div th:include="commonComponenets :: app-header"></div>
+        <div th:include="commonComponents :: app-header"></div>
     </header>
     <aside class="main-sidebar">
         <section class="sidebar">
             <form action="#" method="get" class="sidebar-form">
                 <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                    <input id="case_search_input" type="text" name="q" class="form-control" placeholder="Search...">
                     <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                <button th:onclick="caseSearch([[${caseNum}]])" type="button" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
                 </button>
               </span>
                 </div>
@@ -267,6 +267,31 @@
                 alert("重置失败！");
             }
         })
+    }
+
+    function caseSearch(caseNum) {
+        var keyword = $('#case_search_input').val();
+
+        if (keyword === '' || keyword === null) {
+            alert("关键字不能为空");
+        } else {
+            $.ajax({
+                type:"post",
+                url:"../dossier/caseSearch",
+                data:{
+                    caseNum:caseNum,
+                    keyword:keyword
+                },
+                dataType:"json",
+                async:false,
+                success:function (data) {
+                    console.log(data);
+                },
+                error:function (e) {
+                    console.log(e);
+                }
+            });
+        }
     }
 </script>
 </html>
