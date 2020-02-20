@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
@@ -55,12 +56,16 @@ public class UserController {
      */
     @RequestMapping("/list/all")
     public String getAllUsers() throws IOException, ParseException {
-        StringDifferenceUtils.getTempString("aaaabdff", "baaadf");
+//        StringDifferenceUtils.getTempString("aaaabdff", "baaadf");
 //        DossierContentService.test();
-//        Dossier dossier = dossierService.getDossier(62);
-//        dossierService.processDossierContent(dossier);
+        Dossier dossier = dossierService.getDossier(62);
+        dossierService.processDossierContent(dossier);
 //        List<String> strings = IATSpeechRecognizer.RecognizePcmfileByte(pcmPath);
 //        FileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPath, 0F, 15F);
+//        String pdfPath = "C:/Users/Kratos/Desktop/毕设/参考论文/法院/一种低成本语音识别解决方案_张鹤鸣.pdf";
+//        File file = new File(pdfPath);
+//        String destFolder = file.getParent() + File.separator + "process";
+//        FileEncodeUtils.pdf2Images(pdfPath, destFolder, 96);
         return "hahah";
     }
 

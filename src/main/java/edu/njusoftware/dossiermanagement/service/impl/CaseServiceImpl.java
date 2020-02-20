@@ -95,27 +95,30 @@ public class CaseServiceImpl implements ICaseService {
     }
 
     @Override
-    public Page<CaseInfo> getCaseList(CaseQueryCondition caseQueryCondition) {
-        Pageable pageable = PageRequest.of(caseQueryCondition.getPageNum(), caseQueryCondition.getPageSize(),
-                caseQueryCondition.isDescend() ? Sort.Direction.DESC : Sort.Direction.ASC, "filingTime");
-        Page<CaseInfo> caseInfoPage = caseRepository.findAll(new Specification<CaseInfo>(){
+    public Page<CaseInfo> getCaseList(CaseQueryCondition condition) {
+        Pageable pageable = PageRequest.of(condition.getPageNum(), condition.getPageSize(),
+                condition.isDescend() ? Sort.Direction.DESC : Sort.Direction.ASC,
+                "filingTime");
+        Page<CaseInfo> page = caseRepository.findAll(new Specification<CaseInfo>(){
             @Override
             public Predicate toPredicate(Root<CaseInfo> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> list = new ArrayList<Predicate>();
-                if(caseQueryCondition.getType() != null && !"".equals(caseQueryCondition.getType())) {
-                    list.add(criteriaBuilder.equal(root.get("type").as(String.class), caseQueryCondition.getType()));
+                if(condition.getType() != null && !"".equals(condition.getType())) {
+                    list.add(criteriaBuilder.equal(
+                            root.get("type").as(String.class), condition.getType()));
                 }
                 // 案号案由模糊查询
-                if (caseQueryCondition.getKeyword() != null && !"".equals(caseQueryCondition.getKeyword())) {
-                    String pattern = "%" + caseQueryCondition.getKeyword() + "%";
+                if (condition.getKeyword() != null && !"".equals(condition.getKeyword())) {
+                    String pattern = "%" + condition.getKeyword() + "%";
                     Predicate keywordPredicate =
-                            criteriaBuilder.or(criteriaBuilder.like(root.get("caseNum").as(String.class), pattern),
+                            criteriaBuilder.or(
+                                    criteriaBuilder.like(root.get("caseNum").as(String.class), pattern),
                                     criteriaBuilder.like(root.get("summary").as(String.class), pattern));
                     list.add(keywordPredicate);
                 }
                 return criteriaBuilder.and(list.toArray(new Predicate[0]));
             }
         }, pageable);
-        return caseInfoPage;
+        return page;
     }
 }

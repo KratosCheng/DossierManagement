@@ -14,6 +14,6 @@ public class VideoDossierTextProcessor implements DossierTextProcessor {
 
     @Override
     public void process(Dossier dossier) {
-        audioDossierTextProcessor.processDossierAudioFile(dossier.getId(), dossier.getName(), dossier.getPath(), dossier.getCaseNum());
+        audioDossierTextProcessor.process(dossier);
     }
 }
