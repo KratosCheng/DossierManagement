@@ -164,8 +164,8 @@ public class FileEncodeUtils {
         File pdfFile = new File(pdfFilePath);
         String pdfName = getPureName(pdfFile);
 
+        List<String> imagePaths = new LinkedList<>();
         try {
-            List<String> imagePaths = new LinkedList<>();
             if (createDirectory(dstImgFolder)) {
                 PDDocument pdDocument = PDDocument.load(pdfFile);
                 PDFRenderer renderer = new PDFRenderer(pdDocument);
@@ -186,8 +186,9 @@ public class FileEncodeUtils {
         } catch (IOException e) {
             logger.error("Error to separate and transform Pdf " + pdfFilePath + " to png images!");
             e.printStackTrace();
+            return null;
         }
-        return null;
+        return imagePaths;
     }
 
     /**

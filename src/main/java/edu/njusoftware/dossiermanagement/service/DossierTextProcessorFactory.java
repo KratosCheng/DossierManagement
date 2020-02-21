@@ -11,8 +11,12 @@ import java.util.Map;
  */
 @Service
 public class DossierTextProcessorFactory {
+    private Map<String, DossierTextProcessor> dossierTextProcessorMap;
+
     @Autowired
-    private Map<String, DossierTextProcessor> dossierTextProcessorMap = new HashMap<>(3);
+    public DossierTextProcessorFactory(Map<String, DossierTextProcessor> dossierTextProcessorMap) {
+        this.dossierTextProcessorMap = dossierTextProcessorMap;
+    }
 
     public DossierTextProcessor getDossierTextProcessor(String type) {
         return dossierTextProcessorMap.get(type);

@@ -1,6 +1,7 @@
 package edu.njusoftware.dossiermanagement.service.impl;
 
 import edu.njusoftware.dossiermanagement.domain.Dossier;
+import edu.njusoftware.dossiermanagement.domain.DossierContent;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.rsp.CaseSearchResult;
 import edu.njusoftware.dossiermanagement.mapper.DossierMapper;
@@ -31,6 +32,9 @@ public class DossierServiceImpl implements IDossierService {
 
     @Autowired
     private DossierTextProcessorFactory dossierTextProcessorFactory;
+
+    @Autowired
+    private DossierContentService dossierContentService;
 
     @Autowired
     private OperationRecordService operationRecordService;
@@ -135,7 +139,45 @@ public class DossierServiceImpl implements IDossierService {
     @Override
     public List<CaseSearchResult> caseSearch(String caseNum, String keyword) {
         List<Dossier> dossiers = getDossiersByCaseNum(caseNum);
+        Map<Long, Dossier> map = new HashMap<>();
+        for (Dossier dossier : dossiers) {
+            map.put(dossier.getId(), dossier);
+        }
+        List<DossierContent> dossierContentList = dossierContentService.search(keyword, map.keySet());
+        List<CaseSearchResult> caseSearchResultList = new LinkedList<>();
+        // 解析DossierContent列表，获取结果
+        for (DossierContent dossierContent : dossierContentList) {
+            String content = dossierContent.getContent();
+            String[] locationInfos = dossierContent.getLocationInfo().split("_");
+            // 遍历查找所有的keyword出现的
+            while (content.contains(keyword)) {
+                int position = content.lastIndexOf(keyword);
+                content = content.substring(0, position);
+                String example = getExampleStr(position, keyword, dossierContent.getContent());
+                Dossier dossier = map.get(dossierContent.getDossierId());
+                CaseSearchResult caseSearchResult = new CaseSearchResult(dossier.getId(), dossier.getName(),
+                        dossierContent.getPart(), dossier.getFileType(), example, locationInfos[position]);
+                caseSearchResultList.add(caseSearchResult);
+            }
+        }
+        return caseSearchResultList;
+    }
 
-        return null;
+    /**
+     * 根据位置截取str中的示例字符串，取关键字的前后各五位
+     * @param position 关键字首字符位置
+     * @param keyword 关键字长度
+     * @param str
+     * @return
+     */
+    private String getExampleStr(int position, String keyword, String str) {
+        int length = keyword.length();
+        int offset = length < 6 ? 8 : 5;
+        int begin = position < offset ? 0 : position - offset;
+        int end = position < str.length() - offset - length ? position + offset + length : str.length();
+        String example = str.substring(begin, position)
+                + "<span style=\"color: red\">" + keyword + "</span>"
+                + str.substring(position + length, end);
+        return "......" + example + "......";
     }
 }

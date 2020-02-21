@@ -33,7 +33,7 @@ public class IATSpeechRecognizer {
      * @param filePath
      */
     @Retryable(value = SpeechResultException.class)
-    public List<String> recognizePcmFileByte(String filePath) throws SpeechResultException {
+    public List<String> recognizePcmFile(String filePath) throws SpeechResultException {
         resultList.clear();
         completed = false;
 

@@ -246,6 +246,6 @@ public class DossierController {
     public String caseSearch(Model model, String caseNum, String keyword) {
         List<CaseSearchResult> caseSearchResults = dossierService.caseSearch(caseNum, keyword);
         model.addAttribute("caseSearchResults", caseSearchResults);
-        return null;
+        return "casePage::#search_result_dialog";
     }
 }

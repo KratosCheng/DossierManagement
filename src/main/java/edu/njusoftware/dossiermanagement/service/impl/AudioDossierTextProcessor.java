@@ -15,9 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ws.schild.jave.EncoderException;
-import ws.schild.jave.MultimediaInfo;
-import ws.schild.jave.MultimediaObject;
 
 import java.io.File;
 import java.util.List;
@@ -94,7 +91,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
         logger.debug("Start to recognize " + pcmFilePath + " of dossier:" + dossierId + " part" + part);
         List<String> resultStrings = null;
         try {
-            resultStrings = iatSpeechRecognizer.recognizePcmFileByte(pcmFilePath);
+            resultStrings = iatSpeechRecognizer.recognizePcmFile(pcmFilePath);
         } catch (IATSpeechRecognizer.SpeechResultException e) {
             e.printStackTrace();
         }

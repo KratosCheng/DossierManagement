@@ -5,6 +5,7 @@ import edu.njusoftware.dossiermanagement.domain.req.AccountOperationQueryConditi
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.CaseQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
+import edu.njusoftware.dossiermanagement.domain.rsp.CaseSearchResult;
 import edu.njusoftware.dossiermanagement.service.ICaseService;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.service.IUserService;
@@ -123,6 +124,7 @@ public class PageController {
         model.addAttribute("directoryMap", dossierService.getDirectoryMap(caseNum));
         model.addAttribute("title", "案件主页 #" + caseNum);
         model.addAttribute("user", SecurityUtils.getLoginUser());
+//        model.addAttribute("caseSearchResults", new ArrayList<CaseSearchResult>());
 //        model.addAttribute("contentHisList", new ArrayList<DossierOperationRecord>());
         return "casePage";
     }

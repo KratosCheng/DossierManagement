@@ -11,10 +11,13 @@ import edu.njusoftware.dossiermanagement.util.Constants;
 import edu.njusoftware.dossiermanagement.util.StringDifferenceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.*;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DossierContentService implements IDossierContentService {
@@ -123,4 +126,16 @@ public class DossierContentService implements IDossierContentService {
 //        String[] timeInfo = "0_1_2_3_4_5_6_7_8_9_10_11".split("_");
 //        rectifyTimeInfo(a, b, timeInfo);
 //    }
+
+    public List<DossierContent> search(String keyword, Set<Long> dossierIds) {
+        return dossierContentRepository.findAll(new Specification<DossierContent>() {
+            @Override
+            public Predicate toPredicate(Root<DossierContent> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<Object> path = root.get("dossierId");
+                criteriaQuery.where(path.in(dossierIds));
+                String pattern = "%" + keyword + "%";
+                return criteriaBuilder.like(root.get("content").as(String.class), pattern);
+            }
+        });
+    }
 }

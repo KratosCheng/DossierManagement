@@ -7,9 +7,6 @@ public class CaseSearchResult {
     // 卷宗id
     private long dossierId;
 
-    // 卷宗所在目录
-    private String directory;
-
     // 卷宗名称
     private String dossierName;
 
@@ -22,13 +19,15 @@ public class CaseSearchResult {
     // 关键字结果示例（取左右各五个字）
     private String example;
 
-    public CaseSearchResult(long dossierId, String directory, String dossierName, int part, String type, String example) {
+    private String location;
+
+    public CaseSearchResult(long dossierId, String dossierName, int part, String type, String example, String location) {
         this.dossierId = dossierId;
-        this.directory = directory;
         this.dossierName = dossierName;
         this.part = part;
         this.type = type;
         this.example = example;
+        this.location = location;
     }
 
     public long getDossierId() {
@@ -37,14 +36,6 @@ public class CaseSearchResult {
 
     public void setDossierId(long dossierId) {
         this.dossierId = dossierId;
-    }
-
-    public String getDirectory() {
-        return directory;
-    }
-
-    public void setDirectory(String directory) {
-        this.directory = directory;
     }
 
     public String getDossierName() {
@@ -79,15 +70,23 @@ public class CaseSearchResult {
         this.example = example;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     @Override
     public String toString() {
         return "CaseSearchResult{" +
                 "dossierId=" + dossierId +
-                ", directory='" + directory + '\'' +
                 ", dossierName='" + dossierName + '\'' +
                 ", part=" + part +
                 ", type='" + type + '\'' +
                 ", example='" + example + '\'' +
+                ", location='" + location + '\'' +
                 '}';
     }
 }

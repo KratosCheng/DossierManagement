@@ -19,6 +19,13 @@ public class PdfDossierTextProcessor implements DossierTextProcessor {
         File file = new File(dossier.getPath());
         String imagesFolder = file.getParent() + File.separator + "process";
         List<String> imagePaths = FileEncodeUtils.pdf2Images(dossier.getPath(), imagesFolder, 96);
-//        for (String imagePath : imagePaths)
+        int total = imagePaths.size();
+        for (int i = 0; i < total; i++) {
+
+        }
+    }
+
+    private void dealImageFiles() {
+
     }
 }
