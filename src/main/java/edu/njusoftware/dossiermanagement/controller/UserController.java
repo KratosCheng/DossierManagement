@@ -1,6 +1,5 @@
 package edu.njusoftware.dossiermanagement.controller;
 
-import edu.njusoftware.dossiermanagement.domain.Dossier;
 import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
 import edu.njusoftware.dossiermanagement.domain.Account;
 import edu.njusoftware.dossiermanagement.domain.UserOperationRecord;
@@ -9,7 +8,6 @@ import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.service.IUserService;
-import edu.njusoftware.dossiermanagement.service.impl.DossierContentService;
 import edu.njusoftware.dossiermanagement.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -58,13 +57,18 @@ public class UserController {
     public String getAllUsers() throws IOException, ParseException {
 //        StringDifferenceUtils.getTempString("aaaabdff", "baaadf");
 //        DossierContentService.test();
-        Dossier dossier = dossierService.getDossier(62);
-        dossierService.processDossierContent(dossier);
+//        Dossier dossier = dossierService.getDossier(62);
+//        dossierService.processDossierContent(dossier);
 //        List<String> strings = IATSpeechRecognizer.RecognizePcmfileByte(pcmPath);
 //        FileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPath, 0F, 15F);
-//        String pdfPath = "C:/Users/Kratos/Desktop/毕设/参考论文/法院/一种低成本语音识别解决方案_张鹤鸣.pdf";
-//        File file = new File(pdfPath);
-//        String destFolder = file.getParent() + File.separator + "process";
+        String pdfPath = "C:/Users/Kratos/Desktop/毕设/参考论文/法院/一种低成本语音识别解决方案_张鹤鸣.pdf";
+        File file = new File(pdfPath);
+        String destFolder = file.getParent() + File.separator + "process";
+        List<String> positions = new ArrayList<>();
+        positions.add("1_1_1_2");
+        positions.add("10_10_1_2");
+        positions.add("10_10_10_10");
+        FileEncodeUtils.getCharImages(pdfPath, 0, destFolder, positions);
 //        FileEncodeUtils.pdf2Images(pdfPath, destFolder, 96);
         return "hahah";
     }
@@ -166,6 +170,7 @@ public class UserController {
         Page<UserOperationRecord> userOperationRecords = userService.getUserOperationRecords(accountOperationQueryCondition);
         model.addAttribute("userOperationRecords", userOperationRecords);
         model.addAttribute("user", SecurityUtils.getLoginUser());
+        model.addAttribute("accountOperationQueryCondition", accountOperationQueryCondition);
         return "user::operation-list-div";
     }
 

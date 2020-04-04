@@ -158,9 +158,14 @@ function showModifyDialog(modifyUser) {
     $("#modifyPassword").val(modifyUser.password);
     $("#modifyRoleName").val(modifyUser.roleName);
     $("#modifyCreator").val(modifyUser.creator);
-    $("#modifyCreateTime").val(modifyUser.createTime);
+    var createTime = new Date(modifyUser.createTime);
+    $("#modifyCreateTime").val(createTime.toISOString().split(".")[0]);
     $("#modify_user_dialog").modal('show');
     $(".form-hint").show();
+}
+
+function cancelModifyUser() {
+    $("#modify_user_dialog").modal('hide');
 }
 
 function modifyUser() {
@@ -217,4 +222,8 @@ function deleteUser(jobNum) {
             }
         })
     }
+}
+
+function showPermissionList() {
+
 }

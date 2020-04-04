@@ -29,12 +29,9 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
      */
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
-        if (null == configAttributes || 0 >= configAttributes.size()) {
-            return;
-        } else {
-            String needRole;
+        if (configAttributes != null && configAttributes.size() > 0) {
             for(Iterator<ConfigAttribute> iter = configAttributes.iterator(); iter.hasNext(); ) {
-                needRole = iter.next().getAttribute();
+                String needRole = iter.next().getAttribute();
 
                 for(GrantedAuthority ga : authentication.getAuthorities()) {
                     if(needRole.trim().equals(ga.getAuthority().trim())) {

@@ -1,6 +1,7 @@
 package edu.njusoftware.dossiermanagement.util;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -204,5 +206,45 @@ public class FileEncodeUtils {
             logger.debug("Try to create folder " + folder);
             return dir.mkdirs();
         }
+    }
+
+    /**
+     * 用于获取一页pdf中的一些字符图片
+     * @param pdfFilePath
+     * @param targetFolder
+     * @param positions
+     * @return
+     */
+    public static List<String> getCharImages(String pdfFilePath, int page, String targetFolder, List<String> positions) {
+        File pdfFile = new File(pdfFilePath);
+        String pdfName = getPureName(pdfFile);
+
+        List<String> imagePaths = new LinkedList<>();
+        try {
+            if (!createDirectory(targetFolder)) {
+                return null;
+            }
+            PDDocument pdDocument = PDDocument.load(pdfFile);
+            PDFRenderer renderer = new PDFRenderer(pdDocument);
+            int count = positions.size();
+            BufferedImage pageImage = renderer.renderImage(page);
+            String imagePathPrefix = targetFolder + File.separator + pdfName + "_" + page + "_";
+            logger.debug("Start to separate " + pdfFilePath + " page " + page + " to png images, count is " + count);
+            for (int i = 0; i < count; i++) {
+                String[] indexs = positions.get(i).split("_");
+                String imgFilePath = imagePathPrefix + i + ".png";
+                File dstFile = new File(imgFilePath);
+                BufferedImage charImage = pageImage.getSubimage(Integer.parseInt(indexs[0]),
+                        Integer.parseInt(indexs[1]), Integer.parseInt(indexs[2]), Integer.parseInt(indexs[3]));
+                ImageIO.write(charImage, "png", dstFile); // PNG
+                imagePaths.add(imgFilePath);
+            }
+            logger.debug("Success to separate " + pdfFilePath + " page " + page + " to png images, destination folder is  " + targetFolder);
+        } catch (IOException e) {
+            logger.error("Error to separate Pdf "  + " page " + page + pdfFilePath + " to png images!");
+            e.printStackTrace();
+            return null;
+        }
+        return imagePaths;
     }
 }

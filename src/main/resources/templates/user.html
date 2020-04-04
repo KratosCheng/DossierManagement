@@ -23,14 +23,6 @@
     </header>
     <aside class="main-sidebar">
         <section class="sidebar">
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
-                    <span class="input-group-btn">
-                        <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
-                    </span>
-                </div>
-            </form>
             <ul class="sidebar-menu" data-widget="tree">
                 <li class="header page-nav-left-font">用户目录</li>
                 <li class="">
@@ -48,7 +40,7 @@
                 <li class="" th:onclick="showAccountHisList()" th:if="${user.isAdmin()}">
                     <a href="#admin-user-list-div">
                         <i class="fa fa-history"></i>
-                        <span>账户操作记录</span>
+                        <span>账号信息操作记录</span>
                     </a>
                 </li>
                 <li class="treeview" th:if="${user.isAdmin()}">
@@ -64,6 +56,12 @@
                             <a href="#admin-user-list-div">
                                 <i class="fa fa-users"></i>
                                 <span>账户管理</span>
+                            </a>
+                        </li>
+                        <li th:onclick="showPermissionList()">
+                            <a href="#">
+                                <i class="fa fa-cog"></i>
+                                <span>权限设置</span>
                             </a>
                         </li>
                         <li th:onclick="showFeedbackList()">
@@ -418,7 +416,7 @@
                                     <a th:onclick="changeOperationPage([[${pageNum}]])" th:text="${pageNum + 1}" th:if="${pageNum eq userOperationRecords.pageable.getPageNumber()}" th:style="'font-weight:bold;background: #6faed9;'"></a>
                                 </li>
                                 <li th:if="${userOperationRecords.hasNext()}">
-                                    <a th:onclick="changeOperationPage([[${accountQueryCondition.getAccountPageNum() + 1}]])" th:text="下一页"></a>
+                                    <a th:onclick="changeOperationPage([[${accountOperationQueryCondition.getOperationPageNum() + 1}]])" th:text="下一页"></a>
                                 </li>
                                 <li>
                                     <a th:onclick="changeOperationPage([[${userOperationRecords.getTotalPages() - 1}]])">尾页</a>
@@ -429,7 +427,7 @@
                 </div>
             </section>
             <div id="modify_user_dialog" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" title="编辑用户" >
-                <div class="modal-dialog">
+                <div class="modal-dialog" style="margin-top: 60px">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" id="myModalLabel2">
@@ -445,7 +443,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">密码</label>
-                                    <label><input type="text" id="modifyPassword" name="password" /> </label>
+                                    <label><input type="password" id="modifyPassword" name="password" /> </label>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">角色</label>
@@ -465,12 +463,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label">创建时间</label>
-                                    <label><input type="text" disabled id="modifyCreateTime" name="createTime" /> </label>
+                                    <label><input type="datetime-local" disabled id="modifyCreateTime" name="createTime" /> </label>
                                     <span class="form-hint" hidden>创建时间不可编辑</span>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
+                            <button type="button" th:onclick="cancelModifyUser()" class="btn btn-toolbar pull-left">取消</button>
                             <button type="button" th:onclick="modifyUser()" class="btn btn-primary">确认</button>
                         </div>
                     </div>

@@ -72,8 +72,8 @@
         <div id="div-media-content" style="min-height: inherit">
             <div id="div-media-container" th:fragment="div-media-container" style="min-height: inherit">
                 <div class="media-container" th:if="${currentDossier} ne null" th:switch="${currentDossier.fileType}">
-                    <audio style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
-                    <video th:case="'video'" controls="controls">
+                    <audio id="audioPlayer" style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
+                    <video id="videoPlayer" th:case="'video'" controls="controls">
                         <source th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" />
                         Your browser does not support the video tag.
                     </video>
@@ -173,22 +173,22 @@
                                 <thead>
                                 <tr>
                                     <th>卷宗名称</th>
-                                    <th>文件类型</th>
                                     <th>页/分钟</th>
+                                    <th>帧/位置</th>
                                     <th>内容</th>
                                     <th>查看</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:if="${#lists.isEmpty(caseSearchResults)}">
-                                    <td colspan="2">没有操作记录！</td>
+                                    <td colspan="2">没有检索结果！</td>
                                 </tr>
                                 <tr th:each="result : ${caseSearchResults}">
                                     <td th:text="${result.dossierName}">-</td>
-                                    <td th:text="${result.type}">-</td>
                                     <td th:text="${result.part}">-</td>
+                                    <td th:text="${result.location}">-</td>
                                     <td th:utext="${result.example}">-</td>
-                                    <td><a th:onclick="showSearchResult([[${result.dossierId}]],[[${result.location}]])">查看</a> </td>
+                                    <td><a th:onclick="locateSearchResult([[${result.dossierId}]],[[${result.location}]])">查看</a> </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -339,8 +339,18 @@
         })
     }
 
-    function showSearchResult(dossierId, location) {
+    function locateSearchResult(dossierId, location) {
         alert(dossierId + location);
+        // 显示文件
+        updateCurrentDossier(dossierId);
     }
+
+    $('#videoPlayer').ontimeupdate(function(){
+        var timeDisplay;
+        //用秒数来显示当前播放进度
+        timeDisplay = Math.floor(this.currentTime);
+        console.log(Math.floor(timeDisplay))
+    });
+    
 </script>
 </html>

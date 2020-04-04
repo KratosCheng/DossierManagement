@@ -1,4 +1,4 @@
-package edu.njusoftware.dossiermanagement.service;
+package edu.njusoftware.dossiermanagement.config;
 
 import edu.njusoftware.dossiermanagement.domain.Role;
 import edu.njusoftware.dossiermanagement.repository.RoleRepository;
@@ -10,6 +10,7 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -22,16 +23,16 @@ public class InvocationSecurityMetadataSourceService implements FilterInvocation
     /**
      * 每一个资源所需要的角色 Collection<ConfigAttribute>决策器会用到
      */
-    private static HashMap<String, Collection<ConfigAttribute>> map = null;
+    private HashMap<String, Collection<ConfigAttribute>> map = new HashMap<>(16);
 
     /**
-     * 返回请求的资源需要的角色
+     * 返回请求的资源需要的角色列表
      */
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
-        if (map == null) {
-            loadResourceDefine();
-        }
+//        if (map == null) {
+//            loadResourceDefine();
+//        }
         //object 中包含用户请求的request 信息
         HttpServletRequest request = ((FilterInvocation) o).getHttpRequest();
         for (String url : map.keySet()) {
@@ -65,8 +66,8 @@ public class InvocationSecurityMetadataSourceService implements FilterInvocation
     /**
      * 初始化 所有资源 对应的角色
      */
+    @PostConstruct
     private void loadResourceDefine() {
-        map = new HashMap<>(16);
         //权限资源 和 角色对应的表  也就是 角色权限 中间表
         List<Role> roles = roleRepository.findAll();
 
