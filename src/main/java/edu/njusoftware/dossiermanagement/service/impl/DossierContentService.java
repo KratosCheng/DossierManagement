@@ -120,13 +120,6 @@ public class DossierContentService implements IDossierContentService {
         return newTimeInfo.substring(0, newTimeInfo.length() - 1);
     }
 
-//    public static void test() {
-//        String a = "我是中国人，爱说中国话！";
-//        String b = "因为我是中国人，所以爱说国语！";
-//        String[] timeInfo = "0_1_2_3_4_5_6_7_8_9_10_11".split("_");
-//        rectifyTimeInfo(a, b, timeInfo);
-//    }
-
     public List<DossierContent> search(String keyword, Set<Long> dossierIds) {
         return dossierContentRepository.findAll(new Specification<DossierContent>() {
             @Override
@@ -135,6 +128,17 @@ public class DossierContentService implements IDossierContentService {
                 criteriaQuery.where(path.in(dossierIds));
                 String pattern = "%" + keyword + "%";
                 return criteriaBuilder.like(root.get("content").as(String.class), pattern);
+            }
+        });
+    }
+
+    public List<DossierContent> search(String keyword, Long dossierId) {
+        return dossierContentRepository.findAll(new Specification<DossierContent>() {
+            @Override
+            public Predicate toPredicate(Root<DossierContent> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                String pattern = "%" + keyword + "%";
+                return criteriaBuilder.and(criteriaBuilder.equal(root.get("dossierId").as(Long.class), dossierId),
+                        criteriaBuilder.like(root.get("content").as(String.class), pattern));
             }
         });
     }

@@ -149,18 +149,46 @@ public class DossierServiceImpl implements IDossierService {
         for (DossierContent dossierContent : dossierContentList) {
             String content = dossierContent.getContent();
             String[] locationInfos = dossierContent.getLocationInfo().split("_");
-            // 遍历查找所有的keyword出现的
-            while (content.contains(keyword)) {
-                int position = content.lastIndexOf(keyword);
-                content = content.substring(0, position);
-                String example = getExampleStr(position, keyword, dossierContent.getContent());
-                Dossier dossier = map.get(dossierContent.getDossierId());
-                CaseSearchResult caseSearchResult = new CaseSearchResult(dossier.getId(), dossier.getName(),
-                        dossierContent.getPart(), dossier.getFileType(), example, locationInfos[position]);
-                caseSearchResultList.add(caseSearchResult);
-            }
+            Dossier dossier = map.get(dossierContent.getDossierId());
+            searchKeyword(content, keyword, dossierContent, dossier, caseSearchResultList, locationInfos);
         }
         return caseSearchResultList;
+    }
+
+    @Override
+    public List<CaseSearchResult> search(long dossierId, String keyword) {
+        Dossier dossier = getDossier(dossierId);
+        List<DossierContent> dossierContentList = dossierContentService.search(keyword, dossierId);
+        List<CaseSearchResult> caseSearchResultList = new LinkedList<>();
+        // 解析DossierContent列表，获取结果
+        for (DossierContent dossierContent : dossierContentList) {
+            String content = dossierContent.getContent();
+            String[] locationInfos = dossierContent.getLocationInfo().split("_");
+            searchKeyword(content, keyword, dossierContent, dossier, caseSearchResultList, locationInfos);
+        }
+        return caseSearchResultList;
+    }
+
+    /**
+     *
+     * @param content
+     * @param keyword
+     * @param dossierContent
+     * @param dossier
+     * @param caseSearchResultList
+     * @param locationInfos
+     */
+    private void searchKeyword(String content, String keyword, DossierContent dossierContent, Dossier dossier,
+                               List<CaseSearchResult> caseSearchResultList, String[] locationInfos) {
+        // 遍历查找所有的keyword出现的
+        while (content.contains(keyword)) {
+            int position = content.lastIndexOf(keyword);
+            content = content.substring(0, position);
+            String example = getExampleStr(position, keyword, dossierContent.getContent());
+            CaseSearchResult caseSearchResult = new CaseSearchResult(dossier.getId(), dossier.getName(),
+                    dossierContent.getPart(), dossier.getFileType(), example, locationInfos[position]);
+            caseSearchResultList.add(caseSearchResult);
+        }
     }
 
     /**

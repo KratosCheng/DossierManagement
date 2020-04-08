@@ -34,4 +34,6 @@ public interface IDossierService {
     void processDossierContent(Dossier dossier);
 
     List<CaseSearchResult> caseSearch(String caseNum, String keyword);
+
+    List<CaseSearchResult> search(long dossierId, String keyword);
 }
