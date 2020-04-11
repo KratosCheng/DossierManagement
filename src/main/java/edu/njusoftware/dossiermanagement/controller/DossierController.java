@@ -118,29 +118,13 @@ public class DossierController {
     }
 
     /**
-     * 返回前端展示的卷宗多媒体文件
+     * 返回前端展示的卷宗音视频文件，断点续传
      * @param response
      * @param dossierId
      */
     @RequestMapping("/common/getFile/{dossierId}")
     public void getFile(HttpServletRequest request, HttpServletResponse response, @PathVariable long dossierId) {
         Dossier dossier = dossierService.getDossier(dossierId);
-//        response.setContentType(fileTypeMap.get(dossier.getFileType()));
-//        FileInputStream in;
-//        OutputStream out;
-//        try {
-//            in = new FileInputStream(new File(dossier.getPath()));
-//            out = response.getOutputStream();
-//            byte[] b = new byte[512];
-//            while ((in.read(b)) != -1) {
-//                out.write(b);
-//            }
-//            out.flush();
-//            in.close();
-//            out.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
         File file = new File(dossier.getPath());
 
@@ -223,9 +207,9 @@ public class DossierController {
             outputStream.flush();
             response.flushBuffer();
             randomAccessFile.close();
-            System.out.println("下载完毕：" + startByte + "-" + endByte + "：" + transmitted);
+            System.out.println(fileName + " 下载完毕：" + startByte + "-" + endByte + "：" + transmitted);
         } catch (ClientAbortException e) {
-            System.out.println("用户停止下载：" + startByte + "-" + endByte + "：" + transmitted);
+            System.out.println(fileName +  " 用户停止下载：" + startByte + "-" + endByte + "：" + transmitted);
             //捕获此异常表示拥护停止下载
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -241,10 +225,36 @@ public class DossierController {
     }
 
     /**
-     * 局部刷新卷宗文件展示
+     * 返回前端展示的卷宗PDF文件
+     * @param response
      * @param dossierId
-     * @return
      */
+    @RequestMapping("/common/getPDFFile/{dossierId}")
+    public void getPDFFile(HttpServletResponse response, @PathVariable long dossierId) {
+        Dossier dossier = dossierService.getDossier(dossierId);
+        response.setContentType(fileTypeMap.get(dossier.getFileType()));
+        FileInputStream in;
+        OutputStream out;
+        try {
+            in = new FileInputStream(new File(dossier.getPath()));
+            out = response.getOutputStream();
+            byte[] b = new byte[512];
+            while ((in.read(b)) != -1) {
+                out.write(b);
+            }
+            out.flush();
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+        /**
+         * 局部刷新卷宗文件展示
+         * @param dossierId
+         * @return
+         */
     @RequestMapping("/common/updateCurrentDossier/{dossierId}")
     public String updateCurrentDossier(Model model, @PathVariable long dossierId) {
         model.addAttribute("currentDossier", dossierService.getDossier(dossierId));

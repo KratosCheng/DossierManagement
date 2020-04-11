@@ -30,6 +30,9 @@ public class DossierContent {
     // 纯文本内容
     private String content;
 
+    // 附件信息、存储初始识别结果
+    private String additionalInfo;
+
     public DossierContent(long dossierId, String fileType, int part, String locationInfo, String content) {
         this.dossierId = dossierId;
         this.fileType = fileType;
@@ -89,6 +92,14 @@ public class DossierContent {
         this.content = content;
     }
 
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
+    }
+
     @Override
     public String toString() {
         return "DossierContent{" +
@@ -98,6 +109,7 @@ public class DossierContent {
                 ", part=" + part +
                 ", locationInfo='" + locationInfo + '\'' +
                 ", content='" + content + '\'' +
+                ", additionalInfo='" + additionalInfo + '\'' +
                 '}';
     }
 }
