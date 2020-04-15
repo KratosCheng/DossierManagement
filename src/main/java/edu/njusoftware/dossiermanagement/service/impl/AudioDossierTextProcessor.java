@@ -9,7 +9,7 @@ import edu.njusoftware.dossiermanagement.repository.DossierContentRepository;
 import edu.njusoftware.dossiermanagement.service.DossierTextProcessor;
 import edu.njusoftware.dossiermanagement.service.OperationRecordService;
 import edu.njusoftware.dossiermanagement.util.Constants;
-import edu.njusoftware.dossiermanagement.util.FileEncodeUtils;
+import edu.njusoftware.dossiermanagement.util.AudioFileEncodeUtils;
 import edu.njusoftware.dossiermanagement.util.IATSpeechRecognizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
         File sourceFile = new File(dossier.getPath());
         String pcmFileFolder = sourceFile.getParent() + File.separator + "process";
         logger.debug("Start to encode dossier file " + dossier.getName());
-        List<String> pcmFilePaths = FileEncodeUtils.audio2PcmFiles(dossier.getPath(), pcmFileFolder, partDuration);
+        List<String> pcmFilePaths = AudioFileEncodeUtils.audio2PcmFiles(dossier.getPath(), pcmFileFolder, partDuration);
         int total = pcmFilePaths.size();
         for (int i = 0; i < total; i++) {
             dealPcmFiles(pcmFilePaths.get(i), i, dossier.getId(), dossier.getCaseNum(), dossier.getName());
@@ -72,7 +72,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
 //        while (part < total) {
 //            String pcmPartPath = sourceFile.getParent() + File.separator + dossierName + "_" + part + ".pcm";
 //            logger.debug("Start to encode file " + pcmPartPath);
-//            if (FileEncodeUtils.audio2PcmFiles(sourcePath, pcmPartPath, partStart, partDuration)) {
+//            if (AudioFileEncodeUtils.audio2PcmFiles(sourcePath, pcmPartPath, partStart, partDuration)) {
 //                logger.debug("Success to encode file " + pcmPartPath);
 //                dealPcmFiles(pcmPartPath, part, dossierId, caseNum, dossierName);
 //            } else {

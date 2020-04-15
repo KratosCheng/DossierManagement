@@ -1,23 +1,20 @@
 package edu.njusoftware.dossiermanagement.util;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ws.schild.jave.*;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FileEncodeUtils {
-    private static final Logger logger = LoggerFactory.getLogger(FileEncodeUtils.class);
+public class AudioFileEncodeUtils {
+    private static final Logger logger = LoggerFactory.getLogger(AudioFileEncodeUtils.class);
 
     /**
      *  第一个参数source表示要解码的源文件。
@@ -82,6 +79,13 @@ public class FileEncodeUtils {
 //        }
 //    }
 
+    /**
+     * 将音频文件分割并转码为pcm格式
+     * @param sourcePath
+     * @param targetFolder
+     * @param duration
+     * @return
+     */
     public static List<String> audio2PcmFiles(String sourcePath, String targetFolder, float duration) {
         // Audio Attributes/音频编码属性
         AudioAttributes audio = new AudioAttributes();
@@ -132,7 +136,7 @@ public class FileEncodeUtils {
      * @param file
      * @return
      */
-    private static String getPureName(File file) {
+    static String getPureName(File file) {
         return file.getName().substring(0, file.getName().lastIndexOf('.'));
     }
 
@@ -156,49 +160,12 @@ public class FileEncodeUtils {
 
     }
 
-    /***
-     * PDF文件转PNG/JPEG图片
-     * @param pdfFilePath pdf完整路径
-     * @param dstImgFolder 图片存放的文件夹
-     * @param dpi 越大转换后越清晰，相对转换速度越慢,一般电脑默认96dpi
-     */
-    public static List<String> pdf2Images(String pdfFilePath, String dstImgFolder, int dpi) {
-        File pdfFile = new File(pdfFilePath);
-        String pdfName = getPureName(pdfFile);
-
-        List<String> imagePaths = new LinkedList<>();
-        try {
-            if (createDirectory(dstImgFolder)) {
-                PDDocument pdDocument = PDDocument.load(pdfFile);
-                PDFRenderer renderer = new PDFRenderer(pdDocument);
-                int pages = pdDocument.getNumberOfPages();// 获取PDF页数
-                logger.debug("Start to separate and transform Pdf " + pdfFilePath + " to png images, number of pages is " + pages);
-                for (int i = 0; i < pages; i++) {
-                    String imgFilePath = dstImgFolder + File.separator + pdfName + "_" + i + ".png";
-                    File dstFile = new File(imgFilePath);
-//                    BufferedImage image = renderer.renderImageWithDPI(i, dpi);
-                    BufferedImage image = renderer.renderImage(i);
-                    ImageIO.write(image, "png", dstFile); // PNG
-                    imagePaths.add(imgFilePath);
-                }
-                logger.debug("Success to separate and transform Pdf " + pdfFilePath + " to png images, destination folder is  " + dstImgFolder);
-            } else {
-                logger.error("Error to create folder " + dstImgFolder);
-            }
-        } catch (IOException e) {
-            logger.error("Error to separate and transform Pdf " + pdfFilePath + " to png images!");
-            e.printStackTrace();
-            return null;
-        }
-        return imagePaths;
-    }
-
     /**
      * 创建文件夹
      * @param folder
      * @return
      */
-    private static boolean createDirectory(String folder) {
+    static boolean createDirectory(String folder) {
         File dir = new File(folder);
         if (dir.exists()) {
             return true;
@@ -208,43 +175,4 @@ public class FileEncodeUtils {
         }
     }
 
-    /**
-     * 用于获取一页pdf中的一些字符图片
-     * @param pdfFilePath
-     * @param targetFolder
-     * @param positions
-     * @return
-     */
-    public static List<String> getCharImages(String pdfFilePath, int page, String targetFolder, List<String> positions) {
-        File pdfFile = new File(pdfFilePath);
-        String pdfName = getPureName(pdfFile);
-
-        List<String> imagePaths = new LinkedList<>();
-        try {
-            if (!createDirectory(targetFolder)) {
-                return null;
-            }
-            PDDocument pdDocument = PDDocument.load(pdfFile);
-            PDFRenderer renderer = new PDFRenderer(pdDocument);
-            int count = positions.size();
-            BufferedImage pageImage = renderer.renderImage(page);
-            String imagePathPrefix = targetFolder + File.separator + pdfName + "_" + page + "_";
-            logger.debug("Start to separate " + pdfFilePath + " page " + page + " to png images, count is " + count);
-            for (int i = 0; i < count; i++) {
-                String[] indexs = positions.get(i).split("_");
-                String imgFilePath = imagePathPrefix + i + ".png";
-                File dstFile = new File(imgFilePath);
-                BufferedImage charImage = pageImage.getSubimage(Integer.parseInt(indexs[0]),
-                        Integer.parseInt(indexs[1]), Integer.parseInt(indexs[2]), Integer.parseInt(indexs[3]));
-                ImageIO.write(charImage, "png", dstFile); // PNG
-                imagePaths.add(imgFilePath);
-            }
-            logger.debug("Success to separate " + pdfFilePath + " page " + page + " to png images, destination folder is  " + targetFolder);
-        } catch (IOException e) {
-            logger.error("Error to separate Pdf "  + " page " + page + pdfFilePath + " to png images!");
-            e.printStackTrace();
-            return null;
-        }
-        return imagePaths;
-    }
 }

@@ -1,5 +1,7 @@
 package edu.njusoftware.dossiermanagement.domain;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 
 /**
@@ -31,6 +33,8 @@ public class DossierContent {
     private String content;
 
     // 附件信息、存储初始识别结果
+    @Nullable
+    @Column(name = "additional_info")
     private String additionalInfo;
 
     public DossierContent(long dossierId, String fileType, int part, String locationInfo, String content) {
@@ -39,6 +43,15 @@ public class DossierContent {
         this.part = part;
         this.locationInfo = locationInfo;
         this.content = content;
+    }
+
+    public DossierContent(long dossierId, String fileType, int part, String locationInfo, String content, @Nullable String additionalInfo) {
+        this.dossierId = dossierId;
+        this.fileType = fileType;
+        this.part = part;
+        this.locationInfo = locationInfo;
+        this.content = content;
+        this.additionalInfo = additionalInfo;
     }
 
     public DossierContent() {

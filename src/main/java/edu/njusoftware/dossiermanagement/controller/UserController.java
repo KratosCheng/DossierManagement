@@ -10,26 +10,15 @@ import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
 import edu.njusoftware.dossiermanagement.service.IDossierService;
 import edu.njusoftware.dossiermanagement.service.IUserService;
 import edu.njusoftware.dossiermanagement.util.*;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.font.*;
-import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.pdfbox.util.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -71,7 +60,7 @@ public class UserController {
 //        Dossier dossier = dossierService.getDossier(62);
 //        dossierService.processDossierContent(dossier);
 //        List<String> strings = IATSpeechRecognizer.RecognizePcmfileByte(pcmPath);
-//        FileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPath, 0F, 15F);
+//        AudioFileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPath, 0F, 15F);
         String pdfPath = "C:/Users/Kratos/Desktop/dossier/test/阿达/FACT授权书/(2014)滨刑初字第0079号 受贿罪139页.pdf";
 //        PDFFileEncodeUtils.test(pdfPath);
         List<PDFLine> lines = new ArrayList<>();
@@ -84,7 +73,7 @@ public class UserController {
         lines.add(new PDFLine("成受贿罪。根据天津市滨海新区人民法院机关刑事案件受理", 95, 525, 16));
         lines.add(new PDFLine("范围的相关规定，现将该案移送机关刑事审判庭审理，请查", 95, 502, 16));
         lines.add(new PDFLine("收。", 95, 480, 16));
-        PDFFileEncodeUtils.alterPageContent(pdfPath, lines, 0);
+        PDFFileEncodeUtils.setPageTextContent(pdfPath, lines, 0);
         return "hahah";
     }
 
