@@ -114,7 +114,7 @@ public class AudioDossierTextProcessor implements DossierTextProcessor {
             for (int i = 0; i < wsArray.size(); i++) {
                 JsonObject cwObject = wsArray.get(i).getAsJsonObject();
 //                long bg = (part * partDuration * 1000) + cwObject.get("bg").getAsInt();
-                // 获取当前中文词在当前音频文件分区中的起始位置
+                // 获取当前中文词在当前音频文件分区中的起始位置，单位为帧（10ms）
                 long bg = cwObject.get("bg").getAsLong();
                 // 通过关键字cw得到第二个数组
                 JsonArray cwArray = cwObject.get("cw").getAsJsonArray();

@@ -24,36 +24,6 @@ import java.util.List;
 public class PDFFileEncodeUtils {
     private static final Logger logger = LoggerFactory.getLogger(AudioFileEncodeUtils.class);
 
-    public static PDPage setPageTextContent(String filePath, List<PDFLine> lines, int pageIndex) throws IOException {
-        File file = new File(filePath);
-        PDDocument doc = PDDocument.load(file);
-        doc.setAllSecurityToBeRemoved(true);
-        PDPage page = doc.getPage(pageIndex);
-//        PDPageContentStream cs = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true, true);
-        PDPageContentStream cs = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true, true);
-        Resource resource = new ClassPathResource("static/fonts/simfang.ttf");
-        File fontFile = resource.getFile();
-        PDFont font = PDType0Font.load(doc, fontFile);
-        PDExtendedGraphicsState r0 = new PDExtendedGraphicsState();
-//        // 透明度
-        r0.setNonStrokingAlphaConstant(0f);
-        r0.setAlphaSourceFlag(true);
-        cs.setGraphicsStateParameters(r0);
-//        cs.setNonStrokingColor(lines,0,0);//Red
-        for (PDFLine line : lines) {
-            cs.setNonStrokingColor(line.getR(),line.getG(),line.getB());
-            cs.setFont(font, line.getFontSize());
-            cs.beginText();
-            // 获取平移实例，tx - 坐标在 X 轴方向上平移的距离，ty - 坐标在 Y 轴方向上平移的距离
-            cs.setTextMatrix(Matrix.getTranslateInstance(line.getTx(),line.getTy()));
-            cs.showText(line.getText());
-            cs.endText();
-        }
-        cs.close();
-        doc.save(file);
-        return page;
-    }
-
     /***
      * PDF文件转PNG/JPEG图片
      * @param pdfFilePath pdf完整路径
@@ -74,8 +44,7 @@ public class PDFFileEncodeUtils {
                 for (int i = 0; i < pages; i++) {
                     String imgFilePath = dstImgFolder + File.separator + pdfName + "_" + i + ".png";
                     File dstFile = new File(imgFilePath);
-//                    BufferedImage image = renderer.renderImageWithDPI(i, dpi);
-                    BufferedImage image = renderer.renderImage(i);
+                    BufferedImage image = renderer.renderImageWithDPI(i, dpi);
                     ImageIO.write(image, "png", dstFile); // PNG
                     imagePaths.add(imgFilePath);
                 }
@@ -89,6 +58,45 @@ public class PDFFileEncodeUtils {
             return null;
         }
         return imagePaths;
+    }
+
+    /**
+     * 设置pdf文件某页的文本层
+     * @param filePath
+     * @param lines
+     * @param pageIndex
+     * @return
+     * @throws IOException
+     */
+    public static PDPage setPageTextContent(String filePath, List<PDFLine> lines, int pageIndex) throws IOException {
+        File file = new File(filePath);
+        PDDocument doc = PDDocument.load(file);
+        doc.setAllSecurityToBeRemoved(true);
+        PDPage page = doc.getPage(pageIndex);
+        float pageWidth = page.getCropBox().getWidth();
+        float pageHeight = page.getCropBox().getHeight();
+        PDPageContentStream cs = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true, true);
+        Resource resource = new ClassPathResource("static/fonts/simfang.ttf");
+        File fontFile = resource.getFile();
+        PDFont font = PDType0Font.load(doc, fontFile);
+        PDExtendedGraphicsState r0 = new PDExtendedGraphicsState();
+        // 透明度
+        r0.setNonStrokingAlphaConstant(0f);
+        r0.setAlphaSourceFlag(true);
+        cs.setGraphicsStateParameters(r0);
+        for (PDFLine line : lines) {
+//            cs.setNonStrokingColor(line.getR(), line.getG(), line.getB());
+            cs.setNonStrokingColor(200, 0, 0);
+            cs.setFont(font, line.getFontSize());
+            cs.beginText();
+            // 获取平移实例，tx - 坐标在 X 轴方向上平移的距离，ty - 坐标在 Y 轴方向上平移的距离
+            cs.setTextMatrix(Matrix.getTranslateInstance(line.getTx() * pageWidth, line.getTy() * pageHeight));
+            cs.showText(line.getText());
+            cs.endText();
+        }
+        cs.close();
+        doc.save(file);
+        return page;
     }
 
     /**

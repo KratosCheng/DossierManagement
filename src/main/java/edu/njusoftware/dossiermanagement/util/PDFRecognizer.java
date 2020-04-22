@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -29,15 +32,23 @@ public class PDFRecognizer {
      */
     public String recognizePicture(String filePath) {
         File file = new File(filePath);
-        // 文件必须封装成FileSystemResource这个类型后端才能收到附件
-        FileSystemResource resource = new FileSystemResource(file);
-        // 然后所有参数要封装到MultiValueMap里面
-        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-        param.add("file", resource);
-        param.add("files", new FileSystemResource[]{resource,resource});
-        param.add("remove_lines", 1);
-        param.add("verbose", 1);
+        //设置请求头
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("multipart/form-data");
+        headers.setContentType(type);
+
+        //设置请求体，注意是LinkedMultiValueMap
+        FileSystemResource fileSystemResource = new FileSystemResource(filePath);
+        MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+        form.add("file", fileSystemResource);
+        form.add("remove_lines", 1);
+        form.add("verbose", 1);
+
+        //用HttpEntity封装整个请求报文
+        HttpEntity<MultiValueMap<String, Object>> files = new HttpEntity<>(form, headers);
+
+        logger.debug("Call the ocr interface:" + ocrUrl + " to recognize file " + filePath);
         // 调用接口即可
-        return restTemplate.postForEntity("http://xxxService/api/uploadFile/addUploadFileUrl", param, String.class).getBody();
+        return restTemplate.postForEntity(ocrUrl, files, String.class).getBody();
     }
 }

@@ -6,10 +6,10 @@ package edu.njusoftware.dossiermanagement.domain;
 public class PDFLine {
     private String text;
 
-    // 从左下角在x轴方向上的平移距离
+    // 从左下角在x轴方向上的平移距离与页面宽度的比率
     private float tx;
 
-    // 从左下角在y轴方向上的平移距离
+    // 从左下角在y轴方向上的平移距离与页面高度的比率
     private float ty;
 
     private int fontSize;
@@ -26,6 +26,16 @@ public class PDFLine {
         this.tx = tx;
         this.ty = ty;
         this.fontSize = fontSize;
+    }
+
+    public PDFLine(String text, float tx, float ty, int fontSize, int r, int g, int b) {
+        this.text = text;
+        this.tx = tx;
+        this.ty = ty;
+        this.fontSize = fontSize;
+        this.r = r;
+        this.g = g;
+        this.b = b;
     }
 
     public String getText() {

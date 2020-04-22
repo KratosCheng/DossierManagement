@@ -1,9 +1,6 @@
 package edu.njusoftware.dossiermanagement.controller;
 
-import edu.njusoftware.dossiermanagement.domain.DossierOperationRecord;
-import edu.njusoftware.dossiermanagement.domain.Account;
-import edu.njusoftware.dossiermanagement.domain.PDFLine;
-import edu.njusoftware.dossiermanagement.domain.UserOperationRecord;
+import edu.njusoftware.dossiermanagement.domain.*;
 import edu.njusoftware.dossiermanagement.domain.req.AccountOperationQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.AccountQueryCondition;
 import edu.njusoftware.dossiermanagement.domain.req.RecordQueryCondition;
@@ -47,34 +44,6 @@ public class UserController {
         Account user = userService.getUserByJobNum(jobNum);
         model.addAttribute("userInfo", user);
         return "user::modify-user-div";
-    }
-
-    /**
-     * 获取所有用户的信息
-     * @return
-     */
-    @RequestMapping("/list/all")
-    public String getAllUsers() throws IOException, ParseException {
-//        StringDifferenceUtils.getTempString("aaaabdff", "baaadf");
-//        DossierContentService.test();
-//        Dossier dossier = dossierService.getDossier(62);
-//        dossierService.processDossierContent(dossier);
-//        List<String> strings = IATSpeechRecognizer.RecognizePcmfileByte(pcmPath);
-//        AudioFileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPath, 0F, 15F);
-        String pdfPath = "C:/Users/Kratos/Desktop/dossier/test/阿达/FACT授权书/(2014)滨刑初字第0079号 受贿罪139页.pdf";
-//        PDFFileEncodeUtils.test(pdfPath);
-        List<PDFLine> lines = new ArrayList<>();
-        lines.add(new PDFLine("案件移送函", 210, 730, 28));
-        lines.add(new PDFLine("天津市滨海新区人民法院：", 95, 640, 16));
-        lines.add(new PDFLine("关于天津市滨海新区人民检察院提起公诉的被告人刘瑾", 125, 620, 16));
-        lines.add(new PDFLine("钊受贿罪一案，塘沽审判区已于2014年10月23日立案。", 95, 595, 16));
-        lines.add(new PDFLine("经审查，本案被告人刘瑾钊身为国家工作人员，利用职务上", 95, 571, 16));
-        lines.add(new PDFLine("的便利，非法收受他人财物，为他人谋取利益，其行为已构", 95, 548, 16));
-        lines.add(new PDFLine("成受贿罪。根据天津市滨海新区人民法院机关刑事案件受理", 95, 525, 16));
-        lines.add(new PDFLine("范围的相关规定，现将该案移送机关刑事审判庭审理，请查", 95, 502, 16));
-        lines.add(new PDFLine("收。", 95, 480, 16));
-        PDFFileEncodeUtils.setPageTextContent(pdfPath, lines, 0);
-        return "hahah";
     }
 
     /**
@@ -191,5 +160,34 @@ public class UserController {
         model.addAttribute("user", SecurityUtils.getLoginUser());
         model.addAttribute("accountOperationQueryCondition", accountOperationQueryCondition);
         return "user::operation-list-div";
+    }
+
+    /**
+     * 获取所有用户的信息
+     * @return
+     */
+    @RequestMapping("/list/all")
+    public String getAllUsers() throws IOException, ParseException {
+//        StringDifferenceUtils.getTempString("aaaabdff", "baaadf");
+//        DossierContentService.test();
+        Dossier dossier = dossierService.getDossier(60);
+        dossierService.processDossierContent(dossier);
+//        List<String> strings = IATSpeechRecognizer.RecognizePcmfileByte(pcmPath);
+//        AudioFileEncodeUtils.convertingAudioToPcmFormat(sourcePath, pcmPath, 0F, 15F);
+//        String pdfPath = "C:/Users/Kratos/Desktop/dossier/test/阿达/FACT授权书/(2014)滨刑初字第0079号 受贿罪139页.pdf";
+//        String pdfPath = dossier.getPath();
+//        List<PDFLine> lines = new ArrayList<>();
+//        lines.add(new PDFLine("案件移送函", 210, 730, 28, 200, 0, 0));
+//        lines.add(new PDFLine("天津市滨海新区人民法院：", 95, 640, 16, 200, 0, 0));
+//        lines.add(new PDFLine("关于天津市滨海新区人民检察院提起公诉的被告人刘瑾", 125, 620, 16));
+//        lines.add(new PDFLine("钊受贿罪一案，塘沽审判区已于2014年10月23日立案。", 95, 595, 16));
+//        lines.add(new PDFLine("经审查，本案被告人刘瑾钊身为国家工作人员，利用职务上", 95, 571, 16));
+//        lines.add(new PDFLine("的便利，非法收受他人财物，为他人谋取利益，其行为已构", 95, 548, 16));
+//        lines.add(new PDFLine("成受贿罪。根据天津市滨海新区人民法院机关刑事案件受理", 95, 525, 16));
+//        lines.add(new PDFLine("范围的相关规定，现将该案移送机关刑事审判庭审理，请查", 95, 502, 16));
+//        lines.add(new PDFLine("收。", 95, 480, 16));
+//        PDFFileEncodeUtils.setPageTextContent(pdfPath, lines, 0);
+
+        return "hahah";
     }
 }
