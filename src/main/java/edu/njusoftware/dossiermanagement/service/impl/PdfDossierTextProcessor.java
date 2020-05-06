@@ -42,7 +42,7 @@ public class PdfDossierTextProcessor implements DossierTextProcessor {
         String pdfPath = dossier.getPath();
         File file = new File(pdfPath);
         String imagesFolder = file.getParent() + File.separator + "process";
-        
+
 //        List<String> imagePaths = new ArrayList<>();
 //        imagePaths.add(imagesFolder + File.separator + "(2014)滨刑初字第0079号 受贿罪139页_0.png");
 
@@ -50,7 +50,7 @@ public class PdfDossierTextProcessor implements DossierTextProcessor {
         int total = imagePaths.size();
         // 备份pdf文件
         backUpFile(pdfPath);
-        logger.debug("Start to process png files." );
+        logger.debug("Start to process png files of pdf: " + pdfPath);
         for (int i = 0; i < total; i++) {
             processSinglePage(imagePaths.get(i), pdfPath, dossier, i);
         }
@@ -75,7 +75,7 @@ public class PdfDossierTextProcessor implements DossierTextProcessor {
             e.printStackTrace();
         }
         DossierContent dossierContent = new DossierContent(dossier.getId(),
-                dossier.getFileType(), pageIndex, locationInfo.substring(1), content.toString());
+                dossier.getFileType(), pageIndex, locationInfo.substring(1), content.toString(), result);
         dossierContentRepository.save(dossierContent);
         operationRecordService.saveContentRecognitionOperationRecord(dossier.getCaseNum(), dossier.getId(),
                 dossier.getName(), pageIndex, content.toString());

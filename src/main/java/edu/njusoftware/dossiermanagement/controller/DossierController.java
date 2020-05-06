@@ -371,4 +371,11 @@ public class DossierController {
         model.addAttribute("caseSearchResults", caseSearchResults);
         return "casePage::#search_result_dialog";
     }
+
+    @RequestMapping(value = "/content")
+    public String getDossierContent(Model model, long dossierId, int part) {
+        DossierContent dossierContent = dossierContentService.getDossierContent(dossierId, part);
+        model.addAttribute("dossierContent", dossierContent);
+        return "casePage::#div-text-container";
+    }
 }

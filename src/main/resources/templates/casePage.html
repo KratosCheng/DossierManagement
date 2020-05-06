@@ -70,8 +70,8 @@
                         </span>
                     </div>
                     <div class="media-container" th:switch="${currentDossier.fileType}">
-                        <audio id="audioPlayer" preload="auto" style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" controls="controls"></audio>
-                        <video id="videoPlayer" preload="auto" th:case="'video'" controls="controls">
+                        <audio id="audioPlayer" preload="auto" style="min-width: 50%;" th:case="'audio'" th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" th:ontimeupdate="checkAudioTime([[${currentDossier.id}]])" controls="controls"></audio>
+                        <video id="videoPlayer" preload="auto" th:case="'video'" controls="controls" th:ontimeupdate="checkVideoTime([[${currentDossier.id}]])">
                             <source th:src="@{'/dossier/common/getFile/' + ${currentDossier.id}}" />
                             Your browser does not support the video tag.
                         </video>
@@ -89,9 +89,9 @@
                                 <form id="dossierContentForm" role="form" th:object="${dossierContent}">
                                     <div class="form-group">
                                         <label style="width: 100%">
-                                            <input hidden th:field="*{dossierId}">
+                                            <input id="dossier-id-input" hidden th:field="*{dossierId}">
                                             <span>第</span>
-                                            <input readonly type="text" style="width: 60px" th:field="*{part}">
+                                            <input id="part-input" readonly type="text" style="width: 60px" th:field="*{part}">
                                             <span th:if="${dossierContent.fileType eq 'pdf'}">页</span>
                                             <span th:if="${dossierContent.fileType ne 'pdf'}">段</span>
                                             <textarea th:onchange="allowSubmit()" type="text" id="ta-content" class="form-control text-content" rows="20" readonly th:field="*{content}"></textarea>
@@ -387,12 +387,58 @@
         }
     }
 
-    $('#videoPlayer').ontimeupdate(function(){
-        var timeDisplay;
-        //用秒数来显示当前播放进度
-        timeDisplay = Math.floor(this.currentTime);
-        console.log(Math.floor(timeDisplay))
-    });
+    function checkPDFPage() {
+        var iframeViewer = document.getElementById("iframeViewer");
+        if (iframeViewer === null) {
+            return
+        }
+
+        var dossierId = $('#dossier-id-input').val();
+        var page = iframeViewer.contentDocument.getElementById('pageNumber').value;
+        if (page > 0) {
+            page = page - 1;
+        }
+        if (page !== parseInt($('#part-input').val())) {
+            // 更新卷宗文本内容
+            getDossierContent(dossierId, page);
+        }
+    }
+
+    // 设置一秒检查一次pdf页码
+    window.setInterval("checkPDFPage()", 1000);
+
+    function checkVideoTime(dossierId) {
+        var part = Math.floor(document.getElementById("videoPlayer").currentTime / 60);
+        if (part !== parseInt($('#part-input').val())) {
+            // 更新卷宗文本内容
+            getDossierContent(dossierId, part);
+        }
+    }
+
+    function checkAudioTime(dossierId) {
+        var part = Math.floor(document.getElementById("audioPlayer").currentTime / 60);
+        if (part !== parseInt($('#part-input').val())) {
+            // 更新卷宗文本内容
+            getDossierContent(dossierId, part);
+        }
+    }
+
+    function getDossierContent(dossierId, part) {
+        $.ajax({
+            type:"post",
+            url:"../dossier/content",
+            data:{
+                dossierId:dossierId,
+                part:part
+            },
+            success: function (result) {
+                $('#div-text-container').html(result);
+            },
+            error : function (r) {
+                console.error(r);
+            }
+        })
+    }
     
 </script>
 </html>

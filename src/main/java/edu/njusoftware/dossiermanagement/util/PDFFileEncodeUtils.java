@@ -68,7 +68,7 @@ public class PDFFileEncodeUtils {
      * @return
      * @throws IOException
      */
-    public static PDPage setPageTextContent(String filePath, List<PDFLine> lines, int pageIndex) throws IOException {
+    public static void setPageTextContent(String filePath, List<PDFLine> lines, int pageIndex) throws IOException {
         File file = new File(filePath);
         PDDocument doc = PDDocument.load(file);
         doc.setAllSecurityToBeRemoved(true);
@@ -85,8 +85,7 @@ public class PDFFileEncodeUtils {
         r0.setAlphaSourceFlag(true);
         cs.setGraphicsStateParameters(r0);
         for (PDFLine line : lines) {
-//            cs.setNonStrokingColor(line.getR(), line.getG(), line.getB());
-            cs.setNonStrokingColor(200, 0, 0);
+            cs.setNonStrokingColor(line.getR(), line.getG(), line.getB());
             cs.setFont(font, line.getFontSize());
             cs.beginText();
             // 获取平移实例，tx - 坐标在 X 轴方向上平移的距离，ty - 坐标在 Y 轴方向上平移的距离
@@ -96,7 +95,7 @@ public class PDFFileEncodeUtils {
         }
         cs.close();
         doc.save(file);
-        return page;
+        doc.close();
     }
 
     /**
